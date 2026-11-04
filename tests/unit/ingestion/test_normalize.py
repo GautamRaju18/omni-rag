@@ -43,3 +43,9 @@ def test_context_ids_are_deterministic_and_skip_empty() -> None:
     second = ctx.add(ElementType.PARAGRAPH, "world", extraction_method=method)
     assert (first, skipped, second) == ("doc_abc-e00000", None, "doc_abc-e00001")
     assert [e.order for e in ctx.elements] == [0, 1]
+
+
+@pytest.mark.parametrize("separator", ["\v", "\f", "\u2028"])
+def test_line_separators_become_newlines_not_deleted(separator: str) -> None:
+    # PowerPoint soft breaks arrive as "\v"; deleting them would glue words together.
+    assert normalize_text(f"line{separator}break") == "line\nbreak"

@@ -18,6 +18,9 @@ Local-first multimodal GraphRAG platform, built phase by phase (see `docs/PROGRE
 - Tables go through `ingestion/tables.add_table()` (TABLE + self-describing TABLE_ROW children).
 - Loaders are shared across threads: no per-file state on `self`.
 - Don't fetch remote URLs found in documents (SSRF / offline-first).
+- DOCX text: use `docx_loader._element_text`, never python-docx `Paragraph.text`/`cell.text` (they drop tracked insertions, fields, content controls).
+- Office samples in `data/samples` are committed binaries; regenerating via `scripts/make_office_samples.py` changes their doc IDs.
+- `defusedxml` must stay installed (openpyxl XML-bomb protection; asserted by a test).
 
 ## Conventions
 - Code lives in `src/omnirag/<module>/` (ADR-0001). Create a module's package only in its phase.

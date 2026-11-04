@@ -93,3 +93,16 @@ def test_hash_and_id_are_content_addressed(tmp_path: Path) -> None:
     c = _write(tmp_path, "c.txt", b"other bytes")
     assert sha256_file(a) == sha256_file(b) != sha256_file(c)
     assert document_id_for(sha256_file(a)) == f"doc_{sha256_file(a)[:16]}"
+
+
+def test_ooxml_zip_bomb_rejected_from_directory_sizes(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # The real limit is 512 MiB; lower it instead of writing a huge file in a unit test.
+    monkeypatch.setattr("omnirag.ingestion.validation.MAX_OOXML_UNCOMPRESSED_BYTES", 1000)
+    path = tmp_path / "bomb.docx"
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        zf.writestr("word/document.xml", "<w/>" + " " * 5000)  # compresses to a few bytes
+    assert path.stat().st_size < 1000
+    with pytest.raises(FileValidationError, match="expands to"):
+        validate_file(path, max_bytes=MAX)

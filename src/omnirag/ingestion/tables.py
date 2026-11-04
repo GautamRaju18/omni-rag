@@ -57,8 +57,13 @@ def add_table(
     section_path: Sequence[str] = (),
     metadata: dict[str, Any] | None = None,
     parent_id: str | None = None,
+    row_metadata: Sequence[dict[str, Any]] | None = None,
 ) -> str | None:
-    """Add a TABLE element plus one TABLE_ROW child per row. Returns the table element ID."""
+    """Add a TABLE element plus one TABLE_ROW child per row. Returns the table element ID.
+
+    ``row_metadata[i]`` is merged into row ``i``'s metadata, e.g. ``{"excel_row": 7}`` so a
+    citation can point at the exact spreadsheet row.
+    """
     header = [h if _cell(h) else f"column_{i + 1}" for i, h in enumerate(header)]
     table_meta = {"columns": list(header), "n_rows": len(rows), "n_cols": len(header)}
     table_id = ctx.add(
@@ -81,7 +86,7 @@ def add_table(
             confidence=confidence,
             page_number=page_number,
             section_path=section_path,
-            metadata={"row_index": index},
+            metadata={"row_index": index, **(row_metadata[index] if row_metadata else {})},
             parent_id=table_id,
         )
     return table_id

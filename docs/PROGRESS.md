@@ -7,8 +7,8 @@ A feature counts as done only when its tests pass and the result was observed, n
 | 0 | Hardware & environment | ✅ Done 2026-11-04 | [learning/phase-00](learning/phase-00-environment.md) |
 | 1 | Backend foundation (config, logging, DI, health) | ✅ Done 2026-11-04 | 24 unit + 4 integration tests; live checks in [learning/phase-01](learning/phase-01-backend-foundation.md) |
 | 2a | Ingestion core + TXT/MD/HTML/JSON/CSV | ✅ Done 2026-11-04 | 83 unit tests; [learning/phase-02a](learning/phase-02a-ingestion-core.md) |
-| 2b | DOCX / XLSX / PPTX loaders | ⏭ Next | |
-| 2c | PDF (PyMuPDF) + Tesseract OCR + images | ⬜ | needs `sudo apt install tesseract-ocr` |
+| 2b | DOCX / XLSX / PPTX loaders | ✅ Done 2026-11-04 | 117 unit tests; [learning/phase-02b](learning/phase-02b-office-loaders.md) |
+| 2c | PDF (PyMuPDF) + Tesseract OCR + images | ⏭ Next | needs `sudo apt install tesseract-ocr` |
 | 2d | Docling + vision-model descriptions | ⬜ | |
 | 2e | `/documents` + `/ingestion` API, background jobs | ⬜ | |
 | 3 | Chunking engine | ⬜ | |
@@ -27,7 +27,7 @@ A feature counts as done only when its tests pass and the result was observed, n
 | 16 | Tests, docs, resume prep | ⬜ | |
 
 ## Success-criteria tracker (from the brief)
-- [ ] All document types ingest (5/10 kinds: txt, md, html, json, csv) · [ ] OCR on scans/images · [ ] Table/figure provenance (tables ✅ for text formats)
+- [ ] All document types ingest (8/10 kinds: txt, md, html, json, csv, docx, xlsx, pptx) · [ ] OCR on scans/images · [ ] Table/figure provenance (tables ✅ for text + Office formats; chart data ✅ for PPTX)
 - [ ] Multiple chunking strategies · [ ] Embeddings in Neo4j · [ ] Graph queryable
 - [ ] Dense · [ ] BM25 · [ ] Graph retrieval · [ ] RRF · [ ] Reranking
 - [ ] Grounded answers · [ ] Verifiable citations · [ ] LangSmith tracing
@@ -51,6 +51,8 @@ A feature counts as done only when its tests pass and the result was observed, n
 | bge-m3 output | 1024-dim, L2 norm 1.0 |
 | Neo4j idle RSS | 940 MiB / 2 GiB limit |
 | `/api/v1/health` latency (both probes, concurrent) | ~50 ms |
+| Office loader time (docx / xlsx / pptx samples, 43 / 7 / 47 KB) | 69 / 40 / 76 ms (python-docx 1.2.0, openpyxl 3.1.5, python-pptx 1.0.2) |
+| CLI ingest of one Office file (process total) | 1.8–2.0 s wall, 72–77 MB max RSS |
 
 ## Phase 2 prerequisites (to be done at the start of Phase 2)
 - `sudo apt install tesseract-ocr` (needs your sudo password) plus `jq` (optional, for nicer CLI JSON)

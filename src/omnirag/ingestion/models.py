@@ -47,7 +47,10 @@ class ExtractionMethod(StrEnum):
     BEAUTIFULSOUP = "beautifulsoup"
     JSON_PARSE = "json_parse"
     CSV_SNIFFER = "csv_sniffer"
-    # Later phases: PYMUPDF, DOCLING, PYTHON_DOCX, OPENPYXL, PYTHON_PPTX, TESSERACT, VLM
+    PYTHON_DOCX = "python_docx"
+    OPENPYXL = "openpyxl"
+    PYTHON_PPTX = "python_pptx"
+    # Later phases: PYMUPDF, DOCLING, TESSERACT, VLM
 
 
 class ContentOrigin(StrEnum):

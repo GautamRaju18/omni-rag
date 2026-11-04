@@ -16,6 +16,10 @@ _LIGATURES = str.maketrans({"ﬀ": "ff", "ﬁ": "fi", "ﬂ": "fl", "ﬃ": "ffi",
 _SPACES = str.maketrans({" ": " ", " ": " ", " ": " ", "　": " "})
 _INVISIBLE = re.compile("[​‌‍⁠﻿­]")  # zero-width, BOM, soft hyphen
 _CONTROL = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]")  # keeps \t \n \r
+# Vertical tab is PowerPoint's soft line break (python-pptx returns it as "\v"); form feed is a
+# page break in plain text and PDFs. Both separate words, so they become newlines instead of
+# being deleted with the other control characters ("line\vbreak" must not become "linebreak").
+_LINE_SEPARATORS = str.maketrans({"\v": "\n", "\f": "\n", " ": "\n", " ": "\n"})
 _HSPACE_RUN = re.compile(r"[ \t]+")
 _BLANK_LINES = re.compile(r"\n{3,}")
 
@@ -27,7 +31,7 @@ def normalize_text(text: str, *, preserve_layout: bool = False) -> str:
     and only strips trailing spaces per line.
     """
     text = unicodedata.normalize("NFC", text)
-    text = text.replace("\r\n", "\n").replace("\r", "\n")
+    text = text.replace("\r\n", "\n").replace("\r", "\n").translate(_LINE_SEPARATORS)
     text = text.translate(_LIGATURES).translate(_SPACES)
     text = _INVISIBLE.sub("", text)
     text = _CONTROL.sub("", text)

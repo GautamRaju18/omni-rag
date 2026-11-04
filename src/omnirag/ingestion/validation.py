@@ -40,6 +40,11 @@ _OOXML_MARKERS = {
     FileKind.PPTX: "ppt/presentation.xml",
 }
 
+# Zip-bomb guard: a 1 MB .docx can declare gigabytes of XML. python-docx, python-pptx and
+# openpyxl decompress and parse members fully, so an absurd declared size would exhaust the
+# 8 GB WSL VM. Legitimate Office files rarely exceed ~10x compression on their XML.
+MAX_OOXML_UNCOMPRESSED_BYTES = 512 * 1024 * 1024
+
 _SNIFF_BYTES = 8192
 
 
@@ -90,12 +95,19 @@ def _is_image(head: bytes) -> bool:
 def _check_ooxml(path: Path, kind: FileKind) -> None:
     try:
         with zipfile.ZipFile(path) as zf:
-            names = set(zf.namelist())
+            infos = zf.infolist()
     except zipfile.BadZipFile as exc:
         raise FileValidationError(f"{path.name} is not a valid Office file (bad ZIP)") from exc
-    if _OOXML_MARKERS[kind] not in names:
+    if _OOXML_MARKERS[kind] not in {info.filename for info in infos}:
         raise FileValidationError(
             f"{path.name} is a ZIP archive but not a {kind.value.upper()} document"
+        )
+    # Sizes come from the ZIP directory, so this check decompresses nothing.
+    uncompressed = sum(info.file_size for info in infos)
+    if uncompressed > MAX_OOXML_UNCOMPRESSED_BYTES:
+        raise FileValidationError(
+            f"{path.name} expands to {uncompressed // (1024 * 1024)} MiB when unpacked",
+            details={"uncompressed_bytes": uncompressed, "max": MAX_OOXML_UNCOMPRESSED_BYTES},
         )
 
 
