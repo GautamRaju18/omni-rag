@@ -29,6 +29,29 @@ dev = [
     "pytest-asyncio==1.4.1.post1",
     "ruff==0.17.3",
 ]
+# Layout-model PDF parsing (Phase 2d). Heavy: torch + model weights. Installed by default
+# (see default-groups); a slim install is `uv sync --no-group layout`, and the code falls back
+# to PyMuPDF when Docling is missing.
+layout = [
+    "docling==2.141.0",
+    # Listed directly only so [tool.uv.sources] applies: uv ignores sources for transitive
+    # dependencies, and without this PyPI's CUDA build (+cu132, ~5 GB) gets installed.
+    "torch==2.15.0",
+    "torchvision==0.29.2",
+]
+
+[tool.uv]
+default-groups = ["dev", "layout"]
+
+# CPU-only PyTorch: the 6 GB GPU is reserved for Ollama, and CUDA wheels add several GB.
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+torchvision = { index = "pytorch-cpu" }
 
 [build-system]
 requires = ["hatchling"]
@@ -62,5 +85,8 @@ select = [
 testpaths = ["tests"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
-markers = ["integration: needs live Neo4j and Ollama (run with: pytest -m integration)"]
-addopts = "-ra -m 'not integration'"
+markers = [
+    "integration: needs live Neo4j and Ollama (run with: pytest -m integration)",
+    "docling: runs the real Docling models, ~1 min start-up (run with: pytest -m docling)",
+]
+addopts = "-ra -m 'not integration and not docling'"

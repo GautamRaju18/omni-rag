@@ -7,18 +7,22 @@ The pipeline is deliberately synchronous and side-effect ordered:
    before any parsing work is done.
 3. **Preserve the original** before parsing, so a parser crash never loses the source.
 4. **Load** with the loader registered for the file kind.
-5. **Persist** elements and a ``DocumentRecord`` whose ``status`` says what happened.
+5. **Enrich** (optional): e.g. vision-model image descriptions. Enrichers only *append*
+   elements, so loader element IDs never depend on them, and an enricher failure is a warning,
+   never a failed document.
+6. **Persist** elements and a ``DocumentRecord`` whose ``status`` says what happened.
 """
 
 from __future__ import annotations
 
 import time
 from collections import Counter
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from functools import partial
 from pathlib import Path
+from typing import Any, Protocol
 
 import structlog
 
@@ -38,6 +42,16 @@ class IngestionResult:
     duplicate: bool = False
 
 
+class Enricher(Protocol):
+    """Post-load step that appends derived elements (never edits or removes existing ones)."""
+
+    name: str
+
+    def enrich(
+        self, ctx: ExtractionContext, read_asset: Callable[[str], Path]
+    ) -> dict[str, Any]: ...
+
+
 class IngestionPipeline:
     def __init__(
         self,
@@ -45,10 +59,19 @@ class IngestionPipeline:
         loaders: Mapping[FileKind, Loader],
         *,
         max_bytes: int,
+        enrichers: Sequence[Enricher] = (),
     ) -> None:
         self.store = store
         self.loaders = loaders
         self.max_bytes = max_bytes
+        self.enrichers = enrichers
+
+    def close(self) -> None:
+        """End of a batch: let enrichers release resources (e.g. unload the vision model)."""
+        for enricher in self.enrichers:
+            close = getattr(enricher, "close", None)
+            if close is not None:
+                close()
 
     def ingest(
         self, path: Path, *, source_name: str | None = None, force: bool = False
@@ -99,6 +122,13 @@ class IngestionPipeline:
             record.error = f"{type(exc).__name__}: {exc}"
             record.warnings = ctx.warnings
             return self._finish(record, started)
+
+        for enricher in self.enrichers:
+            try:
+                metadata[enricher.name] = enricher.enrich(ctx, self.store.resolve_asset)
+            except Exception as exc:  # enrichment is optional: keep the loaded content
+                log.exception("enrich_failed", document_id=document_id, enricher=enricher.name)
+                ctx.warn(f"Enricher {enricher.name!r} failed: {type(exc).__name__}: {exc}")
 
         if not ctx.elements:
             ctx.warn("No content was extracted from this file")

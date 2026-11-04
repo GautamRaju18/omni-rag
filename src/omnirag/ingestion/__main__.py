@@ -16,6 +16,7 @@ from omnirag.core.errors import OmniRAGError
 from omnirag.core.logging import configure_logging
 from omnirag.ingestion import build_pipeline
 from omnirag.ingestion.models import IngestionStatus
+from omnirag.ingestion.store import DocumentStore
 from omnirag.ingestion.validation import EXTENSION_KINDS
 
 
@@ -40,29 +41,32 @@ def cmd_ingest(args: argparse.Namespace) -> int:
     pipeline = build_pipeline(get_settings())
     failures = 0
     print(f"{'STATUS':<10} {'DOCUMENT ID':<22} {'KIND':<9} {'ELEMS':>5} {'MS':>8}  FILE")
-    for path in _expand(args.paths):
-        try:
-            result = pipeline.ingest(path, force=args.force)
-        except OmniRAGError as exc:
-            failures += 1
-            print(f"{'REJECTED':<10} {'-':<22} {'-':<9} {'-':>5} {'-':>8}  {path.name}: {exc}")
-            continue
-        r = result.record
-        status = "DUPLICATE" if result.duplicate else r.status.value.upper()
-        failures += r.status is IngestionStatus.FAILED
-        print(
-            f"{status:<10} {r.document_id:<22} {r.file_kind.value:<9} {r.element_count:>5} "
-            f"{r.duration_ms or 0:>8.1f}  {r.source_file}"
-        )
-        for warning in r.warnings:
-            print(f"{'':<10} ⚠ {warning}")
-        if r.error:
-            print(f"{'':<10} ✖ {r.error}")
+    try:
+        for path in _expand(args.paths):
+            try:
+                result = pipeline.ingest(path, force=args.force)
+            except OmniRAGError as exc:
+                failures += 1
+                print(f"{'REJECTED':<10} {'-':<22} {'-':<9} {'-':>5} {'-':>8}  {path.name}: {exc}")
+                continue
+            r = result.record
+            status = "DUPLICATE" if result.duplicate else r.status.value.upper()
+            failures += r.status is IngestionStatus.FAILED
+            print(
+                f"{status:<10} {r.document_id:<22} {r.file_kind.value:<9} {r.element_count:>5} "
+                f"{r.duration_ms or 0:>8.1f}  {r.source_file}"
+            )
+            for warning in r.warnings:
+                print(f"{'':<10} ⚠ {warning}")
+            if r.error:
+                print(f"{'':<10} ✖ {r.error}")
+    finally:
+        pipeline.close()  # unload the vision model once, after the whole batch
     return 1 if failures else 0
 
 
 def cmd_list(_: argparse.Namespace) -> int:
-    store = build_pipeline(get_settings()).store
+    store = DocumentStore(get_settings().data_dir)
     for r in store.list_records():
         counts = ", ".join(f"{k}={v}" for k, v in r.element_counts_by_type.items())
         print(f"{r.document_id}  {r.status.value:<10} {r.source_file:<32} {counts}")
@@ -70,7 +74,7 @@ def cmd_list(_: argparse.Namespace) -> int:
 
 
 def cmd_show(args: argparse.Namespace) -> int:
-    store = build_pipeline(get_settings()).store
+    store = DocumentStore(get_settings().data_dir)
     record = store.read_record(args.document_id)
     if record is None:
         print(f"No document {args.document_id}", file=sys.stderr)

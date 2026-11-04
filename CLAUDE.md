@@ -23,6 +23,9 @@ Local-first multimodal GraphRAG platform, built phase by phase (see `docs/PROGRE
 - `defusedxml` must stay installed (openpyxl XML-bomb protection; asserted by a test).
 - OCR text: `origin=OCR`, confidence = Tesseract mean word confidence, `parent_element_id` = the source IMAGE. OCR goes through `ingestion/ocr.TesseractOcr` (subprocess, list args, no shell); tests needing the binary use `requires_tesseract`.
 - PyMuPDF is AGPL (ADR-0004); keep PDF parsing behind `PdfLoader` so it can be swapped.
+- Enrichers (e.g. vision) only APPEND elements after the loader; never change loader element order/IDs. Generated text: `ElementType.DESCRIPTION`, `origin=GENERATED`, child of its IMAGE.
+- torch/torchvision stay as direct deps in the `layout` group (CPU index); uv ignores sources for transitive deps (ADR-0005). Docling tests: `-m docling`.
+- Call `pipeline.close()` after a batch (unloads the VLM).
 
 ## Conventions
 - Code lives in `src/omnirag/<module>/` (ADR-0001). Create a module's package only in its phase.

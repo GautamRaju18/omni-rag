@@ -21,7 +21,13 @@ def test_password_is_never_rendered(settings: Settings) -> None:
 
 
 def test_required_models_follow_configured_models(settings: Settings) -> None:
-    assert settings.required_ollama_models == ["qwen3:4b-instruct", "bge-m3"]
+    assert settings.required_ollama_models == [
+        "qwen3:4b-instruct",
+        "bge-m3",
+        "qwen3-vl:2b-instruct",
+    ]
+    no_vision = settings.model_copy(update={"vision_enabled": False})
+    assert no_vision.required_ollama_models == ["qwen3:4b-instruct", "bge-m3"]
 
 
 def test_invalid_values_are_rejected() -> None:

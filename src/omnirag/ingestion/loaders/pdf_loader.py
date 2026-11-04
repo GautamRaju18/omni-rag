@@ -21,8 +21,9 @@ document with paragraphs. Structure has to be *inferred*. Two passes:
 * **garbled text layers** (many U+FFFD characters from fonts without a Unicode map) are OCR'd
   too.
 
-Known limits (Phase 2d brings Docling for these): multi-column reading order, tables without
-ruling lines, and formulas.
+Known limits of these heuristics: multi-column reading order and tables without ruling lines.
+Pass 1 therefore also detects multi-column pages; with ``pdf_engine=auto`` such documents go to
+the Docling layout model instead (``docling_engine.py``), and scanned ones stay here for OCR.
 """
 
 from __future__ import annotations
@@ -30,11 +31,12 @@ from __future__ import annotations
 import re
 from collections import Counter
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import pymupdf
 
 from omnirag.ingestion.context import ExtractionContext
+from omnirag.ingestion.loaders.docling_engine import DoclingEngine
 from omnirag.ingestion.models import (
     BoundingBox,
     ContentOrigin,
@@ -97,15 +99,27 @@ def _bbox(rect: Any) -> BoundingBox:
     return BoundingBox(x0=round(x0, 1), y0=round(y0, 1), x1=round(x1, 1), y1=round(y1, 1))
 
 
+def _is_multi_column(prose: list[pymupdf.Rect], width: float) -> bool:
+    """Two prose blocks side by side: one in the left part, one in the right, overlapping
+    vertically. Prose only (>= 40 chars), so table cells next to each other don't count."""
+    left = [r for r in prose if r.x1 <= width * 0.55]
+    right = [r for r in prose if r.x0 >= width * 0.45]
+    return any(a.y0 < b.y1 and b.y0 < a.y1 for a in left for b in right)
+
+
 class _Plan:
-    """Pass-1 results: boilerplate keys and the font size -> heading level map."""
+    """Pass-1 results: boilerplate keys, font size -> heading level, and layout signals."""
 
     def __init__(self, doc: pymupdf.Document, pages: int) -> None:
         margin_pages: Counter[str] = Counter()
         body_sizes: Counter[float] = Counter()
         candidates: set[float] = set()
-        for page in doc.pages(0, pages):
+        self.multi_column_pages: list[int] = []
+        self.scan_like_pages: list[int] = []
+        for number, page in enumerate(doc.pages(0, pages), start=1):
             keys = set()
+            prose: list[pymupdf.Rect] = []
+            chars = 0
             for block in page.get_text("dict", flags=_FLAGS)["blocks"]:
                 if block["type"] != 0:
                     continue
@@ -113,13 +127,20 @@ class _Plan:
                 text = " ".join(lines)
                 if not text:
                     continue
+                chars += len(text)
                 if _in_margin(block["bbox"], page.rect.height):
                     keys.add(_margin_key(text))
                     continue
                 body_sizes[size] += len(text)
                 if len(text) <= _MAX_HEADING_CHARS:
                     candidates.add(size)
+                if len(text) >= 40:
+                    prose.append(pymupdf.Rect(block["bbox"]))
             margin_pages.update(keys)
+            if _is_multi_column(prose, page.rect.width):
+                self.multi_column_pages.append(number)
+            if chars < _MIN_TEXT_CHARS and page.get_images():
+                self.scan_like_pages.append(number)
         self.boilerplate = {
             key for key, n in margin_pages.items() if pages >= 2 and n >= max(2, pages / 2)
         }
@@ -135,11 +156,35 @@ class PdfLoader:
     kinds = (FileKind.PDF,)
 
     def __init__(
-        self, ocr: TesseractOcr | None = None, *, ocr_dpi: int = 300, ocr_max_pages: int = 50
+        self,
+        ocr: TesseractOcr | None = None,
+        *,
+        ocr_dpi: int = 300,
+        ocr_max_pages: int = 50,
+        layout_engine: DoclingEngine | None = None,
+        engine_mode: Literal["pymupdf", "docling", "auto"] = "pymupdf",
     ) -> None:
         self.ocr = ocr
         self.ocr_dpi = ocr_dpi
         self.ocr_max_pages = ocr_max_pages
+        self.layout_engine = layout_engine
+        self.engine_mode = engine_mode
+
+    def _choose_engine(self, plan: _Plan, ctx: ExtractionContext) -> tuple[str, str]:
+        """``(engine, reason)``. Scanned pages always stay on PyMuPDF + Tesseract."""
+        if self.engine_mode == "pymupdf":
+            return "pymupdf", "configured"
+        if self.layout_engine is None:
+            if self.engine_mode == "docling":
+                ctx.warn("pdf_engine=docling but Docling is not installed; used PyMuPDF")
+            return "pymupdf", "docling unavailable"
+        if plan.scan_like_pages:
+            return "pymupdf", f"scanned pages {plan.scan_like_pages} need OCR"
+        if self.engine_mode == "docling":
+            return "docling", "configured"
+        if plan.multi_column_pages:
+            return "docling", f"multi-column pages {plan.multi_column_pages}"
+        return "pymupdf", "single-column layout"
 
     def load(self, path: Path, ctx: ExtractionContext) -> dict[str, Any]:
         with pymupdf.open(path) as doc:
@@ -149,6 +194,27 @@ class PdfLoader:
             if doc.page_count > _MAX_PAGES:
                 ctx.warn(f"Only the first {_MAX_PAGES} of {doc.page_count} pages were processed")
             plan = _Plan(doc, pages)
+            meta = doc.metadata or {}
+            base = {
+                "page_count": doc.page_count,
+                "author": meta.get("author") or None,
+                "producer": meta.get("producer") or None,
+                "creation_date": meta.get("creationDate") or None,
+                "toc": [{"level": lvl, "title": t, "page": p} for lvl, t, p in doc.get_toc()][:200],
+                "multi_column_pages": plan.multi_column_pages,
+            }
+            engine, reason = self._choose_engine(plan, ctx)
+            if engine == "docling" and self.layout_engine is not None:
+                emitted = len(ctx.elements)
+                try:
+                    counts = self.layout_engine.convert(path, ctx)
+                except Exception as exc:  # model/runtime failure: fall back, don't lose the doc
+                    del ctx.elements[emitted:]  # drop partial output; IDs restart from here
+                    ctx.warn(f"Docling failed ({type(exc).__name__}: {exc}); used PyMuPDF")
+                    engine, reason = "pymupdf", "docling failed"
+                else:
+                    return {**base, "title": meta.get("title") or None, "engine": "docling",
+                            "engine_reason": reason, **counts}  # fmt: skip
             state: dict[str, Any] = {
                 "headings": [],  # (level, text) stack, carried across pages
                 "seen_xrefs": set(),  # an image reused on many pages (logo) is stored once
@@ -159,14 +225,11 @@ class PdfLoader:
             }
             for number, page in enumerate(doc.pages(0, pages), start=1):
                 self._page(doc, page, number, plan, ctx, state)
-            meta = doc.metadata or {}
             return {
-                "page_count": doc.page_count,
+                **base,
                 "title": meta.get("title") or state["first_heading"],
-                "author": meta.get("author") or None,
-                "producer": meta.get("producer") or None,
-                "creation_date": meta.get("creationDate") or None,
-                "toc": [{"level": lvl, "title": t, "page": p} for lvl, t, p in doc.get_toc()][:200],
+                "engine": "pymupdf",
+                "engine_reason": reason,
                 "body_font_size": plan.body_size,
                 "boilerplate_removed": sorted(plan.boilerplate),
                 "scanned_pages": state["scanned_pages"],

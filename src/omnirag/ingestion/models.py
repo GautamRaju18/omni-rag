@@ -39,6 +39,8 @@ class ElementType(StrEnum):
     IMAGE = "image"
     FIGURE = "figure"
     CAPTION = "caption"
+    # Model-written description of an IMAGE (always origin=generated, child of the image).
+    DESCRIPTION = "description"
 
 
 class ExtractionMethod(StrEnum):
@@ -53,7 +55,8 @@ class ExtractionMethod(StrEnum):
     PYMUPDF = "pymupdf"
     TESSERACT = "tesseract"
     PILLOW = "pillow"
-    # Later phases: DOCLING, VLM
+    DOCLING = "docling"
+    VLM = "vlm"  # vision-language model (generated content)
 
 
 class ContentOrigin(StrEnum):

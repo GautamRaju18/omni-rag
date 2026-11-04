@@ -63,6 +63,19 @@ class Settings(BaseSettings):
     ocr_timeout_s: float = Field(default=120.0, gt=0)  # per page / image
     ocr_max_pages: int = Field(default=50, ge=0)  # per document; OCR costs seconds per page
 
+    # --- image descriptions (vision-language model via Ollama)
+    vision_enabled: bool = True
+    # Chosen by scripts/benchmark_vision.py (2026-11-04): 8/8 chart label-value pairs, ~1-2 s
+    # per image warm, 2.1 GB VRAM. The 4B variant missed every pairing; gemma3:4b was 2x slower.
+    vision_model: str = "qwen3-vl:2b-instruct"
+    vision_timeout_s: float = Field(default=180.0, gt=0)  # per image, includes cold load
+    vision_max_images: int = Field(default=20, ge=0)  # per document
+
+    # --- PDF engine (ADR-0005): "auto" routes multi-column documents to Docling's layout model
+    # and everything else to PyMuPDF (~40x faster); "pymupdf" / "docling" force one engine.
+    # Scanned pages always use PyMuPDF + Tesseract.
+    pdf_engine: Literal["auto", "pymupdf", "docling"] = "auto"
+
     @property
     def max_upload_bytes(self) -> int:
         return self.max_upload_mb * 1024 * 1024
@@ -70,7 +83,10 @@ class Settings(BaseSettings):
     @property
     def required_ollama_models(self) -> list[str]:
         """Models that must be pulled for the platform to be fully functional."""
-        return [self.generation_model, self.embedding_model]
+        models = [self.generation_model, self.embedding_model]
+        if self.vision_enabled:
+            models.append(self.vision_model)
+        return models
 
 
 @lru_cache

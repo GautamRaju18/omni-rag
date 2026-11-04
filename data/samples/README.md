@@ -20,6 +20,7 @@ The facts are deliberately spread across files and formats, so later phases can 
 | `aurora_safety_review.pdf` | PDF (born-digital) | Safety review of the AUR-C103 failure: swelling table, figure, recommendations, running header/footer |
 | `aurora_lab_notebook_scan.pdf` | PDF (scanned) | One scanned notebook page with **no text layer** (needs OCR) |
 | `whiteboard_2026-03-20.jpg` | Image | Phone photo of the E-7 qualification plan, stored sideways with EXIF orientation 6 |
+| `e7_technical_note.pdf` | PDF (two-column) | E-7 formulation note: two text columns and a borderless table (routed to Docling) |
 
 More cross-format questions:
 

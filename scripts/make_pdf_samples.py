@@ -150,10 +150,58 @@ def make_whiteboard(path: Path) -> None:
     stored.save(path, format="JPEG", quality=88, exif=exif.tobytes())
 
 
+LEFT_COLUMN = """
+<h1>E-7 Electrolyte: Technical Note</h1>
+<p><b>Abstract.</b> E-7 is a carbonate electrolyte with a borate additive developed to replace
+the E-5 baseline at elevated temperature. This note summarises its formulation and the first
+600 cycles at 45 °C.</p>
+<p><b>1. Motivation.</b> The E-5 baseline decomposed at 45 °C and cell AUR-C103 failed at cycle
+412. A solvent blend with a higher boiling point and a film-forming additive was needed.</p>
+<p><b>2. Formulation.</b> The solvent blend replaces DEC with PC and DMC. The additive
+NaDFOB forms a stable interphase on hard carbon.</p>
+"""
+RIGHT_COLUMN = """
+<p><b>3. Results.</b> Cells AUR-C105 and AUR-C106 retained 89.6% and 90.2% of their capacity
+after 600 cycles at 45 °C, with 2.1% and 2.4% swelling.</p>
+<p><b>4. Conclusion.</b> E-7 meets the 5% swelling limit and is the candidate for milestone M2.
+Qualification continues to 1500 cycles under Marco Lindqvist.</p>
+"""
+# A borderless table: aligned columns, no ruling lines (common in papers and reports).
+BORDERLESS_TABLE = """
+<table>
+<tr><td><b>Component</b></td><td><b>Role</b></td><td><b>Amount</b></td></tr>
+<tr><td>NaPF6</td><td>Salt</td><td>1.0 M</td></tr>
+<tr><td>EC</td><td>Solvent</td><td>30 vol%</td></tr>
+<tr><td>PC</td><td>Solvent</td><td>30 vol%</td></tr>
+<tr><td>DMC</td><td>Co-solvent</td><td>40 vol%</td></tr>
+<tr><td>NaDFOB</td><td>SEI additive</td><td>1 wt%</td></tr>
+</table>
+"""
+LAYOUT_CSS = CSS.replace("border: 1px solid black;", "") + " td { padding: 2px 18px 2px 0; }"
+
+
+def make_layout_paper(path: Path) -> None:
+    """Two text columns, then a full-width borderless table: hard cases for PyMuPDF."""
+    doc = pymupdf.open()
+    page = doc.new_page(width=595, height=842)
+    page.insert_htmlbox(pymupdf.Rect(50, 60, 287, 520), LEFT_COLUMN, css=LAYOUT_CSS)
+    page.insert_htmlbox(pymupdf.Rect(308, 60, 545, 520), RIGHT_COLUMN, css=LAYOUT_CSS)
+    page.insert_htmlbox(pymupdf.Rect(50, 540, 545, 760), BORDERLESS_TABLE, css=LAYOUT_CSS)
+    doc.set_metadata({"title": "E-7 Electrolyte: Technical Note", "author": "Marco Lindqvist"})
+    doc.save(path, garbage=4, deflate=True)
+
+
+BUILDERS = {
+    "aurora_safety_review.pdf": make_safety_review,
+    "aurora_lab_notebook_scan.pdf": make_notebook_scan,
+    "whiteboard_2026-03-20.jpg": make_whiteboard,
+    "e7_technical_note.pdf": make_layout_paper,
+}
+
 if __name__ == "__main__":
-    make_safety_review(OUT / "aurora_safety_review.pdf")
-    make_notebook_scan(OUT / "aurora_lab_notebook_scan.pdf")
-    make_whiteboard(OUT / "whiteboard_2026-03-20.jpg")
-    for name in ["aurora_safety_review.pdf", "aurora_lab_notebook_scan.pdf",
-                 "whiteboard_2026-03-20.jpg"]:  # fmt: skip
+    import sys
+
+    # Regenerating a sample changes its document ID, so name the ones to build (default: all).
+    for name in sys.argv[1:] or BUILDERS:
+        BUILDERS[name](OUT / name)
         print(f"{name}: {(OUT / name).stat().st_size} bytes")

@@ -5,6 +5,7 @@ from __future__ import annotations
 from omnirag.core.config import Settings
 from omnirag.ingestion.loaders.base import Loader
 from omnirag.ingestion.loaders.csv_loader import CsvLoader
+from omnirag.ingestion.loaders.docling_engine import DoclingEngine, docling_available
 from omnirag.ingestion.loaders.docx_loader import DocxLoader
 from omnirag.ingestion.loaders.html_loader import HtmlLoader
 from omnirag.ingestion.loaders.image_loader import ImageLoader
@@ -39,7 +40,13 @@ def default_loaders(settings: Settings | None = None) -> dict[FileKind, Loader]:
         DocxLoader(),
         XlsxLoader(),
         PptxLoader(),
-        PdfLoader(ocr, ocr_dpi=settings.ocr_dpi, ocr_max_pages=settings.ocr_max_pages),
+        PdfLoader(
+            ocr,
+            ocr_dpi=settings.ocr_dpi,
+            ocr_max_pages=settings.ocr_max_pages,
+            layout_engine=DoclingEngine() if docling_available() else None,
+            engine_mode=settings.pdf_engine,
+        ),
         ImageLoader(ocr),
     ]
     return {kind: loader for loader in loaders for kind in loader.kinds}
