@@ -99,13 +99,24 @@ def test_loader_crash_marks_failed_and_keeps_original(store: DocumentStore, tmp_
 
 
 def test_known_kind_without_loader_raises_before_storing(
-    pipeline: IngestionPipeline, store: DocumentStore, tmp_path: Path
+    store: DocumentStore, tmp_path: Path
 ) -> None:
+    loaders = {k: v for k, v in default_loaders().items() if k is not FileKind.PDF}
     path = tmp_path / "paper.pdf"
     path.write_bytes(b"%PDF-1.7 minimal")
     with pytest.raises(LoaderNotAvailableError):
-        pipeline.ingest(path)
+        IngestionPipeline(store, loaders, max_bytes=1024).ingest(path)
     assert store.list_records() == []
+
+
+def test_corrupt_pdf_fails_but_keeps_original(
+    pipeline: IngestionPipeline, store: DocumentStore, tmp_path: Path
+) -> None:
+    path = tmp_path / "paper.pdf"
+    path.write_bytes(b"%PDF-1.7 minimal")  # right signature, no PDF structure
+    record = pipeline.ingest(path).record
+    assert record.status is IngestionStatus.FAILED and record.error
+    assert store.original_path(record.document_id).read_bytes() == b"%PDF-1.7 minimal"
 
 
 def test_unsupported_type_raises(pipeline: IngestionPipeline, tmp_path: Path) -> None:

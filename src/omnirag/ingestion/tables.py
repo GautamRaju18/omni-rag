@@ -14,7 +14,7 @@ from collections.abc import Iterable, Sequence
 from typing import Any
 
 from omnirag.ingestion.context import ExtractionContext
-from omnirag.ingestion.models import ElementType, ExtractionMethod
+from omnirag.ingestion.models import BoundingBox, ElementType, ExtractionMethod
 
 
 def _cell(value: object) -> str:
@@ -58,6 +58,7 @@ def add_table(
     metadata: dict[str, Any] | None = None,
     parent_id: str | None = None,
     row_metadata: Sequence[dict[str, Any]] | None = None,
+    bbox: BoundingBox | None = None,
 ) -> str | None:
     """Add a TABLE element plus one TABLE_ROW child per row. Returns the table element ID.
 
@@ -75,6 +76,7 @@ def add_table(
         section_path=section_path,
         metadata={**table_meta, **(metadata or {})},
         parent_id=parent_id,
+        bbox=bbox,
     )
     if table_id is None:
         return None

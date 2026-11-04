@@ -50,7 +50,10 @@ class ExtractionMethod(StrEnum):
     PYTHON_DOCX = "python_docx"
     OPENPYXL = "openpyxl"
     PYTHON_PPTX = "python_pptx"
-    # Later phases: PYMUPDF, DOCLING, TESSERACT, VLM
+    PYMUPDF = "pymupdf"
+    TESSERACT = "tesseract"
+    PILLOW = "pillow"
+    # Later phases: DOCLING, VLM
 
 
 class ContentOrigin(StrEnum):

@@ -29,7 +29,9 @@ def run_loader(tmp_path: Path) -> LoaderRunner:
             path.write_text(content, encoding="utf-8")
         else:
             path.write_bytes(content)
-        ctx = ExtractionContext("doc_test", name, asset_saver=_saver)
+        ctx = ExtractionContext(
+            "doc_test", name, asset_saver=_saver, original_ref=f"documents/doc_test/{name}"
+        )
         metadata = loader.load(path, ctx)
         return ctx, metadata
 

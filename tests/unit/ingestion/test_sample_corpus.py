@@ -6,12 +6,13 @@ that silently drops the table the evaluation dataset will later ask about.
 
 from __future__ import annotations
 
+import shutil
 from pathlib import Path
 
 import pytest
 
 from omnirag.ingestion.loaders import default_loaders
-from omnirag.ingestion.models import DocumentElement, ElementType, IngestionStatus
+from omnirag.ingestion.models import ContentOrigin, DocumentElement, ElementType, IngestionStatus
 from omnirag.ingestion.pipeline import IngestionPipeline
 from omnirag.ingestion.store import DocumentStore
 
@@ -25,7 +26,13 @@ FILES = [
     "aurora_status_report_2026-03.docx",
     "aurora_budget_2026.xlsx",
     "aurora_q1_review.pptx",
+    "aurora_safety_review.pdf",
 ]
+# OCR samples need the tesseract binary; without it they would (correctly) warn instead.
+HAS_TESSERACT = shutil.which("tesseract") is not None
+if HAS_TESSERACT:
+    FILES += ["aurora_lab_notebook_scan.pdf", "whiteboard_2026-03-20.jpg"]
+requires_tesseract = pytest.mark.skipif(not HAS_TESSERACT, reason="tesseract not installed")
 # Warnings that are correct for a file; anything else is a regression.
 EXPECTED_WARNINGS = {"aurora_status_report_2026-03.docx": ["tracked changes"]}
 
@@ -153,3 +160,50 @@ def test_pptx_speaker_notes_and_hidden_slide(corpus) -> None:
     assert notes.metadata["speaker_notes"] is True and notes.page_number == 2
     backup = _find(elements, "EC decomposition")
     assert backup.metadata["hidden"] is True and backup.page_number == 6
+
+
+# ------------------------------------------------------------ PDF / OCR (Phase 2c)
+def test_pdf_table_under_numbered_heading(corpus) -> None:
+    elements = corpus["aurora_safety_review.pdf"]
+    row = _find(elements, "Cell: AUR-C105", ElementType.TABLE_ROW)
+    assert row.content == (
+        "Cell: AUR-C105 | Electrolyte: E-7 | Temp (°C): 45 | Cycles: 600 | Swelling (%): 2.1"
+    )
+    assert row.page_number == 2
+    assert row.section_path == [
+        "Aurora E-5 High-Temperature Failure: Safety Review",
+        "3. Swelling Measurements",
+    ]
+
+
+def test_pdf_running_header_footer_removed(corpus) -> None:
+    text = "\n".join(e.content for e in corpus["aurora_safety_review.pdf"])
+    assert "Page 2 of 3" not in text and "Internal safety review" not in text
+
+
+def test_pdf_figure_caption_and_recommendations(corpus) -> None:
+    elements = corpus["aurora_safety_review.pdf"]
+    caption = _find(elements, "Figure 1", ElementType.CAPTION)
+    image = next(e for e in elements if e.element_id == caption.parent_element_id)
+    assert image.element_type is ElementType.IMAGE and image.page_number == 2
+    recs = _find(elements, "gas-sampling port", ElementType.LIST)
+    assert recs.section_path[-1] == "4. Recommendations" and recs.page_number == 3
+
+
+@requires_tesseract
+def test_scanned_notebook_ocr_matches_safety_review(corpus) -> None:
+    # The handwritten-style scan and the typed safety review agree: AUR-C105 swelled 2.1%.
+    elements = corpus["aurora_lab_notebook_scan.pdf"]
+    para = _find(elements, "AUR-C105")
+    assert "89.6" in para.content and "2.1" in para.content
+    assert para.origin is ContentOrigin.OCR and para.confidence > 0.8
+    assert elements[0].element_type is ElementType.IMAGE
+    assert para.parent_element_id == elements[0].element_id
+
+
+@requires_tesseract
+def test_whiteboard_photo_ocr_after_exif_rotation(corpus) -> None:
+    elements = corpus["whiteboard_2026-03-20.jpg"]
+    assert elements[0].metadata["exif_orientation"] == 6
+    text = "\n".join(e.content for e in elements)
+    assert "QUALIFICATION PLAN" in text and "Swelling limit: 5" in text

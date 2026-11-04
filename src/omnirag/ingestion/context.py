@@ -33,9 +33,13 @@ class ExtractionContext:
         document_id: str,
         source_file: str,
         asset_saver: Callable[[str, bytes], str] | None = None,
+        original_ref: str | None = None,
     ) -> None:
         self.document_id = document_id
         self.source_file = source_file
+        # Reference to the stored original file. An image file *is* its own asset, so the image
+        # loader points at it instead of storing a second copy.
+        self.original_ref = original_ref
         self.elements: list[DocumentElement] = []
         self.warnings: list[str] = []
         self._asset_saver = asset_saver

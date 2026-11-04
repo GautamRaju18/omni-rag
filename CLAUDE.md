@@ -21,6 +21,8 @@ Local-first multimodal GraphRAG platform, built phase by phase (see `docs/PROGRE
 - DOCX text: use `docx_loader._element_text`, never python-docx `Paragraph.text`/`cell.text` (they drop tracked insertions, fields, content controls).
 - Office samples in `data/samples` are committed binaries; regenerating via `scripts/make_office_samples.py` changes their doc IDs.
 - `defusedxml` must stay installed (openpyxl XML-bomb protection; asserted by a test).
+- OCR text: `origin=OCR`, confidence = Tesseract mean word confidence, `parent_element_id` = the source IMAGE. OCR goes through `ingestion/ocr.TesseractOcr` (subprocess, list args, no shell); tests needing the binary use `requires_tesseract`.
+- PyMuPDF is AGPL (ADR-0004); keep PDF parsing behind `PdfLoader` so it can be swapped.
 
 ## Conventions
 - Code lives in `src/omnirag/<module>/` (ADR-0001). Create a module's package only in its phase.

@@ -12,6 +12,6 @@ def build_pipeline(settings: Settings) -> IngestionPipeline:
     """Wire the default pipeline from settings (used by the CLI and, in 2e, the API)."""
     return IngestionPipeline(
         DocumentStore(settings.data_dir),
-        default_loaders(),
+        default_loaders(settings),
         max_bytes=settings.max_upload_bytes,
     )

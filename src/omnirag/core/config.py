@@ -54,6 +54,15 @@ class Settings(BaseSettings):
     data_dir: Path = Field(default_factory=lambda: Path.home() / "omnirag-data")
     max_upload_mb: int = Field(default=100, gt=0)
 
+    # --- OCR (Tesseract CLI, installed with `sudo apt install tesseract-ocr`)
+    ocr_enabled: bool = True
+    ocr_tesseract_cmd: str = "tesseract"
+    # Tesseract language codes joined with "+", e.g. "eng+deu" (needs tesseract-ocr-deu).
+    ocr_languages: str = Field(default="eng", pattern=r"^[A-Za-z_]+(\+[A-Za-z_]+)*$")
+    ocr_dpi: int = Field(default=300, ge=72, le=600)  # render resolution for scanned pages
+    ocr_timeout_s: float = Field(default=120.0, gt=0)  # per page / image
+    ocr_max_pages: int = Field(default=50, ge=0)  # per document; OCR costs seconds per page
+
     @property
     def max_upload_bytes(self) -> int:
         return self.max_upload_mb * 1024 * 1024

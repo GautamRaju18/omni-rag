@@ -80,12 +80,15 @@ class IngestionPipeline:
         )
         if existing:
             record.created_at = existing.created_at
-        self.store.save_original(document_id, path)
+        original = self.store.save_original(document_id, path)
         self.store.clear_derived(document_id)
         self.store.write_record(record)
 
         ctx = ExtractionContext(
-            document_id, source_name, asset_saver=partial(self.store.save_asset, document_id)
+            document_id,
+            source_name,
+            asset_saver=partial(self.store.save_asset, document_id),
+            original_ref=original.relative_to(self.store.data_dir).as_posix(),
         )
         started = time.perf_counter()
         try:
