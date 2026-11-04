@@ -1,0 +1,59 @@
+[project]
+name = "omnirag"
+version = "0.1.0"
+description = "OmniRAG: local-first multimodal graph-based retrieval augmented generation platform"
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+# Exact pins for reproducibility; transitive versions live in uv.lock.
+# Heavy deps (docling, torch, sentence-transformers, langgraph...) arrive in their own phases.
+dependencies = [
+    "fastapi==0.162.0",
+    "httpx==0.28.1",
+    "neo4j==6.4.1",
+    "pydantic==2.14.2",
+    "pydantic-settings==2.16.2",
+    "structlog==26.1.0",
+    "uvicorn[standard]==0.54.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest==9.2.0",
+    "pytest-asyncio==1.4.1.post1",
+    "ruff==0.17.3",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/omnirag"]
+
+# ---------------------------------------------------------------- ruff
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",     # pycodestyle errors
+    "F",     # pyflakes
+    "I",     # isort
+    "B",     # bugbear
+    "UP",    # pyupgrade
+    "ASYNC", # blocking calls inside async code
+    "S",     # bandit security checks
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S105", "S106"] # pytest asserts; dummy passwords in fixtures
+
+# -------------------------------------------------------------- pytest
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+markers = ["integration: needs live Neo4j and Ollama (run with: pytest -m integration)"]
+addopts = "-ra -m 'not integration'"

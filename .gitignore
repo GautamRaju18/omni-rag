@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+
+# Secrets / local config
+.env
+
+# Data (raw uploads and derived artifacts are never committed; samples go in data/samples/)
+data/*
+!data/samples/
+!data/.gitkeep
+
+# Editors / OS
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store

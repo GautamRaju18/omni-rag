@@ -1,0 +1,9 @@
+# Repo is edited from Windows and WSL: store LF, check out LF everywhere.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.pdf binary
+*.docx binary
+*.xlsx binary
+*.pptx binary

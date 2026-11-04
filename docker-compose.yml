@@ -1,0 +1,32 @@
+# Phase 1: only Neo4j. The API, UI and Postgres join in later phases.
+# Memory is budgeted for a 16 GB laptop: the whole WSL VM is capped at 8 GB.
+name: omnirag
+
+services:
+  neo4j:
+    image: neo4j:2026.10.1-community
+    container_name: omnirag-neo4j
+    restart: unless-stopped
+    ports:
+      - "7474:7474" # Browser UI
+      - "7687:7687" # Bolt protocol (driver)
+    environment:
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:?set NEO4J_PASSWORD in .env}
+      NEO4J_server_memory_heap_initial__size: 512m
+      NEO4J_server_memory_heap_max__size: 1G
+      NEO4J_server_memory_pagecache_size: 512m
+      NEO4J_server_jvm_additional: -XX:+ExitOnOutOfMemoryError
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    mem_limit: 2g
+    healthcheck:
+      test: ["CMD-SHELL", "cypher-shell -u neo4j -p \"$${NEO4J_AUTH#neo4j/}\" 'RETURN 1' >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+      start_period: 30s
+
+volumes:
+  neo4j_data:
+  neo4j_logs:
