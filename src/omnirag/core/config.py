@@ -8,6 +8,7 @@ appears in logs, reprs, or tracebacks.
 from __future__ import annotations
 
 from functools import lru_cache
+from pathlib import Path
 from typing import Literal
 
 from pydantic import Field, SecretStr
@@ -46,6 +47,16 @@ class Settings(BaseSettings):
     ollama_connect_retries: int = Field(default=2, ge=0, le=5)
     generation_model: str = "qwen3:4b-instruct"
     embedding_model: str = "bge-m3"
+
+    # --- ingestion
+    # Originals, extracted elements and assets. Keep this on the WSL ext4 disk: fast I/O and
+    # plenty of space (the repo drive P: has only a few GB free).
+    data_dir: Path = Field(default_factory=lambda: Path.home() / "omnirag-data")
+    max_upload_mb: int = Field(default=100, gt=0)
+
+    @property
+    def max_upload_bytes(self) -> int:
+        return self.max_upload_mb * 1024 * 1024
 
     @property
     def required_ollama_models(self) -> list[str]:

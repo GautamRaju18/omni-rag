@@ -39,6 +39,33 @@ class ValidationFailedError(OmniRAGError):
     code = "validation_failed"
 
 
+class FileValidationError(ValidationFailedError):
+    """File is empty, too large, corrupt, or its content does not match its extension."""
+
+    code = "invalid_file"
+
+
+class UnsupportedFileTypeError(OmniRAGError):
+    """The file extension is not one OmniRAG ingests."""
+
+    status_code = status.HTTP_415_UNSUPPORTED_MEDIA_TYPE
+    code = "unsupported_file_type"
+
+
+class LoaderNotAvailableError(OmniRAGError):
+    """The file type is recognized but its loader is not installed or implemented yet."""
+
+    status_code = status.HTTP_501_NOT_IMPLEMENTED
+    code = "loader_not_available"
+
+
+class NotFoundError(OmniRAGError):
+    """A requested resource (document, job, ...) does not exist."""
+
+    status_code = status.HTTP_404_NOT_FOUND
+    code = "not_found"
+
+
 def _envelope(request: Request, code: str, message: str, details: dict) -> dict:
     request_id = structlog.contextvars.get_contextvars().get("request_id")
     return {

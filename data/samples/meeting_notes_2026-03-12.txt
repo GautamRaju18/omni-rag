@@ -1,0 +1,25 @@
+Project Aurora - Technical Review
+Date: 2026-03-12
+Attendees: Dr. Priya Raman, Marco Lindqvist, Aiko Tanaka, Samuel Okafor
+
+1. High-temperature failure of AUR-C103
+Aiko presented the post-mortem for AUR-C103. The cell failed at cycle 412 at 45 C with
+14% pouch swelling. Gas analysis points to electrolyte decomposition of the E-5 baseline,
+not a manufacturing defect. Samuel confirmed the seal integrity tests on the same batch passed.
+
+2. Decision: move high-temperature testing to electrolyte E-7
+The team agreed to stop 45 C testing with E-5 and to qualify E-7 instead. Early E-7 cells
+(AUR-C105 and AUR-C106) are above 89% retention after 600 cycles at 45 C.
+Marco Lindqvist owns the E-7 qualification and will report swelling data per checkpoint.
+
+3. Milestone M2 risk
+Priya noted that milestone M2 (45 C stability demonstrated, due 2026-05-30) is at risk if
+E-7 swelling exceeds the 5% limit. A fallback is E-5 + FEC, which is at 83.1% after 800
+cycles on AUR-C104.
+
+Action items
+- Aiko: continue AUR-C105 to AUR-C108 to 1500 cycles; report every 100 cycles.
+- Marco: E-7 qualification report draft by 2026-03-26.
+- Samuel: prepare pilot-line pouch tooling for E-7 fill volume.
+
+Next review: 2026-04-02

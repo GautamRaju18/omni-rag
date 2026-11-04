@@ -1,0 +1,39 @@
+{
+  "project": "Aurora",
+  "organization": "Helios Energy Lab",
+  "status": "active",
+  "lead": "Dr. Priya Raman",
+  "team": [
+    {
+      "name": "Dr. Priya Raman",
+      "role": "Project lead",
+      "workstreams": ["program management", "cathode"]
+    },
+    {
+      "name": "Marco Lindqvist",
+      "role": "Electrolyte chemist",
+      "workstreams": ["electrolyte", "E-7 qualification"]
+    },
+    {
+      "name": "Aiko Tanaka",
+      "role": "Test engineer",
+      "workstreams": ["cell testing", "high-temperature cycling"]
+    },
+    {
+      "name": "Samuel Okafor",
+      "role": "Manufacturing engineer",
+      "workstreams": ["pouch assembly", "pilot line"]
+    }
+  ],
+  "test_thresholds": {
+    "min_retention_pct": 80.0,
+    "max_test_temperature_c": 45,
+    "max_swelling_pct": 5.0,
+    "target_cycles": 3000
+  },
+  "milestones": [
+    {"id": "M1", "name": "Baseline chemistry frozen", "due": "2026-02-15", "done": true},
+    {"id": "M2", "name": "45 C stability demonstrated", "due": "2026-05-30", "done": false},
+    {"id": "M3", "name": "Pilot line 100-cell batch", "due": "2026-09-30", "done": false}
+  ]
+}

@@ -6,7 +6,11 @@ A feature counts as done only when its tests pass and the result was observed, n
 |---|---|---|---|
 | 0 | Hardware & environment | ✅ Done 2026-11-04 | [learning/phase-00](learning/phase-00-environment.md) |
 | 1 | Backend foundation (config, logging, DI, health) | ✅ Done 2026-11-04 | 24 unit + 4 integration tests; live checks in [learning/phase-01](learning/phase-01-backend-foundation.md) |
-| 2 | Multimodal ingestion | ⏭ Next | |
+| 2a | Ingestion core + TXT/MD/HTML/JSON/CSV | ✅ Done 2026-11-04 | 83 unit tests; [learning/phase-02a](learning/phase-02a-ingestion-core.md) |
+| 2b | DOCX / XLSX / PPTX loaders | ⏭ Next | |
+| 2c | PDF (PyMuPDF) + Tesseract OCR + images | ⬜ | needs `sudo apt install tesseract-ocr` |
+| 2d | Docling + vision-model descriptions | ⬜ | |
+| 2e | `/documents` + `/ingestion` API, background jobs | ⬜ | |
 | 3 | Chunking engine | ⬜ | |
 | 4 | Embedding engine | ⬜ | |
 | 5 | Neo4j graph construction | ⬜ | |
@@ -23,7 +27,7 @@ A feature counts as done only when its tests pass and the result was observed, n
 | 16 | Tests, docs, resume prep | ⬜ | |
 
 ## Success-criteria tracker (from the brief)
-- [ ] All document types ingest · [ ] OCR on scans/images · [ ] Table/figure provenance
+- [ ] All document types ingest (5/10 kinds: txt, md, html, json, csv) · [ ] OCR on scans/images · [ ] Table/figure provenance (tables ✅ for text formats)
 - [ ] Multiple chunking strategies · [ ] Embeddings in Neo4j · [ ] Graph queryable
 - [ ] Dense · [ ] BM25 · [ ] Graph retrieval · [ ] RRF · [ ] Reranking
 - [ ] Grounded answers · [ ] Verifiable citations · [ ] LangSmith tracing

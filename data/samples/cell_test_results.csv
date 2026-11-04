@@ -1,0 +1,9 @@
+cell_id,electrolyte,temperature_c,cycles_completed,capacity_retention_pct,status,tester
+AUR-C101,E-5 + FEC,25,1000,91.4,passed,Aiko Tanaka
+AUR-C102,E-5,25,1000,88.0,passed,Aiko Tanaka
+AUR-C103,E-5,45,412,72.5,failed,Aiko Tanaka
+AUR-C104,E-5 + FEC,45,800,83.1,in_progress,Aiko Tanaka
+AUR-C105,E-7,45,600,89.6,in_progress,Aiko Tanaka
+AUR-C106,E-7,45,600,90.2,in_progress,Aiko Tanaka
+AUR-C107,E-7,25,600,94.8,in_progress,Jonas Weber
+AUR-C108,E-7,25,600,95.1,in_progress,Jonas Weber

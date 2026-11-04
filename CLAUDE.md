@@ -9,6 +9,15 @@ Local-first multimodal GraphRAG platform, built phase by phase (see `docs/PROGRE
 - Ollama: native Windows at `localhost:11434` (mirrored networking). Models: `qwen3:4b-instruct` (generator), `qwen3:4b`, `bge-m3`. Max 2 resident models on a 6 GB GPU.
 - Neo4j: `docker compose up -d` → `neo4j:2026.10.1-community`, mem_limit 2g. Password in `.env` (`NEO4J_PASSWORD` and `OMNIRAG_NEO4J_PASSWORD`).
 - WSL VM capped at 8 GB (`C:\Users\gautam\.wslconfig`); Docker shares that cap.
+- Ingested data lives in `OMNIRAG_DATA_DIR=/home/gautam/omnirag-data` (ext4). CLI: `uv run python -m omnirag.ingestion ingest|list|show`.
+
+## Ingestion invariants (Phase 2)
+- Every loader emits `DocumentElement`s only via `ExtractionContext.add()`: never construct IDs by hand.
+- Element IDs are deterministic (`<doc_id>-eNNNNN`); document IDs are `doc_` + sha256[:16]. Don't change either scheme; eval ground truth depends on it.
+- Originals are saved before parsing and never modified. Model-written text uses `origin=GENERATED`, OCR text uses `origin=OCR`.
+- Tables go through `ingestion/tables.add_table()` (TABLE + self-describing TABLE_ROW children).
+- Loaders are shared across threads: no per-file state on `self`.
+- Don't fetch remote URLs found in documents (SSRF / offline-first).
 
 ## Conventions
 - Code lives in `src/omnirag/<module>/` (ADR-0001). Create a module's package only in its phase.
