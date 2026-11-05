@@ -75,7 +75,7 @@ def _counts(store: GraphStore) -> dict[str, int]:
 def test_schema_is_idempotent_and_detects_dimension_changes(store: GraphStore) -> None:
     report = ensure_schema(store, vector_dim=DIM)
     assert report.created == [] and "chunk_embedding" in report.existing
-    with pytest.raises(SchemaMismatchError, match="dimension 1024"):
+    with pytest.raises(SchemaMismatchError, match=r"\(1024, 'NONE'.*requested \(8, "):
         ensure_schema(store, vector_dim=8)
     assert ensure_schema(store, vector_dim=8, recreate_vector_index=True).recreated == [
         "chunk_embedding"

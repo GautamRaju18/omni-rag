@@ -123,7 +123,9 @@ class Settings(BaseSettings):
     # Neo4j 2026.x defaults new vector indexes to BINARY; NONE keeps exact float32 vectors.
     graph_vector_quantization: Literal["NONE", "SCALAR", "BINARY"] = "NONE"
     graph_fulltext_index: str = "chunk_fulltext"
-    graph_fulltext_analyzer: str = "standard-no-stop-words"
+    # "classic" keeps tokens with digits whole (aur-c103, e-7): best BM25 on the seed set
+    # (Phase 6 benchmark, ADR-0013). Changing it needs `init --recreate-fulltext-index`.
+    graph_fulltext_analyzer: str = "classic"
 
     # --- entity/relation extraction (Phase 5b, ADR-0012). Off at ingestion by default: about
     # 15 s per chunk on a 6 GB GPU (measured). Run `python -m omnirag.knowledge_base extract`.
@@ -132,6 +134,16 @@ class Settings(BaseSettings):
     extraction_config: str = ""  # chunk set to extract from; empty = the first graph set
     extraction_timeout_s: float = Field(default=300.0, gt=0)
     extraction_num_ctx: int = Field(default=8192, ge=2048)
+
+    # --- retrieval (Phase 6, ADR-0013): dense (vector index) and lexical (BM25 full-text).
+    retrieval_config: str = ""  # chunk set to search; empty = the first graph set
+    retrieval_k: int = Field(default=5, ge=1, le=50)
+    # Post-filters (no in-index support) fetch k × overfetch candidates, at most max_fetch.
+    retrieval_overfetch: int = Field(default=10, ge=1, le=100)
+    retrieval_max_fetch: int = Field(default=200, ge=1, le=2000)
+    # How technical identifiers (AUR-C103, E-7) enter the BM25 query: plain terms, an extra
+    # boosted exact phrase, or a required phrase.
+    retrieval_identifier_mode: Literal["terms", "boost", "require"] = "require"
 
     # --- PDF engine (ADR-0005): "auto" routes multi-column documents to Docling's layout model
     # and everything else to PyMuPDF (~40x faster); "pymupdf" / "docling" force one engine.
@@ -149,6 +161,10 @@ class Settings(BaseSettings):
     @property
     def extraction_config_id(self) -> str:
         return self.extraction_config or self.graph_configs[0]
+
+    @property
+    def retrieval_config_id(self) -> str:
+        return self.retrieval_config or self.graph_configs[0]
 
     @property
     def required_ollama_models(self) -> list[str]:

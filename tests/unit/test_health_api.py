@@ -141,4 +141,5 @@ async def test_openapi_lists_versioned_routes_only(healthy_client: httpx.AsyncCl
         "/api/v1/ingestion/jobs",
         "/api/v1/ingestion/jobs/{job_id}",
         "/api/v1/ingestion/status",
+        "/api/v1/retrieval/search",
     } == paths

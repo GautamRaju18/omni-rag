@@ -38,6 +38,7 @@ def cmd_init(args: argparse.Namespace) -> int:
     try:
         _print(indexer.store.verify())
         indexer.schema_options["recreate_vector_index"] = args.recreate_vector_index
+        indexer.schema_options["recreate_fulltext_index"] = args.recreate_fulltext_index
         report = indexer.ensure_schema()
         print(f"created   {report.created}\nexisting  {report.existing}\n"
               f"recreated {report.recreated}")  # fmt: skip
@@ -255,7 +256,12 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument(
         "--recreate-vector-index",
         action="store_true",
-        help="drop and recreate a vector index whose dimension/quantization changed",
+        help="drop and recreate a vector index whose dimension/quantization/filters changed",
+    )
+    p.add_argument(
+        "--recreate-fulltext-index",
+        action="store_true",
+        help="drop and recreate the full-text index whose analyzer changed",
     )
     p.set_defaults(fn=cmd_init)
     p = sub.add_parser("load", help="write documents from disk into the graph")

@@ -48,6 +48,13 @@ Local-first multimodal GraphRAG platform, built phase by phase (see `docs/PROGRE
 - Raw replies live in `extractions/<config>.json` keyed by input hash + model digest + `PROMPT_VERSION`; bump `PROMPT_VERSION` whenever the prompt or schema changes. Rule changes: `revalidate` (no model calls).
 - Extraction is off at ingestion (`extraction_enabled=false`); run `python -m omnirag.knowledge_base extract`. Quality is measured with `evaluation/extraction_eval.py` against `data/eval/entities_seed.json` (names and quotes verified against the samples by a test).
 
+## Retrieval invariants (Phase 6, ADR-0013)
+- Never pass user text to Lucene: always `retrieval.sparse.lucene_query` (escapes everything; identifiers by mode). Full-text SEARCH has no WHERE: all its filters are post-filters.
+- Vector SEARCH WHERE = AND of `=`/`IN` on declared properties only (`schema.VECTOR_FILTER_PROPERTIES` == `retrieval.filters.VECTOR_INDEX_FILTERS`, asserted). A MATCH before SEARCH is not a pre-filter. Other filters over-fetch and report `underfilled`.
+- Dense refuses to rank when the graph's `Document.embedding_space` differs from the query embedder's `space_id`.
+- Index config changes (analyzer, vector filters/dimension/quantization) raise `SchemaMismatchError`; fix with `init --recreate-fulltext-index` / `--recreate-vector-index`, never by silently keeping the old index. Analyzer sweeps run only against `neo4j-test` (7688).
+- Raw scores are per retriever (Neo4j cosine is (1+cos)/2; BM25 unbounded): never add them across retrievers; Phase 7 fuses ranks (RRF).
+
 ## Conventions
 - Code lives in `src/omnirag/<module>/` (ADR-0001). Create a module's package only in its phase.
 - Config only through `omnirag.core.config.Settings` (`OMNIRAG_*`). No hardcoded secrets.

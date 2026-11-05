@@ -5,10 +5,14 @@ Measured on Neo4j 2026.10.1 Community (2026-11-05):
   for candidate search). We set the type explicitly; the default here is ``NONE`` (exact
   float32 vectors): at this corpus size memory is no concern, and lossy candidates would
   blur strategy and model comparisons. Valid values: NONE, SCALAR, BINARY.
-* A vector index can carry extra filter properties (Cypher 25 ``WITH [...]``). We include
-  ``config_id`` and ``is_latest`` so Phase 6 can filter inside the index.
-* The full-text "standard" analyzers split identifiers (``AUR-C103`` → aur, c103), so
-  ``AUR-C103`` also matches ``AUR-C105``. Phase 6 evaluates analyzers and query forms.
+* A vector index can carry extra filter properties (Cypher 25 ``WITH [...]``): equality /
+  ``IN`` filters on them run inside the search (Phase 6). Declared: chunk set, latest
+  version, document and element type (``VECTOR_FILTER_PROPERTIES``).
+* Only one full-text index can cover a label + property set: ``CREATE FULLTEXT INDEX ...
+  IF NOT EXISTS`` with another name is silently a no-op. So an analyzer change must drop and
+  recreate the index, and a changed setting is reported, never silently ignored.
+* The full-text "standard" analyzers split identifiers (``AUR-C103`` → aur, c103); the
+  ``classic`` analyzer keeps tokens with digits whole. Phase 6 measures which one to use.
 
 Index options can't be query parameters, so they are built from validated values only
 (an int dimension and enum members); labels and property names are constants.
@@ -22,6 +26,8 @@ from typing import Literal
 from omnirag.knowledge_base.graph_store import GraphStore
 
 Quantization = Literal["NONE", "SCALAR", "BINARY"]
+# Must match retrieval.filters.VECTOR_INDEX_FILTERS (asserted by a test).
+VECTOR_FILTER_PROPERTIES = ("config_id", "is_latest", "document_id", "element_type")
 
 # (label, property) pairs that identify a node: one uniqueness constraint each.
 UNIQUE_KEYS = [
@@ -68,11 +74,13 @@ def ensure_schema(
     vector_index: str = "chunk_embedding",
     quantization: Quantization = "NONE",
     fulltext_index: str = "chunk_fulltext",
-    analyzer: str = "standard-no-stop-words",
+    analyzer: str = "classic",
     recreate_vector_index: bool = False,
+    recreate_fulltext_index: bool = False,
 ) -> SchemaReport:
     """Idempotently create the schema. Raises ``SchemaMismatchError`` instead of silently
-    keeping an index whose dimension or quantization differs from what's requested."""
+    keeping an index whose configuration (dimension, quantization, filter properties,
+    analyzer) differs from what's requested."""
     if not isinstance(vector_dim, int) or vector_dim <= 0:
         raise ValueError(f"Invalid vector dimension {vector_dim!r}")
     if quantization not in ("NONE", "SCALAR", "BINARY"):
@@ -99,22 +107,24 @@ def ensure_schema(
     current = existing.get(vector_index)
     if current is not None:
         cfg = current["options"]["indexConfig"]
-        same = (cfg.get("vector.dimensions") == vector_dim
-                and cfg.get("vector.quantization.type") == quantization)  # fmt: skip
-        if not same and not recreate_vector_index:
+        have = (cfg.get("vector.dimensions"), cfg.get("vector.quantization.type"),
+                tuple(current["properties"][1:]))  # fmt: skip
+        want = (vector_dim, quantization, VECTOR_FILTER_PROPERTIES)
+        if have != want and not recreate_vector_index:
             raise SchemaMismatchError(
-                f"Vector index {vector_index} has dimension {cfg.get('vector.dimensions')} / "
-                f"quantization {cfg.get('vector.quantization.type')}, requested {vector_dim} / "
-                f"{quantization}. Re-embed and run `init --recreate-vector-index`."
+                f"Vector index {vector_index} has dimension / quantization / filter properties "
+                f"{have}, requested {want}. Run `init --recreate-vector-index` (vectors stay on "
+                "the nodes and are re-indexed; re-embed first if the dimension changed)."
             )
-        if not same:
+        if have != want:
             store.schema(f"DROP INDEX {vector_index}")
             report.recreated.append(vector_index)
             current = None
     if current is None:
+        with_props = ", ".join(f"c.{p}" for p in VECTOR_FILTER_PROPERTIES)
         store.schema(
             f"CYPHER 25 CREATE VECTOR INDEX {vector_index} IF NOT EXISTS FOR (c:Chunk) "
-            "ON (c.embedding) WITH [c.config_id, c.is_latest] OPTIONS {indexConfig: {"
+            f"ON (c.embedding) WITH [{with_props}] OPTIONS {{indexConfig: {{"
             f"`vector.dimensions`: {vector_dim}, `vector.similarity_function`: 'cosine', "
             f"`vector.quantization.type`: '{quantization}'}}}}"
         )
@@ -123,15 +133,31 @@ def ensure_schema(
     else:
         report.existing.append(vector_index)
 
-    _note(report, fulltext_index, fulltext_index in existing)
     if not analyzer.replace("-", "").replace("_", "").isalnum():
         raise ValueError(f"Invalid analyzer name {analyzer!r}")
-    store.schema(
-        f"CREATE FULLTEXT INDEX {fulltext_index} IF NOT EXISTS FOR (c:Chunk) "
-        "ON EACH [c.content, c.context] OPTIONS {indexConfig: {"
-        f"`fulltext.analyzer`: '{analyzer}'}}}}"
-    )
-    store.schema("CALL db.awaitIndexes(60)")
+    current = existing.get(fulltext_index)
+    if current is not None:
+        have_analyzer = current["options"]["indexConfig"].get("fulltext.analyzer")
+        if have_analyzer != analyzer and not recreate_fulltext_index:
+            raise SchemaMismatchError(
+                f"Full-text index {fulltext_index} uses analyzer {have_analyzer!r}, requested "
+                f"{analyzer!r}. Run `init --recreate-fulltext-index` (rebuilt from the nodes)."
+            )
+        if have_analyzer != analyzer:
+            store.schema(f"DROP INDEX {fulltext_index}")
+            report.recreated.append(fulltext_index)
+            current = None
+    if current is None:
+        store.schema(
+            f"CREATE FULLTEXT INDEX {fulltext_index} IF NOT EXISTS FOR (c:Chunk) "
+            "ON EACH [c.content, c.context] OPTIONS {indexConfig: {"
+            f"`fulltext.analyzer`: '{analyzer}'}}}}"
+        )
+        if fulltext_index not in report.recreated:
+            report.created.append(fulltext_index)
+    else:
+        report.existing.append(fulltext_index)
+    store.schema("CALL db.awaitIndexes(120)")
     return report
 
 
