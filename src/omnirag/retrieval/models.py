@@ -14,9 +14,12 @@ from typing import Any, Literal
 from pydantic import BaseModel, Field
 
 RetrieverName = Literal["dense", "bm25", "graph"]
-# Retrieval modes (brief section 9): one retriever, or several fused with RRF. Reranking and
-# query rewriting join as modes in Phases 8-9.
-RetrievalMode = Literal["dense", "bm25", "graph", "dense+bm25", "dense+bm25+graph"]
+# Retrieval modes (brief section 9): one retriever, several fused with RRF, optionally
+# re-scored by a cross-encoder (Phase 8). Query rewriting joins in Phase 9.
+RetrievalMode = Literal[
+    "dense", "bm25", "graph", "dense+bm25", "dense+bm25+graph",
+    "dense+bm25+rerank", "dense+bm25+graph+rerank",
+]  # fmt: skip
 
 
 class RetrievalFilters(BaseModel):

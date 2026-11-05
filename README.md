@@ -2,7 +2,7 @@
 
 **Multimodal Graph-Based Retrieval Intelligence**: a local-first RAG platform. It ingests heterogeneous documents (PDF, scans, Office files, images, HTML, JSON), builds a Neo4j knowledge graph with vector and full-text indexes, runs dense + BM25 + graph hybrid retrieval with reranking, and generates cited, grounded answers with local LLMs through Ollama. Every stage is measured by an evaluation harness.
 
-> 🚧 Work in progress, built in 16 tested phases. Current status: **Phase 7 complete** (multimodal ingestion with upload API; 8 chunking strategies; versioned bge-m3 embeddings; Neo4j knowledge graph with vector + full-text indexes, document versioning, and LLM-extracted entities/relations validated against the source; dense, identifier-aware BM25 and graph retrieval with metadata filters, fused by RRF, benchmarked against exact baselines). See [docs/PROGRESS.md](docs/PROGRESS.md).
+> 🚧 Work in progress, built in 16 tested phases. Current status: **Phase 8 complete** (multimodal ingestion with upload API; 8 chunking strategies; versioned bge-m3 embeddings; Neo4j knowledge graph with vector + full-text indexes, document versioning, and LLM-extracted entities/relations validated against the source; dense, identifier-aware BM25 and graph retrieval with metadata filters, fused by RRF and optionally reranked by a BGE cross-encoder, benchmarked against exact baselines). See [docs/PROGRESS.md](docs/PROGRESS.md).
 
 ## Target hardware
 Built for and measured on a 16 GB RAM laptop with a 6 GB RTX 3060 (Windows 11 + WSL2). Memory and VRAM budgets are documented in [docs/learning/phase-00-environment.md](docs/learning/phase-00-environment.md).

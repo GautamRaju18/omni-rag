@@ -61,6 +61,13 @@ Local-first multimodal GraphRAG platform, built phase by phase (see `docs/PROGRE
 - Graph scoring: chunk = Σ seed IDF weights of mentioned seeds + its *best* edge (max, not sum: hub entities). Tie-breaks are part of the ranking (seed weight, then fewer other entities), never chunk ID alone.
 - A failing fusion member degrades (`details.failed`); only all-failed raises.
 
+## Reranking invariants (Phase 8, ADR-0015)
+- Reranker weights are pinned (repo + revision + SHA-256 per file in `retrieval/reranker.MODELS`), safetensors only, loaded lazily; never `from_pretrained(repo_id)` without a pinned revision.
+- Reranked hits keep first-stage provenance plus `sources.rerank` (logit, first_stage_rank). `score` is sigmoid(logit): a relevance estimate, NOT a confidence that the answer is present (unanswerable q39/q40 score 0.89/0.94).
+- Torch is CPU-only (ADR-0005); `rerank_device=auto|cuda` falls back to CPU. Don't add CUDA torch without the user's decision (open in ADR-0015).
+- Default mode stays `dense+bm25` (CPU rerank 9.5-17 s); `dense+bm25+rerank` is the quality mode. bge-reranker-base was measured worse than no reranker.
+- The seed set has one quote per fact (q22's target is only `target_cycles: 3000`); alternative evidence would be a deliberate dataset v2 re-baseline of all phases.
+
 ## Conventions
 - Code lives in `src/omnirag/<module>/` (ADR-0001). Create a module's package only in its phase.
 - Config only through `omnirag.core.config.Settings` (`OMNIRAG_*`). No hardcoded secrets.

@@ -52,6 +52,7 @@ from omnirag.knowledge_base.schema import ensure_schema
 from omnirag.retrieval import build_retrieval
 from omnirag.retrieval.fusion import HybridRetriever
 from omnirag.retrieval.graph_search import GraphRetriever
+from omnirag.retrieval.reranker import CrossEncoderReranker, RerankingRetriever
 from omnirag.retrieval.sparse import identifiers
 
 MODES = ("terms", "boost", "require")
@@ -74,6 +75,17 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--analyzers", default="", help="comma list; test server only")
     parser.add_argument("--out", type=Path)
     parser.add_argument("--no-fusion", action="store_true", help="skip graph + RRF (Phase 7)")
+    parser.add_argument(
+        "--rerank-models",
+        default="",
+        help="comma list, e.g. bge-reranker-base,bge-reranker-v2-m3 (slow on CPU)",
+    )
+    parser.add_argument(
+        "--rerank-bases",
+        default="dense+bm25",
+        help="first-stage modes to rerank, e.g. dense+bm25,dense+bm25+graph",
+    )
+    parser.add_argument("--rerank-depths", default="20", help="comma list of candidate depths")
     parser.add_argument(
         "--dataset",
         type=Path,
@@ -142,20 +154,25 @@ def main(argv: list[str] | None = None) -> int:
     graph = service.store
 
     def run(retriever, **kw) -> tuple[list[list[int]], list[float], dict]:
-        ranked, ms, extra = [], [], {"embed_ms": [], "search_ms": []}
+        keys = ("embed_ms", "search_ms", "rerank_ms", "top_score")
+        ranked, ms, extra = [], [], {key: [] for key in keys}
         for q in questions:
             res = retriever.retrieve(q.question, args.k, **kw)
             ranked.append([index_of[h.chunk_id] for h in res.hits if h.chunk_id in index_of])
             ms.append(res.latency_ms)
-            for key in ("embed_ms", "search_ms"):
-                if key in res.details:
+            for key in keys:
+                if res.details.get(key) is not None:
                     extra[key].append(res.details[key])
-        returned = [len(retriever.retrieve(q.question, args.k, **kw).hits) for q in unanswerable]
-        out = {"unanswerable_hits": dict(zip([q.id for q in unanswerable], returned,
-                                             strict=True))}  # fmt: skip
+        unans = [retriever.retrieve(q.question, args.k, **kw) for q in unanswerable]
+        out = {"unanswerable_hits": {q.id: len(r.hits) for q, r in zip(unanswerable, unans,
+                                                                         strict=True)}}  # fmt: skip
         for key, values in extra.items():
-            if values:
+            if values and key != "top_score":
                 out[f"{key}_p50"] = round(statistics.median(values), 1)
+        if extra["top_score"]:  # reranker: does its top score separate answerable questions?
+            out["top_score_answerable"] = [round(v, 4) for v in extra["top_score"]]
+            out["top_score_unanswerable"] = {q.id: r.details.get("top_score") for q, r in
+                                             zip(unanswerable, unans, strict=True)}  # fmt: skip
         return ranked, ms, out
 
     dense = service.retrievers["dense"]
@@ -202,6 +219,23 @@ def main(argv: list[str] | None = None) -> int:
             for rrf_k in (60, 10):
                 fused(f"neo4j:dense+bm25+graph:k{rrf_k}:hops{hops}", parts, rrf_k)
             fused(f"neo4j:dense+bm25+graph:k60:hops{hops}:wgraph=0.5", parts, 60, {"graph": 0.5})
+
+    # ---- Phase 8: cross-encoder reranking of the fused candidates (CPU: slow, opt-in sweep)
+    for model in [m for m in args.rerank_models.split(",") if m]:
+        reranker = CrossEncoderReranker(
+            settings.data_dir / "models", model, max_length=settings.rerank_max_length,
+            batch_size=settings.rerank_batch_size, threads=settings.rerank_threads,
+            device=settings.rerank_device,
+        )  # fmt: skip
+        reranker.score("warm up", ["load the weights first"])
+        for base_name in [b for b in args.rerank_bases.split(",") if b]:
+            base = service.retrievers[base_name]
+            for depth in [int(d) for d in args.rerank_depths.split(",") if d]:
+                rr = RerankingRetriever(base, reranker, mode=f"{base_name}+rerank", depth=depth)
+                ranked, ms, extra = run(rr)
+                extra.update(device=reranker.device, load_s=reranker.stats["load_s"])
+                record(f"neo4j:{base_name}+rerank:{model}:d{depth}", ranked, ms, extra)
+        del reranker
     service.close()
 
     # ---- per-question wins / losses against the in-memory baseline of the same family
@@ -222,6 +256,10 @@ def main(argv: list[str] | None = None) -> int:
             bases = ["memory:bm25"]
         else:  # graph and fused modes: against both single retrievers
             bases = [b for b in ("neo4j:dense", best_bm25) if b in results]
+            if "+rerank:" in name:  # and against its own first stage
+                first = name.split("+rerank:")[0]
+                first = f"{first}:k60" if first.endswith("bm25") else f"{first}:k60:hops2"
+                bases += [first] if first in results else []
         for base in bases:
             results[name]["vs_" + base] = d = diff(name, base)
             print(f"  {name:<44} vs {base}: +{d['wins']} -{d['losses']}")

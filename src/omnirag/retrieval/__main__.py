@@ -1,7 +1,7 @@
 """Retrieval CLI.
 
 uv run python -m omnirag.retrieval search "Why did cell AUR-C103 fail?"
-    [--mode dense|bm25|graph|dense+bm25|dense+bm25+graph]
+    [--mode dense|bm25|graph|dense+bm25|dense+bm25+graph|dense+bm25+rerank|...+graph+rerank]
     [--k 5] [--doc DOC_ID ...] [--file NAME ...] [--type table ...] [--no-generated]
     [--all-versions] [--identifiers terms|boost|require] [--full]
 """
@@ -57,7 +57,15 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument(
         "--mode",
         default=get_settings().retrieval_default_mode,
-        choices=["dense", "bm25", "graph", "dense+bm25", "dense+bm25+graph"],
+        choices=[
+            "dense",
+            "bm25",
+            "graph",
+            "dense+bm25",
+            "dense+bm25+graph",
+            "dense+bm25+rerank",
+            "dense+bm25+graph+rerank",
+        ],
     )
     p.add_argument("--k", type=int, default=get_settings().retrieval_k)
     p.add_argument("--doc", action="append", help="restrict to a document ID (repeatable)")

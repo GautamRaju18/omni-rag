@@ -46,6 +46,8 @@ async def search(
         )
     except EmbeddingInputError as exc:  # e.g. an empty or over-long query
         raise ValidationFailedError(str(exc)) from exc
+    except LookupError as exc:  # a mode that this deployment didn't enable
+        raise ValidationFailedError(str(exc)) from exc
     except RetrievalError as exc:  # query and index embeddings differ
         raise ConflictError(str(exc)) from exc
     except GraphUnavailableError as exc:

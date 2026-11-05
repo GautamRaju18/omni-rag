@@ -152,9 +152,20 @@ class Settings(BaseSettings):
     retrieval_rrf_weights: dict[str, float] = Field(default_factory=dict)
     # Mode used when a request names none. dense+bm25 measured best on both eval sets;
     # adding graph lowered MRR (ADR-0014).
-    retrieval_default_mode: Literal["dense", "bm25", "graph", "dense+bm25", "dense+bm25+graph"] = (
-        "dense+bm25"
-    )
+    retrieval_default_mode: Literal[
+        "dense", "bm25", "graph", "dense+bm25", "dense+bm25+graph",
+        "dense+bm25+rerank", "dense+bm25+graph+rerank",
+    ] = "dense+bm25"  # fmt: skip
+
+    # --- cross-encoder reranking (Phase 8, ADR-0015). Weights load on the first rerank.
+    rerank_enabled: bool = True
+    rerank_model: Literal["bge-reranker-v2-m3", "bge-reranker-base"] = "bge-reranker-v2-m3"
+    rerank_device: Literal["auto", "cpu", "cuda"] = "auto"  # auto: CUDA if available, else CPU
+    rerank_depth: int = Field(default=20, ge=1, le=200)  # first-stage candidates re-scored
+    rerank_max_length: int = Field(default=512, ge=32, le=8192)  # tokens per (query, chunk)
+    # batch 4 beat 16 on CPU (less padding): 11.8 s vs 17.5 s for 20 pairs (v2-m3, measured)
+    rerank_batch_size: int = Field(default=4, ge=1, le=256)
+    rerank_threads: int = Field(default=8, ge=1, le=64)
 
     # --- PDF engine (ADR-0005): "auto" routes multi-column documents to Docling's layout model
     # and everything else to PyMuPDF (~40x faster); "pymupdf" / "docling" force one engine.
