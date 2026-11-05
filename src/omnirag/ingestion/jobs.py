@@ -79,6 +79,8 @@ class _Pipeline(Protocol):
 
     def close(self) -> None: ...
 
+    def delete(self, document_id: str) -> bool: ...
+
 
 def new_job_id() -> str:
     return f"job_{secrets.token_hex(6)}"

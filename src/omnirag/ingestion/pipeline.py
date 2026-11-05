@@ -11,6 +11,8 @@ The pipeline is deliberately synchronous and side-effect ordered:
    elements, so loader element IDs never depend on them, and an enricher failure is a warning,
    never a failed document.
 6. **Persist** elements and a ``DocumentRecord`` whose ``status`` says what happened.
+7. **Chunk, embed, graph** (optional, Phases 3-5): each step's failure is a warning; the files
+   on disk stay the source of truth and every later step can be re-run from the CLI.
 """
 
 from __future__ import annotations
@@ -62,6 +64,7 @@ class IngestionPipeline:
         enrichers: Sequence[Enricher] = (),
         chunker: Any = None,  # omnirag.chunking.Chunker (untyped here to avoid an import cycle)
         embedder: Any = None,  # omnirag.embeddings.service.ChunkEmbedder
+        graph: Any = None,  # omnirag.knowledge_base.graph_builder.GraphIndexer
     ) -> None:
         self.store = store
         self.loaders = loaders
@@ -69,6 +72,7 @@ class IngestionPipeline:
         self.enrichers = enrichers
         self.chunker = chunker
         self.embedder = embedder
+        self.graph = graph
 
     def close(self) -> None:
         """End of a batch: let enrichers release resources (e.g. unload the vision model)."""
@@ -76,6 +80,16 @@ class IngestionPipeline:
             close = getattr(enricher, "close", None)
             if close is not None:
                 close()
+
+    def delete(self, document_id: str) -> bool:
+        """Remove a document from the graph, then from disk. Returns False if unknown.
+
+        Graph first: if Neo4j is down this raises and the files stay, so nothing is orphaned
+        in the graph.
+        """
+        if self.graph is not None:
+            self.graph.delete(document_id)
+        return self.store.delete(document_id)
 
     def ingest(
         self, path: Path, *, source_name: str | None = None, force: bool = False
@@ -164,6 +178,14 @@ class IngestionPipeline:
                 self.store.write_chunks(document_id, config_id, chunks)
             if sets:
                 record.metadata["chunk_sets"] = {cid: len(c) for cid, c in sets.items()}
+            if sets and self.graph is not None:
+                # Graph failure (Neo4j down) is a warning: everything is on disk and
+                # `python -m omnirag.knowledge_base load` rebuilds the subgraph later.
+                try:
+                    record.metadata["graph"] = self.graph.index(record, ctx.elements, sets)
+                except Exception as exc:
+                    log.exception("graph_failed", document_id=document_id)
+                    ctx.warn(f"Graph write failed: {type(exc).__name__}: {exc}")
         record.warnings = ctx.warnings
         result = self._finish(record, started)
         log.info(

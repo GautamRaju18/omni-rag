@@ -14,7 +14,8 @@ A feature counts as done only when its tests pass and the result was observed, n
 | 3a | Chunking engine: 7 strategies, bge-m3 tokens | ✅ Done 2026-11-05 | 218 unit + 7 live tests; [learning/phase-03a](learning/phase-03a-chunking-strategies.md) |
 | 3b | Semantic chunking, enrichment experiment, chunking benchmark | ✅ Done 2026-11-05 | 236 unit + 8 live tests; [learning/phase-03b](learning/phase-03b-semantic-chunking-and-benchmark.md), [results](benchmarks/chunking-2026-11-05.json) |
 | 4 | Embedding engine | ✅ Done 2026-11-05 | 243 unit + 8 live tests; [learning/phase-04](learning/phase-04-embedding-engine.md), [results](benchmarks/embeddings-2026-11-05.json) |
-| 5 | Neo4j graph construction | ⏭ Next | |
+| 5a | Neo4j graph: structure, vectors, versions | ✅ Done 2026-11-05 | 262 unit + 12 live tests; [learning/phase-05a](learning/phase-05a-graph-structure.md) |
+| 5b | Entity/relationship extraction with validation | ⏭ Next | |
 | 6 | Dense + sparse retrieval | ⬜ | |
 | 7 | Graph-enhanced hybrid retrieval (RRF) | ⬜ | |
 | 8 | Reranking | ⬜ | |
@@ -29,7 +30,7 @@ A feature counts as done only when its tests pass and the result was observed, n
 
 ## Success-criteria tracker (from the brief)
 - [x] All document types ingest (10/10 kinds: txt, md, html, json, csv, docx, xlsx, pptx, pdf, image) · [x] OCR on scans/images (Tesseract, with confidence) · [x] Table/figure provenance (tables in all formats incl. borderless via Docling; PPTX chart data; image descriptions with origin=generated)
-- [x] Multiple chunking strategies (all 8, benchmarked) · [ ] Embeddings in Neo4j · [ ] Graph queryable
+- [x] Multiple chunking strategies (all 8, benchmarked) · [x] Embeddings in Neo4j (58 chunks, 1024-d, cosine, no quantization) · [x] Graph queryable (structure; entities in 5b)
 - [ ] Dense · [ ] BM25 · [ ] Graph retrieval · [ ] RRF · [ ] Reranking
 - [ ] Grounded answers · [ ] Verifiable citations · [ ] LangSmith tracing
 - [ ] Retrieval eval · [ ] Faithfulness eval · [ ] Reproducible benchmarks
@@ -47,6 +48,7 @@ A feature counts as done only when its tests pass and the result was observed, n
 - [ADR-0008](adr/0008-chunking-tokens-and-element-provenance.md): chunk sizes in bge-m3 tokens; element-level provenance and ground truth
 - [ADR-0009](adr/0009-evidence-based-relevance-and-early-embeddings.md): relevance by verbatim evidence; minimal cached embedding client before Phase 4
 - [ADR-0010](adr/0010-embedding-engine.md): versioned embedding spaces; Ollama dense in production; BGE-M3 sparse/ColBERT as local experiments
+- [ADR-0011](adr/0011-graph-schema-and-versioning.md): graph schema, idempotent per-document writes, source-level versioning
 
 ## Measured baselines (2026-11-04)
 | Metric | Value |

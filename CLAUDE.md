@@ -32,6 +32,15 @@ Local-first multimodal GraphRAG platform, built phase by phase (see `docs/PROGRE
 - Chunking: sizes are bge-m3 tokens (`chunking/tokenizer.HFTokenizer`, pinned revision + SHA-256). Chunks reference `element_ids` (from character spans, never string search); evaluation ground truth is element IDs, never chunk IDs (ADR-0008). Unit tests use `WhitespaceTokenizer`; API/unit tests must keep `chunking_enabled=False` or a fake counter (no 17 MB download).
 - API ingestion runs through `ingestion/jobs.JobManager` (one process only: never `uvicorn --workers N`). Job files in `<data_dir>/jobs/`, upload copies in `<data_dir>/uploads/<job_id>/`. Originals are served as `application/octet-stream` attachments with `nosniff`.
 
+## Knowledge graph invariants (Phase 5, ADR-0011)
+- The graph is a rebuildable index of the files (`python -m omnirag.knowledge_base load --all`); files stay the source of truth.
+- One managed transaction per document: merge Source/Document, delete owned nodes (Chunk/Page/Section/Table/Figure by `document_id`), recreate, recompute versions. Keep writes idempotent.
+- Versions: Source keyed by lowercased file name; ordered by `created_at, document_id`; only the newest is `is_latest` (copied onto its chunks).
+- Vector index: explicit `vector.quantization.type: NONE` (the 2026.x default is BINARY), filter properties `WITH [c.config_id, c.is_latest]`. Vectors via `db.create.setNodeVectorProperty` (native VECTOR type rejected, 51N77), read from the embedding cache by `embedding_ref`, never by calling the model.
+- Searches use Cypher 25 `SEARCH` (`queryNodes` is deprecated). Index names can't be params: validate with `traversal._index_name`. Full-text SEARCH has no WHERE: post-filter.
+- Delete order: graph first, then files (503 if Neo4j is down). A graph write failure during ingestion is a warning.
+- Graph integration tests wipe the database: only against `neo4j-test` (`docker compose --profile test up -d neo4j-test`, port 7688); the fixture refuses other ports. Drop constraints before indexes.
+
 ## Conventions
 - Code lives in `src/omnirag/<module>/` (ADR-0001). Create a module's package only in its phase.
 - Config only through `omnirag.core.config.Settings` (`OMNIRAG_*`). No hardcoded secrets.

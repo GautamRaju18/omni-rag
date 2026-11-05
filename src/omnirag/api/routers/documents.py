@@ -7,7 +7,7 @@
 * ``GET    /documents/{id}/original``       the original file, byte-for-byte
 * ``GET    /documents/{id}/assets/{name}``  an extracted image
 * ``POST   /documents/{id}/reingest``       process the stored original again → 202 + job
-* ``DELETE /documents/{id}``                remove original, elements and assets
+* ``DELETE /documents/{id}``                remove it from the graph, then original/elements/assets
 
 Upload safety, in order: ``Content-Length`` pre-check (413 before reading), filename reduced to
 a safe basename, extension allow-list (415), size cap enforced while copying (413), magic-byte
@@ -31,6 +31,7 @@ from fastapi.responses import FileResponse
 from omnirag.api.dependencies import JobsDep, SettingsDep, StoreDep
 from omnirag.core.errors import (
     ConflictError,
+    DependencyUnavailableError,
     FileValidationError,
     NotFoundError,
     PayloadTooLargeError,
@@ -43,6 +44,7 @@ from omnirag.ingestion.models import (
     IngestionStatus,
 )
 from omnirag.ingestion.validation import document_id_for, kind_for_path, sha256_file, validate_file
+from omnirag.knowledge_base.graph_store import GraphUnavailableError
 from omnirag.schemas.documents import DocumentPage, DocumentSummary, ElementPage, UploadResponse
 
 router = APIRouter(prefix="/documents", tags=["documents"])
@@ -254,12 +256,16 @@ async def reingest_document(
 @router.delete(
     "/{document_id}", status_code=status.HTTP_204_NO_CONTENT, summary="Delete a document"
 )
-async def delete_document(document_id: DocumentId, store: StoreDep, jobs: JobsDep) -> Response:
+async def delete_document(document_id: DocumentId, jobs: JobsDep) -> Response:
     if active := jobs.active_job_for(document_id):
         raise ConflictError(
             f"{document_id} is being ingested; wait for job {active.job_id}",
             details={"job_id": active.job_id, "status": active.status.value},
         )
-    if not await asyncio.to_thread(store.delete, document_id):
+    try:
+        deleted = await asyncio.to_thread(jobs.pipeline.delete, document_id)
+    except GraphUnavailableError as exc:  # files are kept, so nothing is orphaned in the graph
+        raise DependencyUnavailableError(f"Neo4j unavailable; {document_id} not deleted") from exc
+    if not deleted:
         raise NotFoundError(f"Document {document_id} not found")
     return Response(status_code=status.HTTP_204_NO_CONTENT)

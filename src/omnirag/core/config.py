@@ -114,6 +114,17 @@ class Settings(BaseSettings):
     embedding_query_prefix: str = ""  # bge-m3 needs none; e.g. "search_query: " for nomic
     embedding_document_prefix: str = ""
 
+    # --- Neo4j knowledge graph (Phase 5, ADR-0011). Every ingested document is written to the
+    # graph; a graph failure is a warning (reload with `python -m omnirag.knowledge_base load`).
+    graph_enabled: bool = True
+    # Chunk sets stored as Chunk nodes; empty = the embedded sets (embedding_index_configs).
+    graph_chunk_configs: list[str] = Field(default_factory=list)
+    graph_vector_index: str = "chunk_embedding"
+    # Neo4j 2026.x defaults new vector indexes to BINARY; NONE keeps exact float32 vectors.
+    graph_vector_quantization: Literal["NONE", "SCALAR", "BINARY"] = "NONE"
+    graph_fulltext_index: str = "chunk_fulltext"
+    graph_fulltext_analyzer: str = "standard-no-stop-words"
+
     # --- PDF engine (ADR-0005): "auto" routes multi-column documents to Docling's layout model
     # and everything else to PyMuPDF (~40x faster); "pymupdf" / "docling" force one engine.
     # Scanned pages always use PyMuPDF + Tesseract.
@@ -122,6 +133,10 @@ class Settings(BaseSettings):
     @property
     def max_upload_bytes(self) -> int:
         return self.max_upload_mb * 1024 * 1024
+
+    @property
+    def graph_configs(self) -> list[str]:
+        return self.graph_chunk_configs or self.embedding_index_configs
 
     @property
     def required_ollama_models(self) -> list[str]:

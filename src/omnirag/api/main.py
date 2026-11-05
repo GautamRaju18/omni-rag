@@ -62,6 +62,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         yield
     finally:
         await app.state.jobs.stop(settings.ingestion_shutdown_grace_s)
+        if (graph := app.state.jobs.pipeline.graph) is not None:
+            graph.close()
         await app.state.ollama.aclose()
         await app.state.neo4j.close()
         log.info("shutdown")

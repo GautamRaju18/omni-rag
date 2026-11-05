@@ -1,4 +1,4 @@
-# Phase 1: only Neo4j. The API, UI and Postgres join in later phases.
+# Neo4j (Phase 1) plus a throwaway test instance (Phase 5). The API and UI join in Phase 15.
 # Memory is budgeted for a 16 GB laptop: the whole WSL VM is capped at 8 GB.
 name: omnirag
 
@@ -26,6 +26,30 @@ services:
       timeout: 10s
       retries: 12
       start_period: 30s
+
+  # Throwaway Neo4j for integration tests: Community edition has one user database, so tests
+  # get their own server instead of touching real data. Data lives in RAM (tmpfs) and is gone
+  # when the container stops. Start with:  docker compose --profile test up -d neo4j-test
+  neo4j-test:
+    image: neo4j:2026.10.1-community
+    container_name: omnirag-neo4j-test
+    profiles: ["test"]
+    ports:
+      - "7688:7687"
+    environment:
+      NEO4J_AUTH: neo4j/${NEO4J_PASSWORD:?set NEO4J_PASSWORD in .env}
+      NEO4J_server_memory_heap_initial__size: 256m
+      NEO4J_server_memory_heap_max__size: 512m
+      NEO4J_server_memory_pagecache_size: 128m
+    tmpfs:
+      - /data
+    mem_limit: 1g
+    healthcheck:
+      test: ["CMD-SHELL", "cypher-shell -u neo4j -p \"$${NEO4J_AUTH#neo4j/}\" 'RETURN 1' >/dev/null 2>&1"]
+      interval: 5s
+      timeout: 10s
+      retries: 24
+      start_period: 20s
 
 volumes:
   neo4j_data:

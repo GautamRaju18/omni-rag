@@ -31,6 +31,9 @@ def build_pipeline(settings: Settings, store: DocumentStore | None = None) -> In
         # Token limits are checked with the chunker's tokenizer (loaded once, shared).
         dense = build_embedder(settings, lambda text: chunker.counter.count(text))
         embedder = ChunkEmbedder(dense, settings.embedding_index_configs)
+    graph = None
+    if chunker is not None and settings.graph_enabled:
+        graph = build_graph_indexer(settings)
     return IngestionPipeline(
         store or DocumentStore(settings.data_dir),
         default_loaders(settings),
@@ -38,4 +41,31 @@ def build_pipeline(settings: Settings, store: DocumentStore | None = None) -> In
         enrichers=build_enrichers(settings),
         chunker=chunker,
         embedder=embedder,
+        graph=graph,
+    )
+
+
+def build_graph_indexer(settings: Settings):  # -> GraphIndexer (lazy import, see above)
+    from omnirag.embeddings.ollama import EmbeddingCache
+    from omnirag.knowledge_base.graph_builder import GraphIndexer
+    from omnirag.knowledge_base.graph_store import GraphStore
+
+    store = GraphStore(
+        settings.neo4j_uri,
+        settings.neo4j_user,
+        settings.neo4j_password.get_secret_value(),
+        database=settings.neo4j_database,
+        connection_timeout_s=settings.neo4j_connection_timeout_s,
+    )
+    return GraphIndexer(
+        store,
+        EmbeddingCache(settings.data_dir / "cache" / "embeddings.sqlite"),
+        settings.graph_configs,
+        vector_dim=settings.embedding_dim,
+        schema_options={
+            "vector_index": settings.graph_vector_index,
+            "quantization": settings.graph_vector_quantization,
+            "fulltext_index": settings.graph_fulltext_index,
+            "analyzer": settings.graph_fulltext_analyzer,
+        },
     )
