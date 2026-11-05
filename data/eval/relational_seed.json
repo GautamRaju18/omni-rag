@@ -1,0 +1,85 @@
+{
+  "name": "relational_seed",
+  "version": 1,
+  "created": "2026-11-05",
+  "description": "Relational / multi-hop questions over data/samples (Phase 7): each needs two facts that are linked through an entity named in only one of them (the electrolyte someone owns, the supplier of a material used somewhere). Written from the sample documents, not from extraction output. Every evidence quote is checked against the ingested samples by tests/unit/test_evaluation.py. Recall@K = share of the two facts covered by the top-K chunks.",
+  "questions": [
+    {
+      "id": "r01", "type": "relational",
+      "question": "Which cells are being tested with the electrolyte whose qualification Marco Lindqvist owns?",
+      "answer": "E-7: AUR-C105 and AUR-C106 at 45 °C (AUR-C107 and AUR-C108 at 25 °C).",
+      "facts": [
+        [{"file": "meeting_notes_2026-03-12.txt", "text": "Marco Lindqvist owns the E-7 qualification"},
+         {"file": "e7_technical_note.pdf", "text": "Qualification continues to 1500 cycles under Marco Lindqvist."}],
+        [{"file": "meeting_notes_2026-03-12.txt", "text": "Early E-7 cells (AUR-C105 and AUR-C106)"},
+         {"file": "cell_test_results.csv", "text": "| AUR-C105 | E-7 | 45 | 600 | 89.6 | in_progress | Aiko Tanaka |"},
+         {"file": "aurora_safety_review.pdf", "text": "| AUR-C105 | E-7 | 45 | 600 | 2.1 |"}]
+      ]
+    },
+    {
+      "id": "r02", "type": "relational",
+      "question": "Who supplies the salt that the E-5 electrolyte is made with?",
+      "answer": "Nordic Salts AB (NaPF6, lead time 4 weeks).",
+      "facts": [
+        [{"file": "aurora_research_notes.md", "text": "1.0 M NaPF₆ in EC:DEC (1:1), the original baseline"}],
+        [{"file": "aurora_budget_2026.xlsx", "text": "| NaPF6 salt | Nordic Salts AB | 4 | TRUE |"}]
+      ]
+    },
+    {
+      "id": "r03", "type": "relational",
+      "question": "What swelling limit must the electrolyte that replaced E-5 stay below for milestone M2?",
+      "answer": "E-7 must stay below the 5% swelling limit.",
+      "facts": [
+        [{"file": "e7_technical_note.pdf", "text": "developed to replace the E-5 baseline at elevated temperature"},
+         {"file": "aurora_status_report_2026-03.docx", "text": "so high-temperature testing moved to electrolyte E-7"}],
+        [{"file": "aurora_budget_2026.xlsx", "text": "M2 depends on E-7 swelling staying below the 5% limit."}]
+      ]
+    },
+    {
+      "id": "r04", "type": "relational",
+      "question": "What is the planned budget of the workstream owned by the person responsible for risk R2?",
+      "answer": "Samuel Okafor owns R2; his pilot line workstream is planned at EUR 320,000.",
+      "facts": [
+        [{"file": "aurora_status_report_2026-03.docx", "text": "| R2 | Pilot-line pouch tooling arrives late | Samuel Okafor |"}],
+        [{"file": "aurora_budget_2026.xlsx", "text": "| Pilot line | Samuel Okafor | 320000 | 64000 | 20.0% |"}]
+      ]
+    },
+    {
+      "id": "r05", "type": "relational",
+      "question": "Which supplier is being qualified as a second source for the anode material of the Aurora cell?",
+      "answer": "The anode is hard carbon; Carbonix Materials is to be qualified as the second supplier.",
+      "facts": [
+        [{"file": "aurora_research_notes.md", "text": "the anode is hard carbon derived from coconut shell"},
+         {"file": "helios_aurora_s1.html", "text": "a Prussian white cathode and hard carbon anode"}],
+        [{"file": "aurora_status_report_2026-03.docx", "text": "Qualify Carbonix Materials as second supplier"}]
+      ]
+    },
+    {
+      "id": "r06", "type": "relational",
+      "question": "Who reviewed the E-5 safety review, and what did that person approve on 2026-03-25?",
+      "answer": "Dr. Priya Raman; the continuation of E-7 testing.",
+      "facts": [
+        [{"file": "aurora_safety_review.pdf", "text": "Reviewed by Dr. Priya Raman."}],
+        [{"file": "aurora_safety_review.pdf", "text": "Continuation of E-7 testing approved by Dr. Priya Raman on 2026-03-25."}]
+      ]
+    },
+    {
+      "id": "r07", "type": "relational",
+      "question": "How much of the budget of the workstream owned by the electrolyte chemist has been spent?",
+      "answer": "Marco Lindqvist is the electrolyte chemist; the electrolyte workstream has spent EUR 97,200 (40.5%).",
+      "facts": [
+        [{"file": "aurora_config.json", "text": "role: Electrolyte chemist"}],
+        [{"file": "aurora_budget_2026.xlsx", "text": "| Electrolyte | Marco Lindqvist | 240000 | 97200 | 40.5% |"}]
+      ]
+    },
+    {
+      "id": "r08", "type": "relational",
+      "question": "Which person tests the cells that use the E-7 electrolyte at room temperature?",
+      "answer": "Jonas Weber (AUR-C107 and AUR-C108 at 25 °C).",
+      "facts": [
+        [{"file": "cell_test_results.csv", "text": "| AUR-C107 | E-7 | 25 | 600 | 94.8 | in_progress | Jonas Weber |"}],
+        [{"file": "cell_test_results.csv", "text": "| AUR-C108 | E-7 | 25 | 600 | 95.1 | in_progress | Jonas Weber |"}]
+      ]
+    }
+  ]
+}

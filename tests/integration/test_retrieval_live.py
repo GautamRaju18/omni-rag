@@ -20,6 +20,7 @@ from omnirag.knowledge_base.graph_builder import GraphWriter
 from omnirag.knowledge_base.graph_store import GraphStore, GraphUnavailableError
 from omnirag.knowledge_base.schema import SchemaMismatchError, ensure_schema
 from omnirag.retrieval.dense import DenseRetriever
+from omnirag.retrieval.graph_search import GraphRetriever
 from omnirag.retrieval.models import RetrievalFilters
 from omnirag.retrieval.sparse import LexicalRetriever
 
@@ -169,3 +170,97 @@ def test_schema_reports_changed_filters_and_analyzer(store: GraphStore) -> None:
     report = ensure_schema(store, vector_dim=DIM, analyzer="standard", recreate_fulltext_index=True)
     assert report.recreated == ["chunk_fulltext"]
     ensure_schema(store, vector_dim=DIM, recreate_fulltext_index=True)  # back to the default
+
+
+# ---------------------------------------------------------------- Phase 7: graph + fusion
+def _extraction(doc_id: str, sample: str, person: str):
+    from omnirag.ingestion.models import ContentOrigin
+    from omnirag.knowledge_base.entities import (
+        ChunkExtraction,
+        DocumentExtraction,
+        EntityType,
+        Mention,
+        Relation,
+        RelationType,
+    )
+
+    def m(key, etype):
+        return Mention(key=key, surface=key.upper() if etype is EntityType.SAMPLE
+                       else key.title(), type=etype, origin=ContentOrigin.ORIGINAL,
+                       confidence=1.0)  # fmt: skip
+
+    first = ChunkExtraction(
+        chunk_id=f"{doc_id}-{MM}-00000", input_sha256="x",
+        mentions=[m(sample, EntityType.SAMPLE), m(person, EntityType.PERSON)],
+        relations=[Relation(source=sample, target=person, type=RelationType.TESTED_BY,
+                            support="stated", evidence="e", evidence_verified=True)],
+    )  # fmt: skip
+    second = ChunkExtraction(chunk_id=f"{doc_id}-{MM}-00001", input_sha256="x",
+                             mentions=[m("aur-c103", EntityType.SAMPLE)])  # fmt: skip
+    return DocumentExtraction(
+        document_id=doc_id,
+        config_id=MM,
+        model="m",
+        model_digest="d",
+        prompt_version="t",
+        extracted_at="t",
+        chunks=[first, second],
+    )
+
+
+@pytest.fixture
+def graph_corpus(store: GraphStore, graph_doc, corpus):
+    """The ``corpus`` documents again, now with extracted entities and relations."""
+    writer = GraphWriter(store)
+    docs = {A: ("aur-c103", "aiko tanaka", datetime(2026, 1, 1, tzinfo=UTC), "notes.md"),
+            A2: ("aur-c103", "aiko tanaka", datetime(2026, 2, 1, tzinfo=UTC), "notes.md"),
+            B: ("aur-c105", "aiko", None, "other.md")}  # fmt: skip
+    for doc_id, (sample, person, created, name) in docs.items():
+        text = "Cell AUR-C105 failed at cycle 600." if doc_id == B else None
+        record, elements, sets = graph_doc(
+            doc_id, name, created, **({"text": text} if text else {})
+        )
+        writer.write_document(record, elements, sets, corpus, "space-test",  # keep the vectors
+                              _extraction(doc_id, sample, person))  # fmt: skip
+    return corpus
+
+
+def test_graph_retrieval_paths_versions_and_related_documents(store, graph_corpus) -> None:
+    graph = GraphRetriever(store, config_id=MM, max_hops=2)
+    result = graph.retrieve("Who tested cell AUR-C103?", 5)
+    ids = _ids(result)
+    assert ids[0] == f"{A2}-{MM}-00000"  # mention + the TESTED_BY evidence
+    assert set(ids) == {f"{A2}-{MM}-00000", f"{A2}-{MM}-00001", f"{B}-{MM}-00001"}  # no old A
+    top = result.hits[0]
+    assert "MENTIONS AUR-C103" in top.graph_paths
+    assert "AUR-C103 -[TESTED_BY, stated]-> Aiko Tanaka (hop 1)" in top.graph_paths
+    assert [f["name"] for f in result.details["linked"]] == ["AUR-C103"]
+    related = {r["document_id"]: r["shared_entities"] for r in result.details["related_documents"]}
+    assert related == {A2: 1, B: 1}
+    every = graph.retrieve("Who tested cell AUR-C103?", 10, RetrievalFilters(latest_only=False))
+    assert any(c.startswith(A + "-") for c in _ids(every))
+    assert graph.retrieve("Who tested cell AUR-C103?", 5,
+                          RetrievalFilters(element_types=["figure"])).hits == []  # fmt: skip
+    assert graph.retrieve("Who is the CEO?", 5).hits == []  # nothing links
+
+
+def test_graph_follows_same_as(store, graph_corpus) -> None:
+    result = GraphRetriever(store, config_id=MM).retrieve("What did Aiko test?", 5)
+    assert [f["name"] for f in result.details["linked"]] == ["Aiko"]
+    assert result.details["seed_count"] == 2  # + "Aiko Tanaka" through SAME_AS
+    assert f"{A2}-{MM}-00000" in _ids(result)
+
+
+def test_hybrid_fuses_live_retrievers(store, graph_corpus) -> None:
+    from omnirag.retrieval.fusion import HybridRetriever
+
+    members = {"dense": DenseRetriever(store, FixedEmbedder(graph_corpus[f"{A2}-{MM}-00000"]),
+                                       config_id=MM),
+               "bm25": LexicalRetriever(store, config_id=MM),
+               "graph": GraphRetriever(store, config_id=MM)}  # fmt: skip
+    hybrid = HybridRetriever(members, mode="dense+bm25+graph", depth=10)
+    result = hybrid.retrieve("Who tested cell AUR-C103?", 3)
+    hybrid.close()
+    assert result.hits[0].chunk_id == f"{A2}-{MM}-00000"
+    assert set(result.hits[0].sources) == {"dense", "bm25", "graph"}
+    assert result.hits[0].graph_paths and result.details["failed"] == {}

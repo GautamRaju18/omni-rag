@@ -112,3 +112,18 @@ def test_bm25_keeps_identifiers_whole_and_ranks_exact_matches() -> None:
 def test_dense_index_is_exact_cosine() -> None:
     vectors = np.eye(3, dtype=np.float32)
     assert DenseIndex(vectors).search(np.array([0.1, 0.9, 0.2], dtype=np.float32), 2) == [1, 2]
+
+
+RELATIONAL = EvalDataset.load(ROOT / "data" / "eval" / "relational_seed.json")
+
+
+@pytest.mark.skipif(shutil.which("tesseract") is None, reason="OCR evidence needs tesseract")
+def test_relational_quotes_exist_in_the_samples(tmp_path: Path) -> None:
+    """Every quote of the relational set resolves (layout-only files excepted, as above)."""
+    by_file = _ingest_samples(tmp_path, "pymupdf")
+    files = set(by_file) - LAYOUT_FILES
+    assert len(RELATIONAL.questions) == 8 and all(len(q.facts) == 2 for q in RELATIONAL.questions)
+    for q in RELATIONAL.questions:
+        facts = [[a for a in fact if a.file in files] for fact in q.facts]
+        assert all(facts), f"{q.id}: a fact has no non-layout evidence"
+        assert all(resolve(q.model_copy(update={"facts": facts}), by_file)), q.id

@@ -17,8 +17,8 @@ A feature counts as done only when its tests pass and the result was observed, n
 | 5a | Neo4j graph: structure, vectors, versions | ✅ Done 2026-11-05 | 262 unit + 12 live tests; [learning/phase-05a](learning/phase-05a-graph-structure.md) |
 | 5b | Entity/relationship extraction with validation | ✅ Done 2026-11-05 | 294 unit + 15 live tests; entity recall 36/37, typed facts 10/14; [learning/phase-05b](learning/phase-05b-entity-extraction.md), [results](benchmarks/extraction-2026-11-05.json) |
 | 6 | Dense + sparse retrieval | ✅ Done 2026-11-05 | 315 unit + 25 live tests; neo4j dense = exact baseline, BM25 classic/require R@5 0.986 nDCG 0.861; [learning/phase-06](learning/phase-06-dense-and-lexical-retrieval.md), [results](benchmarks/retrieval-2026-11-05.json) |
-| 7 | Graph-enhanced hybrid retrieval (RRF) | ⏭ Next | |
-| 8 | Reranking | ⬜ | |
+| 7 | Graph-enhanced hybrid retrieval (RRF) | ✅ Done 2026-11-05 | 325 unit + 28 live tests; dense+bm25 RRF seed MRR 0.928 (default); graph measured, opt-in; [learning/phase-07](learning/phase-07-graph-retrieval-and-fusion.md), [results](benchmarks/fusion-2026-11-05.json) |
+| 8 | Reranking | ⏭ Next | |
 | 9 | Advanced RAG + LangGraph | ⬜ | |
 | 10 | Ollama generation | ⬜ | |
 | 11 | Citations + answer validation | ⬜ | |
@@ -31,7 +31,7 @@ A feature counts as done only when its tests pass and the result was observed, n
 ## Success-criteria tracker (from the brief)
 - [x] All document types ingest (10/10 kinds: txt, md, html, json, csv, docx, xlsx, pptx, pdf, image) · [x] OCR on scans/images (Tesseract, with confidence) · [x] Table/figure provenance (tables in all formats incl. borderless via Docling; PPTX chart data; image descriptions with origin=generated)
 - [x] Multiple chunking strategies (all 8, benchmarked) · [x] Embeddings in Neo4j (58 chunks, 1024-d, cosine, no quantization) · [x] Graph queryable (structure + validated entities/relations)
-- [x] Dense (Neo4j vector index, in-index filters) · [x] BM25 (full-text, identifier-aware) · [ ] Graph retrieval · [ ] RRF · [ ] Reranking
+- [x] Dense (Neo4j vector index, in-index filters) · [x] BM25 (full-text, identifier-aware) · [x] Graph retrieval (linking, 2-hop traversal, provenance; opt-in, ADR-0014) · [x] RRF · [ ] Reranking
 - [ ] Grounded answers · [ ] Verifiable citations · [ ] LangSmith tracing
 - [ ] Retrieval eval · [ ] Faithfulness eval · [ ] Reproducible benchmarks
 - [ ] FastAPI endpoints (health ✅, documents ✅, ingestion ✅; chat/evaluate/analytics pending)
@@ -51,6 +51,7 @@ A feature counts as done only when its tests pass and the result was observed, n
 - [ADR-0011](adr/0011-graph-schema-and-versioning.md): graph schema, idempotent per-document writes, source-level versioning
 - [ADR-0012](adr/0012-validated-entity-extraction.md): LLM entity/relation extraction validated against the source; stated vs inferred; SAME_AS instead of merging
 - [ADR-0013](adr/0013-dense-and-lexical-retrieval.md): Neo4j dense + lexical retrieval; in-index filters; safe Lucene builder; classic analyzer + required identifiers
+- [ADR-0014](adr/0014-graph-retrieval-and-rrf.md): graph retrieval + RRF; dense+bm25 default, graph opt-in (measured to lower ranking here)
 
 ## Measured baselines (2026-11-04)
 | Metric | Value |

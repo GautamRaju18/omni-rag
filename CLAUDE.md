@@ -55,6 +55,12 @@ Local-first multimodal GraphRAG platform, built phase by phase (see `docs/PROGRE
 - Index config changes (analyzer, vector filters/dimension/quantization) raise `SchemaMismatchError`; fix with `init --recreate-fulltext-index` / `--recreate-vector-index`, never by silently keeping the old index. Analyzer sweeps run only against `neo4j-test` (7688).
 - Raw scores are per retriever (Neo4j cosine is (1+cos)/2; BM25 unbounded): never add them across retrievers; Phase 7 fuses ranks (RRF).
 
+## Graph retrieval + fusion invariants (Phase 7, ADR-0014)
+- Fuse ranks with `retrieval.fusion.rrf`, never raw scores. Fused hits keep `sources` (each member's rank/score) and graph hits keep `graph_paths`: don't drop provenance.
+- Default mode is `dense+bm25` (measured best on both eval sets); graph is opt-in (`graph`, `dense+bm25+graph`) because it lowered MRR on both. Re-measure on both sets (`--dataset data/eval/relational_seed.json`) before changing the default or graph scoring; report per-question wins/losses.
+- Graph scoring: chunk = Σ seed IDF weights of mentioned seeds + its *best* edge (max, not sum: hub entities). Tie-breaks are part of the ranking (seed weight, then fewer other entities), never chunk ID alone.
+- A failing fusion member degrades (`details.failed`); only all-failed raises.
+
 ## Conventions
 - Code lives in `src/omnirag/<module>/` (ADR-0001). Create a module's package only in its phase.
 - Config only through `omnirag.core.config.Settings` (`OMNIRAG_*`). No hardcoded secrets.

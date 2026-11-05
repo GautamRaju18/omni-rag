@@ -1,6 +1,7 @@
 """Retrieval CLI.
 
-uv run python -m omnirag.retrieval search "Why did cell AUR-C103 fail?" [--mode dense|bm25]
+uv run python -m omnirag.retrieval search "Why did cell AUR-C103 fail?"
+    [--mode dense|bm25|graph|dense+bm25|dense+bm25+graph]
     [--k 5] [--doc DOC_ID ...] [--file NAME ...] [--type table ...] [--no-generated]
     [--all-versions] [--identifiers terms|boost|require] [--full]
 """
@@ -39,6 +40,10 @@ def cmd_search(args: argparse.Namespace) -> int:
               f"[{hit.element_type}; {'/'.join(hit.origins)}]  {hit.chunk_id}")  # fmt: skip
         text = hit.content if args.full else hit.content[:240].replace("\n", " ")
         print(f"    {text}")
+        if hit.sources:
+            print("    via " + ", ".join(f"{n} #{s['rank']:.0f}" for n, s in hit.sources.items()))
+        for path in hit.graph_paths[:4]:
+            print(f"    graph: {path}")
     print(f"\n{len(result.hits)} hits in {result.latency_ms} ms")
     return 0
 
@@ -49,7 +54,11 @@ def main(argv: list[str] | None = None) -> int:
     sub = parser.add_subparsers(dest="command", required=True)
     p = sub.add_parser("search")
     p.add_argument("query")
-    p.add_argument("--mode", choices=["dense", "bm25"], default="dense")
+    p.add_argument(
+        "--mode",
+        default=get_settings().retrieval_default_mode,
+        choices=["dense", "bm25", "graph", "dense+bm25", "dense+bm25+graph"],
+    )
     p.add_argument("--k", type=int, default=get_settings().retrieval_k)
     p.add_argument("--doc", action="append", help="restrict to a document ID (repeatable)")
     p.add_argument("--file", action="append", help="restrict to a source file name")

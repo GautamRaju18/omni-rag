@@ -180,6 +180,11 @@ async def test_search_endpoint() -> None:
         ).status_code == 422
         bad_mode = await client.post("/api/v1/retrieval/search", json={"query": "x", "mode": "x"})
         assert bad_mode.status_code == 422
+        default = await client.post("/api/v1/retrieval/search", json={"query": "x"})
+        assert default.json()["retriever"] == "dense+bm25"  # settings.retrieval_default_mode
+        graph = await client.post("/api/v1/retrieval/search",
+                                  json={"query": "x", "mode": "dense+bm25+graph"})  # fmt: skip
+        assert graph.json()["retriever"] == "dense+bm25+graph"
 
 
 @pytest.mark.parametrize(

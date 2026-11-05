@@ -1,7 +1,8 @@
 """Retrieval endpoint (the retrieval laboratory's backend).
 
-* ``POST /retrieval/search``  one retriever (``dense`` or ``bm25``), top-k chunks with
-  provenance, latency and the exact query that ran (e.g. the Lucene string).
+* ``POST /retrieval/search``  one retrieval mode (``dense``, ``bm25``, ``graph``, or the RRF
+  fusions ``dense+bm25`` / ``dense+bm25+graph``): top-k chunks with provenance (graph paths,
+  per-retriever ranks), latency and what actually ran (Lucene string, linked entities).
 
 Retrieval runs in a worker thread: the Neo4j driver used here is synchronous.
 """
@@ -13,15 +14,15 @@ import asyncio
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
 
-from omnirag.api.dependencies import RetrievalDep
+from omnirag.api.dependencies import RetrievalDep, SettingsDep
 from omnirag.core.errors import ConflictError, DependencyUnavailableError, ValidationFailedError
 from omnirag.embeddings.base import EmbeddingError, EmbeddingInputError
 from omnirag.knowledge_base.graph_store import GraphUnavailableError
 from omnirag.retrieval.models import (
     RetrievalError,
     RetrievalFilters,
+    RetrievalMode,
     RetrievalResult,
-    RetrieverName,
 )
 
 router = APIRouter(prefix="/retrieval", tags=["retrieval"])
@@ -29,16 +30,19 @@ router = APIRouter(prefix="/retrieval", tags=["retrieval"])
 
 class SearchRequest(BaseModel):
     query: str = Field(min_length=1, max_length=2000)
-    mode: RetrieverName = "dense"
+    mode: RetrievalMode | None = None  # None = settings.retrieval_default_mode
     k: int = Field(default=5, ge=1, le=50)
     filters: RetrievalFilters = Field(default_factory=RetrievalFilters)
 
 
 @router.post("/search", response_model=RetrievalResult, summary="Retrieve chunks for a query")
-async def search(request: SearchRequest, retrieval: RetrievalDep) -> RetrievalResult:
+async def search(
+    request: SearchRequest, retrieval: RetrievalDep, settings: SettingsDep
+) -> RetrievalResult:
+    mode = request.mode or settings.retrieval_default_mode
     try:
         return await asyncio.to_thread(
-            retrieval.search, request.query, request.mode, request.k, request.filters
+            retrieval.search, request.query, mode, request.k, request.filters
         )
     except EmbeddingInputError as exc:  # e.g. an empty or over-long query
         raise ValidationFailedError(str(exc)) from exc

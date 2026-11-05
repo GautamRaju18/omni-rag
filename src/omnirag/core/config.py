@@ -144,6 +144,17 @@ class Settings(BaseSettings):
     # How technical identifiers (AUR-C103, E-7) enter the BM25 query: plain terms, an extra
     # boosted exact phrase, or a required phrase.
     retrieval_identifier_mode: Literal["terms", "boost", "require"] = "require"
+    # --- graph retrieval + fusion (Phase 7, ADR-0014)
+    retrieval_graph_max_hops: int = Field(default=2, ge=0, le=3)
+    retrieval_rrf_k: int = Field(default=60, ge=1, le=1000)
+    retrieval_fusion_depth: int = Field(default=20, ge=1, le=200)  # candidates per member
+    # Per-retriever RRF weights, e.g. {"graph": 0.5}; missing = 1.0.
+    retrieval_rrf_weights: dict[str, float] = Field(default_factory=dict)
+    # Mode used when a request names none. dense+bm25 measured best on both eval sets;
+    # adding graph lowered MRR (ADR-0014).
+    retrieval_default_mode: Literal["dense", "bm25", "graph", "dense+bm25", "dense+bm25+graph"] = (
+        "dense+bm25"
+    )
 
     # --- PDF engine (ADR-0005): "auto" routes multi-column documents to Docling's layout model
     # and everything else to PyMuPDF (~40x faster); "pymupdf" / "docling" force one engine.

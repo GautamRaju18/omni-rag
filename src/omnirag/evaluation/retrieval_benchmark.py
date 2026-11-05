@@ -10,7 +10,10 @@ Methods, all on the same chunk set and questions as Phases 3–4:
 * ``memory:bm25`` / ``memory:dense``: the exact in-memory baselines (Phase 4 numbers);
 * ``neo4j:dense``: query embedding + vector index SEARCH (HNSW, quantization NONE);
 * ``neo4j:bm25:<analyzer>:<mode>``: full-text index with identifier mode terms / boost /
-  require (see ``retrieval/sparse.py``).
+  require (see ``retrieval/sparse.py``);
+* ``neo4j:graph:hops<n>``: entity linking + traversal (Phase 7);
+* ``neo4j:dense+bm25[:+graph]:k<k>``: Reciprocal Rank Fusion with RRF constant k (and
+  optional per-retriever weights).
 
 Besides the ranking metrics:
 * **identifier precision**: for the questions that name a technical identifier (AUR-C103,
@@ -47,6 +50,8 @@ from omnirag.ingestion.models import IngestionStatus
 from omnirag.ingestion.store import DocumentStore
 from omnirag.knowledge_base.schema import ensure_schema
 from omnirag.retrieval import build_retrieval
+from omnirag.retrieval.fusion import HybridRetriever
+from omnirag.retrieval.graph_search import GraphRetriever
 from omnirag.retrieval.sparse import identifiers
 
 MODES = ("terms", "boost", "require")
@@ -68,6 +73,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--k", type=int, default=5)
     parser.add_argument("--analyzers", default="", help="comma list; test server only")
     parser.add_argument("--out", type=Path)
+    parser.add_argument("--no-fusion", action="store_true", help="skip graph + RRF (Phase 7)")
+    parser.add_argument(
+        "--dataset",
+        type=Path,
+        default=DATASET,
+        help="eval set (default: chunking_seed; relational_seed for Phase 7)",
+    )
     args = parser.parse_args(argv)
     settings = get_settings()
     config = settings.retrieval_config_id
@@ -80,7 +92,7 @@ def main(argv: list[str] | None = None) -> int:
     chunks = [c for r in records for c in store.read_chunks(r.document_id, config)
               if c.retrievable]  # fmt: skip
     index_of = {c.chunk_id: i for i, c in enumerate(chunks)}
-    dataset = EvalDataset.load(DATASET)
+    dataset = EvalDataset.load(args.dataset)
     questions = [q for q in dataset.questions if q.answerable]
     unanswerable = [q for q in dataset.questions if not q.answerable]
     with_ids = [(i, identifiers(q.question)) for i, q in enumerate(questions)]
@@ -163,6 +175,33 @@ def main(argv: list[str] | None = None) -> int:
         default = settings.graph_fulltext_analyzer
         ensure_schema(graph, vector_dim=settings.embedding_dim, analyzer=default,
                       recreate_fulltext_index=True)  # fmt: skip
+
+    # ---- Phase 7: graph retrieval and RRF fusion (the configured analyzer / identifier mode)
+    if not args.no_fusion:
+        members = service.retrievers
+        depth = settings.retrieval_fusion_depth
+
+        def fused(name: str, parts: dict, rrf_k: int, weights=None) -> None:
+            mode = "dense+bm25+graph" if "graph" in parts else "dense+bm25"
+            hybrid = HybridRetriever(parts, mode=mode, rrf_k=rrf_k, weights=weights,
+                                     depth=depth)  # fmt: skip
+            record(name, *run(hybrid))
+            hybrid.close()
+
+        for rrf_k in (60, 10):
+            fused(f"neo4j:dense+bm25:k{rrf_k}", {n: members[n] for n in ("dense", "bm25")}, rrf_k)
+        # Graph retrieval at 0-2 hops, alone and fused with dense + BM25 (k 60 / 10, and a
+        # half-weight graph). Earlier variants: docs/benchmarks/graph-variants-*.json.
+        for hops in (0, 1, 2):
+            g = GraphRetriever(graph, config_id=config, max_hops=hops)
+            g.retrieve("warm up", 1)
+            ranked, ms, extra = run(g)
+            extra["questions_with_graph_hits"] = sum(bool(r) for r in ranked)
+            record(f"neo4j:graph:hops{hops}", ranked, ms, extra)
+            parts = {"dense": members["dense"], "bm25": members["bm25"], "graph": g}
+            for rrf_k in (60, 10):
+                fused(f"neo4j:dense+bm25+graph:k{rrf_k}:hops{hops}", parts, rrf_k)
+            fused(f"neo4j:dense+bm25+graph:k60:hops{hops}:wgraph=0.5", parts, 60, {"graph": 0.5})
     service.close()
 
     # ---- per-question wins / losses against the in-memory baseline of the same family
@@ -171,11 +210,20 @@ def main(argv: list[str] | None = None) -> int:
         return {"wins": sorted(q for q in a if a[q] > b[q]),
                 "losses": sorted(q for q in a if a[q] < b[q])}  # fmt: skip
 
+    best_bm25 = (
+        f"neo4j:bm25:{settings.graph_fulltext_analyzer}:{settings.retrieval_identifier_mode}"
+    )
     for name in results:
-        if name.startswith("neo4j:"):
-            base = "memory:dense" if name == "neo4j:dense" else "memory:bm25"
-            results[name]["vs_" + base] = diff(name, base)
-            d = results[name]["vs_" + base]
+        if not name.startswith("neo4j:"):
+            continue
+        if name == "neo4j:dense":
+            bases = ["memory:dense"]
+        elif ":bm25:" in name:
+            bases = ["memory:bm25"]
+        else:  # graph and fused modes: against both single retrievers
+            bases = [b for b in ("neo4j:dense", best_bm25) if b in results]
+        for base in bases:
+            results[name]["vs_" + base] = d = diff(name, base)
             print(f"  {name:<44} vs {base}: +{d['wins']} -{d['losses']}")
 
     if args.out:
@@ -185,7 +233,7 @@ def main(argv: list[str] | None = None) -> int:
                       "questions": len(questions), "identifier_questions": len(with_ids),
                       "neo4j_uri": settings.neo4j_uri,
                       "embedding_space": embedder.space.space_id,
-                      "analyzers": sweep, "dataset": DATASET.name},
+                      "analyzers": sweep, "dataset": args.dataset.name},
             "results": results,
         }  # fmt: skip
         args.out.write_text(json.dumps(payload, indent=2) + "\n")

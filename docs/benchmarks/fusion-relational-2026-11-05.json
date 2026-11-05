@@ -1,0 +1,843 @@
+{
+  "created": "2026-11-05T15:44:10.583978+00:00",
+  "setup": {
+    "config_id": "multimodal-256-ctx",
+    "k": 5,
+    "chunks": 58,
+    "questions": 8,
+    "identifier_questions": 5,
+    "neo4j_uri": "bolt://localhost:7687",
+    "embedding_space": "dense-ollama-bge-m3-790764642607",
+    "analyzers": [
+      "classic"
+    ],
+    "dataset": "relational_seed.json"
+  },
+  "results": {
+    "memory:bm25": {
+      "hit": 0.875,
+      "recall": 0.75,
+      "precision": 0.35,
+      "mrr": 0.667,
+      "ndcg": 0.584,
+      "context_precision": 0.367,
+      "recall_by_type": {
+        "relational": 0.75
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 1.0,
+        "r06": 1.0,
+        "r07": 0.5,
+        "r08": 0.0
+      },
+      "identifier_precision": 0.64,
+      "latency_ms": {
+        "mean": 0.1,
+        "p50": 0.1,
+        "p95": 0.1
+      }
+    },
+    "memory:dense": {
+      "hit": 1.0,
+      "recall": 0.875,
+      "precision": 0.375,
+      "mrr": 0.854,
+      "ndcg": 0.76,
+      "context_precision": 0.419,
+      "recall_by_type": {
+        "relational": 0.875
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 1.0,
+        "r07": 1.0,
+        "r08": 1.0
+      },
+      "identifier_precision": 0.76,
+      "latency_ms": {
+        "mean": 0.2,
+        "p50": 0.1,
+        "p95": 0.3
+      }
+    },
+    "neo4j:dense": {
+      "hit": 1.0,
+      "recall": 0.875,
+      "precision": 0.375,
+      "mrr": 0.854,
+      "ndcg": 0.76,
+      "context_precision": 0.419,
+      "recall_by_type": {
+        "relational": 0.875
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 1.0,
+        "r07": 1.0,
+        "r08": 1.0
+      },
+      "identifier_precision": 0.76,
+      "latency_ms": {
+        "mean": 24.3,
+        "p50": 9.8,
+        "p95": 10.1
+      },
+      "unanswerable_hits": {},
+      "embed_ms_p50": 0.2,
+      "search_ms_p50": 9.5,
+      "vs_memory:dense": {
+        "wins": [],
+        "losses": []
+      }
+    },
+    "neo4j:bm25:classic:terms": {
+      "hit": 0.875,
+      "recall": 0.812,
+      "precision": 0.35,
+      "mrr": 0.604,
+      "ndcg": 0.601,
+      "context_precision": 0.386,
+      "recall_by_type": {
+        "relational": 0.812
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 1.0,
+        "r06": 1.0,
+        "r07": 1.0,
+        "r08": 0.0
+      },
+      "identifier_precision": 0.64,
+      "latency_ms": {
+        "mean": 7.0,
+        "p50": 7.3,
+        "p95": 7.8
+      },
+      "unanswerable_hits": {},
+      "vs_memory:bm25": {
+        "wins": [
+          "r07"
+        ],
+        "losses": []
+      }
+    },
+    "neo4j:bm25:classic:boost": {
+      "hit": 0.75,
+      "recall": 0.75,
+      "precision": 0.325,
+      "mrr": 0.625,
+      "ndcg": 0.573,
+      "context_precision": 0.359,
+      "recall_by_type": {
+        "relational": 0.75
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.0,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 1.0,
+        "r06": 1.0,
+        "r07": 1.0,
+        "r08": 0.0
+      },
+      "identifier_precision": 0.76,
+      "latency_ms": {
+        "mean": 7.4,
+        "p50": 7.1,
+        "p95": 9.5
+      },
+      "unanswerable_hits": {},
+      "vs_memory:bm25": {
+        "wins": [
+          "r07"
+        ],
+        "losses": [
+          "r02"
+        ]
+      }
+    },
+    "neo4j:bm25:classic:require": {
+      "hit": 0.875,
+      "recall": 0.688,
+      "precision": 0.458,
+      "mrr": 0.656,
+      "ndcg": 0.568,
+      "context_precision": 0.463,
+      "recall_by_type": {
+        "relational": 0.688
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 0.5,
+        "r04": 0.5,
+        "r05": 1.0,
+        "r06": 1.0,
+        "r07": 1.0,
+        "r08": 0.0
+      },
+      "identifier_precision": 0.92,
+      "latency_ms": {
+        "mean": 7.1,
+        "p50": 6.9,
+        "p95": 7.8
+      },
+      "unanswerable_hits": {},
+      "vs_memory:bm25": {
+        "wins": [
+          "r07"
+        ],
+        "losses": [
+          "r03",
+          "r04"
+        ]
+      }
+    },
+    "neo4j:dense+bm25:k60": {
+      "hit": 1.0,
+      "recall": 0.875,
+      "precision": 0.375,
+      "mrr": 0.838,
+      "ndcg": 0.754,
+      "context_precision": 0.433,
+      "recall_by_type": {
+        "relational": 0.875
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 1.0,
+        "r07": 1.0,
+        "r08": 1.0
+      },
+      "identifier_precision": 0.8,
+      "latency_ms": {
+        "mean": 13.5,
+        "p50": 13.0,
+        "p95": 14.5
+      },
+      "unanswerable_hits": {},
+      "vs_neo4j:dense": {
+        "wins": [],
+        "losses": []
+      },
+      "vs_neo4j:bm25:classic:require": {
+        "wins": [
+          "r03",
+          "r04",
+          "r08"
+        ],
+        "losses": [
+          "r05"
+        ]
+      }
+    },
+    "neo4j:dense+bm25:k10": {
+      "hit": 1.0,
+      "recall": 0.875,
+      "precision": 0.375,
+      "mrr": 0.838,
+      "ndcg": 0.754,
+      "context_precision": 0.415,
+      "recall_by_type": {
+        "relational": 0.875
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 1.0,
+        "r07": 1.0,
+        "r08": 1.0
+      },
+      "identifier_precision": 0.8,
+      "latency_ms": {
+        "mean": 13.4,
+        "p50": 13.2,
+        "p95": 14.3
+      },
+      "unanswerable_hits": {},
+      "vs_neo4j:dense": {
+        "wins": [],
+        "losses": []
+      },
+      "vs_neo4j:bm25:classic:require": {
+        "wins": [
+          "r03",
+          "r04",
+          "r08"
+        ],
+        "losses": [
+          "r05"
+        ]
+      }
+    },
+    "neo4j:graph:hops0": {
+      "hit": 0.375,
+      "recall": 0.25,
+      "precision": 0.158,
+      "mrr": 0.212,
+      "ndcg": 0.2,
+      "context_precision": 0.183,
+      "recall_by_type": {
+        "relational": 0.25
+      },
+      "per_question_recall": {
+        "r01": 0.0,
+        "r02": 0.0,
+        "r03": 0.5,
+        "r04": 0.0,
+        "r05": 0.5,
+        "r06": 0.0,
+        "r07": 1.0,
+        "r08": 0.0
+      },
+      "identifier_precision": 0.6,
+      "latency_ms": {
+        "mean": 33.1,
+        "p50": 35.2,
+        "p95": 36.7
+      },
+      "unanswerable_hits": {},
+      "questions_with_graph_hits": 7,
+      "vs_neo4j:dense": {
+        "wins": [],
+        "losses": [
+          "r01",
+          "r02",
+          "r03",
+          "r04",
+          "r06",
+          "r08"
+        ]
+      },
+      "vs_neo4j:bm25:classic:require": {
+        "wins": [],
+        "losses": [
+          "r01",
+          "r02",
+          "r04",
+          "r05",
+          "r06"
+        ]
+      }
+    },
+    "neo4j:dense+bm25+graph:k60:hops0": {
+      "hit": 0.75,
+      "recall": 0.625,
+      "precision": 0.3,
+      "mrr": 0.562,
+      "ndcg": 0.529,
+      "context_precision": 0.347,
+      "recall_by_type": {
+        "relational": 0.625
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 0.0,
+        "r07": 1.0,
+        "r08": 0.0
+      },
+      "identifier_precision": 0.84,
+      "latency_ms": {
+        "mean": 53.1,
+        "p50": 55.2,
+        "p95": 59.7
+      },
+      "unanswerable_hits": {},
+      "vs_neo4j:dense": {
+        "wins": [],
+        "losses": [
+          "r06",
+          "r08"
+        ]
+      },
+      "vs_neo4j:bm25:classic:require": {
+        "wins": [
+          "r03",
+          "r04"
+        ],
+        "losses": [
+          "r05",
+          "r06"
+        ]
+      }
+    },
+    "neo4j:dense+bm25+graph:k10:hops0": {
+      "hit": 0.875,
+      "recall": 0.75,
+      "precision": 0.35,
+      "mrr": 0.604,
+      "ndcg": 0.604,
+      "context_precision": 0.391,
+      "recall_by_type": {
+        "relational": 0.75
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 1.0,
+        "r07": 1.0,
+        "r08": 0.0
+      },
+      "identifier_precision": 0.8,
+      "latency_ms": {
+        "mean": 49.5,
+        "p50": 52.5,
+        "p95": 55.7
+      },
+      "unanswerable_hits": {},
+      "vs_neo4j:dense": {
+        "wins": [],
+        "losses": [
+          "r08"
+        ]
+      },
+      "vs_neo4j:bm25:classic:require": {
+        "wins": [
+          "r03",
+          "r04"
+        ],
+        "losses": [
+          "r05"
+        ]
+      }
+    },
+    "neo4j:dense+bm25+graph:k60:hops0:wgraph=0.5": {
+      "hit": 0.75,
+      "recall": 0.625,
+      "precision": 0.3,
+      "mrr": 0.562,
+      "ndcg": 0.529,
+      "context_precision": 0.339,
+      "recall_by_type": {
+        "relational": 0.625
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 0.0,
+        "r07": 1.0,
+        "r08": 0.0
+      },
+      "identifier_precision": 0.84,
+      "latency_ms": {
+        "mean": 42.4,
+        "p50": 43.5,
+        "p95": 46.4
+      },
+      "unanswerable_hits": {},
+      "vs_neo4j:dense": {
+        "wins": [],
+        "losses": [
+          "r06",
+          "r08"
+        ]
+      },
+      "vs_neo4j:bm25:classic:require": {
+        "wins": [
+          "r03",
+          "r04"
+        ],
+        "losses": [
+          "r05",
+          "r06"
+        ]
+      }
+    },
+    "neo4j:graph:hops1": {
+      "hit": 0.5,
+      "recall": 0.375,
+      "precision": 0.183,
+      "mrr": 0.192,
+      "ndcg": 0.197,
+      "context_precision": 0.201,
+      "recall_by_type": {
+        "relational": 0.375
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.0,
+        "r03": 0.5,
+        "r04": 0.0,
+        "r05": 0.5,
+        "r06": 0.0,
+        "r07": 1.0,
+        "r08": 0.0
+      },
+      "identifier_precision": 0.6,
+      "latency_ms": {
+        "mean": 30.5,
+        "p50": 32.9,
+        "p95": 36.1
+      },
+      "unanswerable_hits": {},
+      "questions_with_graph_hits": 7,
+      "vs_neo4j:dense": {
+        "wins": [],
+        "losses": [
+          "r02",
+          "r03",
+          "r04",
+          "r06",
+          "r08"
+        ]
+      },
+      "vs_neo4j:bm25:classic:require": {
+        "wins": [],
+        "losses": [
+          "r02",
+          "r04",
+          "r05",
+          "r06"
+        ]
+      }
+    },
+    "neo4j:dense+bm25+graph:k60:hops1": {
+      "hit": 0.875,
+      "recall": 0.75,
+      "precision": 0.325,
+      "mrr": 0.588,
+      "ndcg": 0.577,
+      "context_precision": 0.383,
+      "recall_by_type": {
+        "relational": 0.75
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 0.0,
+        "r07": 1.0,
+        "r08": 1.0
+      },
+      "identifier_precision": 0.84,
+      "latency_ms": {
+        "mean": 43.7,
+        "p50": 46.9,
+        "p95": 48.9
+      },
+      "unanswerable_hits": {},
+      "vs_neo4j:dense": {
+        "wins": [],
+        "losses": [
+          "r06"
+        ]
+      },
+      "vs_neo4j:bm25:classic:require": {
+        "wins": [
+          "r03",
+          "r04",
+          "r08"
+        ],
+        "losses": [
+          "r05",
+          "r06"
+        ]
+      }
+    },
+    "neo4j:dense+bm25+graph:k10:hops1": {
+      "hit": 1.0,
+      "recall": 0.812,
+      "precision": 0.35,
+      "mrr": 0.629,
+      "ndcg": 0.62,
+      "context_precision": 0.402,
+      "recall_by_type": {
+        "relational": 0.812
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 0.5,
+        "r07": 1.0,
+        "r08": 1.0
+      },
+      "identifier_precision": 0.84,
+      "latency_ms": {
+        "mean": 46.7,
+        "p50": 49.5,
+        "p95": 52.2
+      },
+      "unanswerable_hits": {},
+      "vs_neo4j:dense": {
+        "wins": [],
+        "losses": [
+          "r06"
+        ]
+      },
+      "vs_neo4j:bm25:classic:require": {
+        "wins": [
+          "r03",
+          "r04",
+          "r08"
+        ],
+        "losses": [
+          "r05",
+          "r06"
+        ]
+      }
+    },
+    "neo4j:dense+bm25+graph:k60:hops1:wgraph=0.5": {
+      "hit": 0.875,
+      "recall": 0.75,
+      "precision": 0.325,
+      "mrr": 0.594,
+      "ndcg": 0.583,
+      "context_precision": 0.355,
+      "recall_by_type": {
+        "relational": 0.75
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 0.0,
+        "r07": 1.0,
+        "r08": 1.0
+      },
+      "identifier_precision": 0.84,
+      "latency_ms": {
+        "mean": 47.7,
+        "p50": 50.1,
+        "p95": 56.0
+      },
+      "unanswerable_hits": {},
+      "vs_neo4j:dense": {
+        "wins": [],
+        "losses": [
+          "r06"
+        ]
+      },
+      "vs_neo4j:bm25:classic:require": {
+        "wins": [
+          "r03",
+          "r04",
+          "r08"
+        ],
+        "losses": [
+          "r05",
+          "r06"
+        ]
+      }
+    },
+    "neo4j:graph:hops2": {
+      "hit": 0.5,
+      "recall": 0.375,
+      "precision": 0.15,
+      "mrr": 0.192,
+      "ndcg": 0.197,
+      "context_precision": 0.146,
+      "recall_by_type": {
+        "relational": 0.375
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.0,
+        "r03": 0.5,
+        "r04": 0.0,
+        "r05": 0.5,
+        "r06": 0.0,
+        "r07": 1.0,
+        "r08": 0.0
+      },
+      "identifier_precision": 0.6,
+      "latency_ms": {
+        "mean": 34.6,
+        "p50": 37.3,
+        "p95": 41.5
+      },
+      "unanswerable_hits": {},
+      "questions_with_graph_hits": 7,
+      "vs_neo4j:dense": {
+        "wins": [],
+        "losses": [
+          "r02",
+          "r03",
+          "r04",
+          "r06",
+          "r08"
+        ]
+      },
+      "vs_neo4j:bm25:classic:require": {
+        "wins": [],
+        "losses": [
+          "r02",
+          "r04",
+          "r05",
+          "r06"
+        ]
+      }
+    },
+    "neo4j:dense+bm25+graph:k60:hops2": {
+      "hit": 1.0,
+      "recall": 0.812,
+      "precision": 0.35,
+      "mrr": 0.713,
+      "ndcg": 0.654,
+      "context_precision": 0.375,
+      "recall_by_type": {
+        "relational": 0.812
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 0.5,
+        "r07": 1.0,
+        "r08": 1.0
+      },
+      "identifier_precision": 0.8,
+      "latency_ms": {
+        "mean": 49.7,
+        "p50": 54.7,
+        "p95": 57.2
+      },
+      "unanswerable_hits": {},
+      "vs_neo4j:dense": {
+        "wins": [],
+        "losses": [
+          "r06"
+        ]
+      },
+      "vs_neo4j:bm25:classic:require": {
+        "wins": [
+          "r03",
+          "r04",
+          "r08"
+        ],
+        "losses": [
+          "r05",
+          "r06"
+        ]
+      }
+    },
+    "neo4j:dense+bm25+graph:k10:hops2": {
+      "hit": 1.0,
+      "recall": 0.875,
+      "precision": 0.375,
+      "mrr": 0.713,
+      "ndcg": 0.691,
+      "context_precision": 0.411,
+      "recall_by_type": {
+        "relational": 0.875
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 1.0,
+        "r07": 1.0,
+        "r08": 1.0
+      },
+      "identifier_precision": 0.8,
+      "latency_ms": {
+        "mean": 55.3,
+        "p50": 57.4,
+        "p95": 66.4
+      },
+      "unanswerable_hits": {},
+      "vs_neo4j:dense": {
+        "wins": [],
+        "losses": []
+      },
+      "vs_neo4j:bm25:classic:require": {
+        "wins": [
+          "r03",
+          "r04",
+          "r08"
+        ],
+        "losses": [
+          "r05"
+        ]
+      }
+    },
+    "neo4j:dense+bm25+graph:k60:hops2:wgraph=0.5": {
+      "hit": 1.0,
+      "recall": 0.812,
+      "precision": 0.35,
+      "mrr": 0.719,
+      "ndcg": 0.66,
+      "context_precision": 0.364,
+      "recall_by_type": {
+        "relational": 0.812
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 0.5,
+        "r07": 1.0,
+        "r08": 1.0
+      },
+      "identifier_precision": 0.8,
+      "latency_ms": {
+        "mean": 50.4,
+        "p50": 54.3,
+        "p95": 57.5
+      },
+      "unanswerable_hits": {},
+      "vs_neo4j:dense": {
+        "wins": [],
+        "losses": [
+          "r06"
+        ]
+      },
+      "vs_neo4j:bm25:classic:require": {
+        "wins": [
+          "r03",
+          "r04",
+          "r08"
+        ],
+        "losses": [
+          "r05",
+          "r06"
+        ]
+      }
+    }
+  }
+}

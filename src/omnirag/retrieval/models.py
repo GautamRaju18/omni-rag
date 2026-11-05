@@ -13,7 +13,10 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
-RetrieverName = Literal["dense", "bm25"]
+RetrieverName = Literal["dense", "bm25", "graph"]
+# Retrieval modes (brief section 9): one retriever, or several fused with RRF. Reranking and
+# query rewriting join as modes in Phases 8-9.
+RetrievalMode = Literal["dense", "bm25", "graph", "dense+bm25", "dense+bm25+graph"]
 
 
 class RetrievalFilters(BaseModel):
@@ -33,8 +36,8 @@ class RetrievedChunk(BaseModel):
     document_id: str
     source_file: str
     rank: int  # 1-based, within this retriever's result
-    score: float  # raw retriever score (cosine-derived or BM25); not comparable across them
-    retriever: RetrieverName
+    score: float  # raw retriever score (cosine, BM25, graph weight, RRF); per retriever only
+    retriever: RetrievalMode
     content: str
     context: str | None = None
     section_path: list[str] = Field(default_factory=list)
@@ -44,11 +47,14 @@ class RetrievedChunk(BaseModel):
     origins: list[str] = Field(default_factory=list)
     min_confidence: float = 1.0
     config_id: str
+    graph_paths: list[str] = Field(default_factory=list)  # how the graph retriever found it
+    # Fused results: each member retriever's rank and raw score for this chunk.
+    sources: dict[str, dict[str, float]] = Field(default_factory=dict)
 
 
 class RetrievalResult(BaseModel):
     query: str
-    retriever: RetrieverName
+    retriever: RetrievalMode
     k: int
     hits: list[RetrievedChunk]
     latency_ms: float
