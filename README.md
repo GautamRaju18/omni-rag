@@ -2,7 +2,7 @@
 
 **Multimodal Graph-Based Retrieval Intelligence**: a local-first RAG platform. It ingests heterogeneous documents (PDF, scans, Office files, images, HTML, JSON), builds a Neo4j knowledge graph with vector and full-text indexes, runs dense + BM25 + graph hybrid retrieval with reranking, and generates cited, grounded answers with local LLMs through Ollama. Every stage is measured by an evaluation harness.
 
-> 🚧 Work in progress, built in 16 tested phases. Current status: **Phase 3 complete** (multimodal ingestion with upload API; 8 chunking strategies benchmarked on a seed evaluation set). See [docs/PROGRESS.md](docs/PROGRESS.md).
+> 🚧 Work in progress, built in 16 tested phases. Current status: **Phase 4 complete** (multimodal ingestion with upload API; 8 chunking strategies; versioned bge-m3 embeddings with dense/sparse/multi-vector comparison). See [docs/PROGRESS.md](docs/PROGRESS.md).
 
 ## Target hardware
 Built for and measured on a 16 GB RAM laptop with a 6 GB RTX 3060 (Windows 11 + WSL2). Memory and VRAM budgets are documented in [docs/learning/phase-00-environment.md](docs/learning/phase-00-environment.md).
@@ -15,6 +15,7 @@ Documents ─► validate ─► loader (TXT/MD/HTML/JSON/CSV/DOCX/XLSX/PPTX/PDF
                          ─► elements + originals + assets  (~/omnirag-data)
                          ─► chunk: fixed │ recursive │ structure │ table │ multimodal │
                                    hierarchical │ parent-child   (bge-m3 tokens, element provenance)
+                         ─► embed: bge-m3 via Ollama (versioned space, cached, embedding_ref per chunk)
 
 FastAPI (WSL2, uvicorn) ──Bolt──► Neo4j 2026.10 (Docker, ≤2 GB)
         └──────HTTP──────► Ollama (native Windows, GPU)

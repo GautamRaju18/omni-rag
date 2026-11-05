@@ -74,11 +74,27 @@ def ensure_tokenizer(
     client: httpx.Client | None = None,
 ) -> Path:
     """Return the local path of ``tokenizer.json``, downloading and verifying it if needed."""
-    target = models_dir / f"{repo.replace('/', '--')}-{revision[:12]}" / "tokenizer.json"
+    return ensure_hf_file(models_dir, repo, revision, "tokenizer.json", sha256,
+                          timeout_s=timeout_s, client=client)  # fmt: skip
+
+
+def ensure_hf_file(
+    models_dir: Path,
+    repo: str,
+    revision: str,
+    filename: str,
+    sha256: str,
+    *,
+    timeout_s: float = 600.0,
+    client: httpx.Client | None = None,
+) -> Path:
+    """Download one file of a Hugging Face repo at a pinned revision, verify its SHA-256, and
+    store it in ``<models_dir>/<org>--<name>-<revision[:12]>/``. Existing files are reused."""
+    target = models_dir / f"{repo.replace('/', '--')}-{revision[:12]}" / filename
     if target.exists():
         return target
     target.parent.mkdir(parents=True, exist_ok=True)
-    url = f"https://huggingface.co/{repo}/resolve/{revision}/tokenizer.json"
+    url = f"https://huggingface.co/{repo}/resolve/{revision}/{filename}"
     digest = hashlib.sha256()
     http = client or httpx.Client(follow_redirects=True, timeout=timeout_s)
     with tempfile.NamedTemporaryFile(dir=target.parent, delete=False) as tmp:

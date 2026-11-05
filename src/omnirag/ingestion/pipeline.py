@@ -61,12 +61,14 @@ class IngestionPipeline:
         max_bytes: int,
         enrichers: Sequence[Enricher] = (),
         chunker: Any = None,  # omnirag.chunking.Chunker (untyped here to avoid an import cycle)
+        embedder: Any = None,  # omnirag.embeddings.service.ChunkEmbedder
     ) -> None:
         self.store = store
         self.loaders = loaders
         self.max_bytes = max_bytes
         self.enrichers = enrichers
         self.chunker = chunker
+        self.embedder = embedder
 
     def close(self) -> None:
         """End of a batch: let enrichers release resources (e.g. unload the vision model)."""
@@ -146,12 +148,22 @@ class IngestionPipeline:
             # are stored and the document can be re-chunked later from the CLI.
             try:
                 sets = self.chunker.chunk(record, ctx.elements)
-                for config_id, chunks in sets.items():
-                    self.store.write_chunks(document_id, config_id, chunks)
-                record.metadata["chunk_sets"] = {cid: len(c) for cid, c in sets.items()}
             except Exception as exc:
                 log.exception("chunking_failed", document_id=document_id)
                 ctx.warn(f"Chunking failed: {type(exc).__name__}: {exc}")
+                sets = {}
+            if sets and self.embedder is not None:
+                # Embedding failure (Ollama down, model missing) is a warning too: chunks are
+                # stored without refs and `python -m omnirag.embeddings embed` fills them in.
+                try:
+                    record.metadata["embeddings"] = self.embedder.embed_sets(sets)
+                except Exception as exc:
+                    log.exception("embedding_failed", document_id=document_id)
+                    ctx.warn(f"Embedding failed: {type(exc).__name__}: {exc}")
+            for config_id, chunks in sets.items():
+                self.store.write_chunks(document_id, config_id, chunks)
+            if sets:
+                record.metadata["chunk_sets"] = {cid: len(c) for cid, c in sets.items()}
         record.warnings = ctx.warnings
         result = self._finish(record, started)
         log.info(

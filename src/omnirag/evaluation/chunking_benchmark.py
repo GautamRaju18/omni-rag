@@ -81,7 +81,7 @@ def run_config(
                 else c for c in search]  # fmt: skip
     texts = [c.embedding_text() for c in search]
     embed_before = embedder.stats["embedded"]
-    vectors = embedder.embed(texts)
+    vectors = embedder.embed_documents(texts)
     indexes = {"dense": DenseIndex(vectors), "bm25": BM25Index(texts)}
 
     results: dict[str, Any] = {}
@@ -156,7 +156,7 @@ def main(argv: list[str] | None = None) -> int:
         resolve(q, by_file)  # fails loudly if any evidence quote is missing from the corpus
     questions = [q for q in dataset.questions if q.answerable]
     t = time.perf_counter()
-    q_vectors = embedder.embed([q.question for q in questions])
+    q_vectors = np.stack([embedder.embed_query(q.question) for q in questions])
     q_embed_ms = (time.perf_counter() - t) * 1000 / len(questions)
 
     grid = default_grid()

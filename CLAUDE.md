@@ -6,7 +6,7 @@ Local-first multimodal GraphRAG platform, built phase by phase (see `docs/PROGRE
 - Source on Windows `P:\omni-rag` = `/mnt/p/omni-rag` in WSL Ubuntu 26.04. P: has only ~5 GB free: never put data, models or venvs there.
 - venv: `~/.venvs/omnirag` via `UV_PROJECT_ENVIRONMENT` (set in `~/.profile`, NOT `.bashrc`). Python 3.11 (uv-managed).
 - Run Python/tests through WSL: `wsl.exe -d Ubuntu -- bash -l <script.sh>`. Inline `bash -lc '...'` via wsl.exe mangles `$()` and quotes, so write a script file in the scratchpad instead. From Git Bash, set `MSYS_NO_PATHCONV=1`.
-- Ollama: native Windows 0.40.x at `localhost:11434` (mirrored networking). Models: `qwen3:4b-instruct` (generator), `qwen3:4b`, `bge-m3`, `qwen3-vl:2b-instruct` (vision). Max 2 resident models on a 6 GB GPU.
+- Ollama: native Windows 0.40.x at `localhost:11434` (mirrored networking). Models: `qwen3:4b-instruct` (generator), `qwen3:4b`, `bge-m3`, `qwen3-vl:2b-instruct` (vision), `nomic-embed-text:v1.5` (embedding comparison only). Max 2 resident models on a 6 GB GPU.
 - A second, unrelated Ollama (0.32.3, systemd service inside WSL, another project's `llama3.1`/`nomic-embed-text`) was moved to `127.0.0.1:11435` on 2026-11-05 via `/etc/systemd/system/ollama.service.d/port.conf`. Mirrored networking shares ports, so if `/api/version` on 11434 ever says 0.32.x, that override is gone and it grabbed our port. Never repoint OmniRAG at 11435.
 - Neo4j: `docker compose up -d` → `neo4j:2026.10.1-community`, mem_limit 2g. Password in `.env` (`NEO4J_PASSWORD` and `OMNIRAG_NEO4J_PASSWORD`). Docker Desktop must be running (`docker` is missing in WSL otherwise); it also starts another project's supabase containers.
 - WSL VM capped at 8 GB (`C:\Users\gautam\.wslconfig`); Docker shares that cap.
@@ -28,7 +28,7 @@ Local-first multimodal GraphRAG platform, built phase by phase (see `docs/PROGRE
 - torch/torchvision stay as direct deps in the `layout` group (CPU index); uv ignores sources for transitive deps (ADR-0005). Docling tests: `-m docling`.
 - Call `pipeline.close()` after a batch (unloads the VLM).
 - Evaluation: relevance = verbatim evidence quotes contained in returned chunk content (`evaluation/dataset.py`, ADR-0009). Never weaken a failing evidence test: fix the quote. Report per-question wins/losses, not only means (seed set: 1 question = 0.027 recall).
-- Embeddings: `omnirag/embeddings/OllamaEmbedder` with the SQLite cache in `<data_dir>/cache/`; Phase 4 builds on it.
+- Embeddings (ADR-0010): retrieval code uses only `DenseEmbedder`/`SparseEmbedder` + `EmbeddingSpace.space_id` (includes the model digest). Always `truncate: false`; Ollama bge-m3 accepts 2,048 tokens incl. specials (measured). `chunk.embedding_ref = <space_id>/<sha256>`; check with `python -m omnirag.embeddings verify`. `BGEM3Local` (CPU, 2.7 GB) is for experiments only, never at ingestion.
 - Chunking: sizes are bge-m3 tokens (`chunking/tokenizer.HFTokenizer`, pinned revision + SHA-256). Chunks reference `element_ids` (from character spans, never string search); evaluation ground truth is element IDs, never chunk IDs (ADR-0008). Unit tests use `WhitespaceTokenizer`; API/unit tests must keep `chunking_enabled=False` or a fake counter (no 17 MB download).
 - API ingestion runs through `ingestion/jobs.JobManager` (one process only: never `uvicorn --workers N`). Job files in `<data_dir>/jobs/`, upload copies in `<data_dir>/uploads/<job_id>/`. Originals are served as `application/octet-stream` attachments with `nosniff`.
 

@@ -90,15 +90,29 @@ class Settings(BaseSettings):
             "parent_child",
         ]  # fmt: skip
     )
-    chunk_size: int = Field(default=512, ge=16, le=8192)
-    chunk_overlap: int = Field(default=64, ge=0)
+    # Defaults follow the Phase 3b benchmark (multimodal-256 + headers was the best
+    # chunk-sized dense configuration on the seed set; revisit after Phase 12).
+    chunk_size: int = Field(default=256, ge=16, le=8192)
+    chunk_overlap: int = Field(default=32, ge=0)
     chunk_child_size: int = Field(default=128, ge=16)
-    chunk_parent_size: int = Field(default=2048, ge=16)
-    chunk_contextual_headers: bool = False
+    # <= 2046: the measured Ollama bge-m3 input limit (2,048 incl. 2 special tokens).
+    chunk_parent_size: int = Field(default=2000, ge=16)
+    chunk_contextual_headers: bool = True
     # The embedding model's tokenizer, pinned: revision + SHA-256 of tokenizer.json.
     chunk_tokenizer_repo: str = "BAAI/bge-m3"
     chunk_tokenizer_revision: str = "5617a9f61b028005a4858fdac845db406aefb181"
     chunk_tokenizer_sha256: str = "21106b6d7dab2952c1d496fb21d5dc9db75c28ed361a05f5020bbba27810dd08"
+
+    # --- embeddings (Phase 4). Which chunk sets get embedded at ingestion, and how.
+    embedding_enabled: bool = True
+    embedding_index_configs: list[str] = Field(default=["multimodal-256-ctx"])
+    embedding_dim: int = Field(default=1024, gt=0)  # validated against the model on first use
+    # Largest input incl. special tokens. Measured 2026-11-05 (Ollama 0.40.14, bge-m3): 2,048,
+    # not the advertised 8,192; longer inputs are rejected (we never let Ollama truncate).
+    embedding_max_tokens: int = Field(default=2048, gt=2)
+    embedding_batch_size: int = Field(default=32, ge=1, le=512)
+    embedding_query_prefix: str = ""  # bge-m3 needs none; e.g. "search_query: " for nomic
+    embedding_document_prefix: str = ""
 
     # --- PDF engine (ADR-0005): "auto" routes multi-column documents to Docling's layout model
     # and everything else to PyMuPDF (~40x faster); "pymupdf" / "docling" force one engine.

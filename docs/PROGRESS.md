@@ -13,8 +13,8 @@ A feature counts as done only when its tests pass and the result was observed, n
 | 2e | `/documents` + `/ingestion` API, background jobs | ✅ Done 2026-11-05 | 176 unit + 6 live tests; [learning/phase-02e](learning/phase-02e-ingestion-api.md) |
 | 3a | Chunking engine: 7 strategies, bge-m3 tokens | ✅ Done 2026-11-05 | 218 unit + 7 live tests; [learning/phase-03a](learning/phase-03a-chunking-strategies.md) |
 | 3b | Semantic chunking, enrichment experiment, chunking benchmark | ✅ Done 2026-11-05 | 236 unit + 8 live tests; [learning/phase-03b](learning/phase-03b-semantic-chunking-and-benchmark.md), [results](benchmarks/chunking-2026-11-05.json) |
-| 4 | Embedding engine | ⏭ Next | |
-| 5 | Neo4j graph construction | ⬜ | |
+| 4 | Embedding engine | ✅ Done 2026-11-05 | 243 unit + 8 live tests; [learning/phase-04](learning/phase-04-embedding-engine.md), [results](benchmarks/embeddings-2026-11-05.json) |
+| 5 | Neo4j graph construction | ⏭ Next | |
 | 6 | Dense + sparse retrieval | ⬜ | |
 | 7 | Graph-enhanced hybrid retrieval (RRF) | ⬜ | |
 | 8 | Reranking | ⬜ | |
@@ -46,6 +46,7 @@ A feature counts as done only when its tests pass and the result was observed, n
 - [ADR-0007](adr/0007-in-process-ingestion-jobs.md): in-process background ingestion jobs with persistent job records
 - [ADR-0008](adr/0008-chunking-tokens-and-element-provenance.md): chunk sizes in bge-m3 tokens; element-level provenance and ground truth
 - [ADR-0009](adr/0009-evidence-based-relevance-and-early-embeddings.md): relevance by verbatim evidence; minimal cached embedding client before Phase 4
+- [ADR-0010](adr/0010-embedding-engine.md): versioned embedding spaces; Ollama dense in production; BGE-M3 sparse/ColBERT as local experiments
 
 ## Measured baselines (2026-11-04)
 | Metric | Value |
@@ -112,3 +113,14 @@ Full tables: [docs/benchmarks/chunking-2026-11-05.json](benchmarks/chunking-2026
 | BM25 Recall@5, multimodal-256 | 0.959 (dense 0.878) |
 | LLM contextual enrichment (qwen3:4b-instruct) | 58 chunks in 104 s (1.8 s/chunk); dense R@5 0.905, BM25 MRR 0.938 |
 | Caveat | 1 question = 0.027 recall; 512-token baselines hit 1.000 only because 12 docs → 16 chunks |
+
+## Measured baselines: embeddings (2026-11-05, Ollama 0.40.14, bge-m3 digest 79076464…)
+Full table: [docs/benchmarks/embeddings-2026-11-05.json](benchmarks/embeddings-2026-11-05.json) and [learning/phase-04](learning/phase-04-embedding-engine.md).
+| Metric | Value |
+|---|---|
+| Ollama bge-m3 usable input | 2,048 tokens incl. 2 special (2,046 OK, 2,047 → HTTP 413); default `truncate` silently cuts to 2,048 |
+| Ollama vs original fp32 weights | cosine ≥ 0.99992 on 58 chunks; identical Recall@5/MRR |
+| Encode 58 chunks | Ollama GPU 1.4 s (41.6/s) · local CPU 31 s (1.9/s, 2.7 GB RSS) · nomic 1.1 s |
+| Recall@5 / MRR (multimodal-256-ctx) | BM25 0.986/0.900 · dense bge-m3 0.932/0.863 · nomic 0.919/0.821 · sparse M3 0.905/0.761 · ColBERT 0.959/0.901 |
+| Storage per chunk | dense 4 KB · sparse 0.4 KB · ColBERT 424 KB |
+| Full sample ingest incl. embeddings | 46 s (embedding ≈ 2 s of it) |

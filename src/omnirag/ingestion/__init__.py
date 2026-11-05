@@ -21,12 +21,21 @@ def build_enrichers(settings: Settings) -> list[Enricher]:
 
 def build_pipeline(settings: Settings, store: DocumentStore | None = None) -> IngestionPipeline:
     """Wire the default pipeline from settings (used by the CLI and the API)."""
-    from omnirag.chunking import build_chunker  # chunking imports ingestion models
+    # Local imports: chunking and embeddings import ingestion models.
+    from omnirag.chunking import build_chunker, build_embedder
+    from omnirag.embeddings.service import ChunkEmbedder
 
+    chunker = build_chunker(settings) if settings.chunking_enabled else None
+    embedder = None
+    if chunker is not None and settings.embedding_enabled:
+        # Token limits are checked with the chunker's tokenizer (loaded once, shared).
+        dense = build_embedder(settings, lambda text: chunker.counter.count(text))
+        embedder = ChunkEmbedder(dense, settings.embedding_index_configs)
     return IngestionPipeline(
         store or DocumentStore(settings.data_dir),
         default_loaders(settings),
         max_bytes=settings.max_upload_bytes,
         enrichers=build_enrichers(settings),
-        chunker=build_chunker(settings) if settings.chunking_enabled else None,
+        chunker=chunker,
+        embedder=embedder,
     )

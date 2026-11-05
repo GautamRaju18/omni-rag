@@ -1,6 +1,23 @@
-"""Embedding engine. Phase 3b brings the minimal client needed for semantic chunking and the
-chunking benchmark; Phase 4 adds storage in Neo4j and index management."""
+"""Embedding engine (Phase 4): model-agnostic interfaces, Ollama dense embeddings, a local
+BGE-M3 model for sparse/multi-vector investigation, and chunk-set embedding."""
 
-from omnirag.embeddings.ollama import EmbeddingCache, EmbeddingError, OllamaEmbedder
+from omnirag.embeddings.base import (
+    DenseEmbedder,
+    EmbeddingError,
+    EmbeddingInputError,
+    EmbeddingKind,
+    EmbeddingSpace,
+    SparseEmbedder,
+)
+from omnirag.embeddings.ollama import EmbeddingCache, OllamaDenseEmbedder
 
-__all__ = ["EmbeddingCache", "EmbeddingError", "OllamaEmbedder"]
+__all__ = [
+    "DenseEmbedder",
+    "EmbeddingCache",
+    "EmbeddingError",
+    "EmbeddingInputError",
+    "EmbeddingKind",
+    "EmbeddingSpace",
+    "OllamaDenseEmbedder",
+    "SparseEmbedder",
+]
