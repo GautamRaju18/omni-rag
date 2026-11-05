@@ -59,6 +59,22 @@ async def test_health_degraded_when_model_missing() -> None:
     assert "ollama pull" in (result.error or "")
 
 
+async def test_health_flags_a_different_ollama_server() -> None:
+    # Reproduces 2026-11-05: a second Ollama (WSL systemd, 0.32.3) answered on port 11434.
+    def other_server(request: httpx.Request) -> httpx.Response:
+        routes = {
+            "/api/version": {"version": "0.32.3"},
+            "/api/tags": {"models": [{"name": "llama3.1:latest"}, {"name": "nomic-embed-text"}]},
+            "/api/ps": {"models": []},
+        }
+        return httpx.Response(200, json=routes[request.url.path])
+
+    result = await _client(other_server).health(["qwen3:4b-instruct", "bge-m3"])
+    assert result.status == "degraded"
+    assert "Another Ollama may be using the port" in (result.error or "")
+    assert "0.32.3" in (result.error or "") and "ollama pull" not in (result.error or "")
+
+
 async def test_health_down_when_unreachable() -> None:
     def refuse(request: httpx.Request) -> httpx.Response:
         raise httpx.ConnectError("connection refused", request=request)

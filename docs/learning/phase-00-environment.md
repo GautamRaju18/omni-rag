@@ -112,6 +112,8 @@ ollama list                               # (in PowerShell) qwen3:4b-instruct, q
 | First chat takes 20–55 s | Cold model load from disk + CUDA init | Expected once; `keep_alive` keeps it warm |
 | `gpu_percent` < 100 | VRAM full, so layers spill to CPU | Unload the extra model (`ollama stop <model>`), shorten context |
 | `docker: cannot connect` in WSL | Docker Desktop not running | Start Docker Desktop; WSL integration is on for Ubuntu |
+| `The command 'docker' could not be found in this WSL 2 distro` | Docker Desktop not running (its WSL integration only exists while it runs) | Start Docker Desktop, then `docker compose up -d`. Neo4j health then shows `TimeoutError` until the container is up |
+| Health: *"None of the required models are on this server (Ollama 0.32.3 …)"* | **Another Ollama took port 11434.** Seen 2026-11-05: an older Ollama installed as a systemd service *inside WSL* started first at boot. Mirrored networking shares ports between Windows and WSL, so whichever server starts first wins, at random | Find it: `ss -ltnp \| grep 11434`, `systemctl status ollama`. Move it with a systemd drop-in (`Environment="OLLAMA_HOST=127.0.0.1:11435"` in `/etc/systemd/system/ollama.service.d/port.conf`, then `daemon-reload` + `restart`) or disable it. Then `curl localhost:11434/api/version` must show the Windows version |
 
 ## 8. Acceptance criteria — Phase 0
 - [x] WSL capped at 8 GB / 8 vCPU (measured 7941 MB / 8)

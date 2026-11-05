@@ -106,6 +106,17 @@ class OllamaClient:
 
         available_set = {normalize_model_name(m) for m in available}
         missing = [m for m in required_models if normalize_model_name(m) not in available_set]
+        error = None
+        if missing and len(missing) == len(required_models) and available:
+            # None of ours, but other models exist: almost certainly a *different* Ollama
+            # server on this URL (seen 2026-11-05: a WSL systemd Ollama took port 11434).
+            error = (
+                f"None of the required models are on this server (Ollama {version} at "
+                f"{self.base_url}, which has {len(available)} other models). Another Ollama "
+                "may be using the port; check OMNIRAG_OLLAMA_BASE_URL"
+            )
+        elif missing:
+            error = f"Missing models: {', '.join(missing)} (run: ollama pull <name>)"
         return ComponentHealth(
             name="ollama",
             status="degraded" if missing else "ok",
@@ -119,9 +130,7 @@ class OllamaClient:
                 "loaded_models": loaded,
                 "vram_in_use_gb": round(sum(m["vram_gb"] for m in loaded), 2),
             },
-            error=f"Missing models: {', '.join(missing)} (run: ollama pull <name>)"
-            if missing
-            else None,
+            error=error,
         )
 
 
