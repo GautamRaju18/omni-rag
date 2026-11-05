@@ -14,6 +14,7 @@ build/
 # Data (raw uploads and derived artifacts are never committed; samples go in data/samples/)
 data/*
 !data/samples/
+!data/eval/
 !data/.gitkeep
 
 # Editors / OS

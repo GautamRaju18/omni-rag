@@ -22,7 +22,7 @@ class ChunkingStrategy(StrEnum):
     MULTIMODAL = "multimodal"  # table + image/figure groups (caption, OCR, description)
     HIERARCHICAL = "hierarchical"  # 3 nested levels, every level retrievable
     PARENT_CHILD = "parent_child"  # small children retrieved, larger parents returned
-    # SEMANTIC (embedding-similarity boundaries) arrives in Phase 3b.
+    SEMANTIC = "semantic"  # boundaries where neighbouring sentences' embeddings diverge
 
 
 class ChunkingConfig(BaseModel):
@@ -32,6 +32,12 @@ class ChunkingConfig(BaseModel):
     child_size: int = Field(default=128, ge=16)  # parent_child children, hierarchical leaves
     parent_size: int = Field(default=2048, ge=16)  # hierarchical top level
     contextual_headers: bool = False  # prepend "title > section" to the embedding text
+    # LLM-written context per chunk (chunking/enrichment.py): an opt-in experiment, one chat
+    # call per chunk. Stored as generated text, used for embedding only.
+    contextual_llm: bool = False
+    # semantic: break where the distance between neighbouring sentences is above this
+    # percentile of all such distances in the document (Kamradt's percentile method).
+    breakpoint_percentile: int = Field(default=90, ge=50, le=99)
 
     @model_validator(mode="after")
     def _check_sizes(self) -> ChunkingConfig:
@@ -58,9 +64,15 @@ class ChunkingConfig(BaseModel):
             base = f"hierarchical-{self.parent_size}-{self.chunk_size}-{self.child_size}"
         elif s is ChunkingStrategy.PARENT_CHILD:
             base = f"parentchild-{self.chunk_size}-{self.child_size}-{self.chunk_overlap}"
+        elif s is ChunkingStrategy.SEMANTIC:
+            base = f"semantic-{self.chunk_size}-{self.breakpoint_percentile}"
         else:
             base = f"{s.value}-{self.chunk_size}"
-        return base + ("-ctx" if self.contextual_headers else "")
+        return (
+            base
+            + ("-ctx" if self.contextual_headers else "")
+            + ("-llmctx" if self.contextual_llm else "")
+        )
 
 
 class Chunk(BaseModel):

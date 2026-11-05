@@ -8,6 +8,7 @@ from collections.abc import Callable, Sequence
 from typing import Any
 
 from omnirag.chunking.models import Chunk, ChunkingConfig, ChunkingStrategy
+from omnirag.chunking.semantic import Embedder
 from omnirag.chunking.strategies import chunk_document
 from omnirag.chunking.tokenizer import TokenCounter
 from omnirag.ingestion.models import DocumentElement, DocumentRecord, ElementType
@@ -17,11 +18,15 @@ class Chunker:
     """Holds the token counter (loaded lazily: the tokenizer file may need downloading)."""
 
     def __init__(
-        self, counter_factory: Callable[[], TokenCounter], configs: Sequence[ChunkingConfig]
+        self,
+        counter_factory: Callable[[], TokenCounter],
+        configs: Sequence[ChunkingConfig],
+        embedder: Embedder | None = None,  # only needed for the semantic strategy
     ) -> None:
         self._factory = counter_factory
         self._counter: TokenCounter | None = None
         self.configs = list(configs)
+        self.embedder = embedder
 
     @property
     def counter(self) -> TokenCounter:
@@ -33,7 +38,7 @@ class Chunker:
         self, record: DocumentRecord, elements: list[DocumentElement]
     ) -> dict[str, list[Chunk]]:
         return {
-            config.config_id: chunk_document(record, elements, config, self.counter)
+            config.config_id: chunk_document(record, elements, config, self.counter, self.embedder)
             for config in self.configs
         }
 
@@ -108,9 +113,12 @@ def describe(
 
 
 def timed_chunk(
-    record: DocumentRecord, elements: list[DocumentElement], config: ChunkingConfig,
+    record: DocumentRecord,
+    elements: list[DocumentElement],
+    config: ChunkingConfig,
     counter: TokenCounter,
-) -> tuple[list[Chunk], float]:  # fmt: skip
+    embedder: Embedder | None = None,
+) -> tuple[list[Chunk], float]:
     started = time.perf_counter()
-    chunks = chunk_document(record, elements, config, counter)
+    chunks = chunk_document(record, elements, config, counter, embedder)
     return chunks, round((time.perf_counter() - started) * 1000, 2)

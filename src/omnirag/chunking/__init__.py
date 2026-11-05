@@ -8,6 +8,7 @@ from omnirag.chunking.models import Chunk, ChunkingConfig, ChunkingStrategy
 from omnirag.chunking.service import Chunker, default_configs
 from omnirag.chunking.tokenizer import HFTokenizer, TokenCounter, ensure_tokenizer
 from omnirag.core.config import Settings
+from omnirag.embeddings import EmbeddingCache, OllamaEmbedder
 
 __all__ = ["Chunk", "Chunker", "ChunkingConfig", "ChunkingStrategy", "build_chunker"]
 
@@ -23,13 +24,24 @@ def load_tokenizer(settings: Settings) -> TokenCounter:
     return HFTokenizer(path, name)
 
 
+def build_embedder(settings: Settings) -> OllamaEmbedder:
+    """bge-m3 via Ollama with the shared on-disk cache (``<data_dir>/cache``)."""
+    return OllamaEmbedder(
+        settings.ollama_base_url,
+        settings.embedding_model,
+        cache=EmbeddingCache(settings.data_dir / "cache" / "embeddings.sqlite"),
+    )
+
+
 def build_chunker(settings: Settings) -> Chunker:
+    strategies = [ChunkingStrategy(s) for s in settings.chunking_strategies]
     configs = default_configs(
-        [ChunkingStrategy(s) for s in settings.chunking_strategies],
+        strategies,
         chunk_size=settings.chunk_size,
         chunk_overlap=settings.chunk_overlap,
         child_size=settings.chunk_child_size,
         parent_size=settings.chunk_parent_size,
         contextual_headers=settings.chunk_contextual_headers,
     )
-    return Chunker(partial(load_tokenizer, settings), configs)
+    embedder = build_embedder(settings) if ChunkingStrategy.SEMANTIC in strategies else None
+    return Chunker(partial(load_tokenizer, settings), configs, embedder)

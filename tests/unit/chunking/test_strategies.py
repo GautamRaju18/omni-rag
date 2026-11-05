@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import numpy as np
 import pytest
 from pydantic import ValidationError
 
@@ -64,11 +65,20 @@ def _doc():
     return record, ctx.elements
 
 
+class _HashEmbedder:
+    """Deterministic stand-in for bge-m3 (only the semantic strategy uses it)."""
+
+    def embed(self, texts):
+        rng = [np.random.default_rng(sum(map(ord, t))) for t in texts]
+        vectors = np.stack([r.standard_normal(8).astype(np.float32) for r in rng])
+        return vectors / np.linalg.norm(vectors, axis=1, keepdims=True)
+
+
 def _chunks(strategy: S, **kw):
     record, elements = _doc()
     sizes = {"chunk_size": 40, "chunk_overlap": 5, "child_size": 16, "parent_size": 200}
     config = ChunkingConfig(strategy=strategy, **{**sizes, **kw})
-    return chunk_document(record, elements, config, WS), elements, config
+    return chunk_document(record, elements, config, WS, _HashEmbedder()), elements, config
 
 
 @pytest.mark.parametrize("strategy", list(ChunkingStrategy))
@@ -180,5 +190,5 @@ def test_config_ids() -> None:
     ids = [ChunkingConfig(strategy=s).config_id for s in ChunkingStrategy]
     assert ids == [
         "fixed-512-64", "recursive-512-64", "structure-512", "table-512", "multimodal-512",
-        "hierarchical-2048-512-128", "parentchild-512-128-64",
+        "hierarchical-2048-512-128", "parentchild-512-128-64", "semantic-512-90",
     ]  # fmt: skip

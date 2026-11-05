@@ -23,7 +23,10 @@ from collections import Counter, defaultdict
 from dataclasses import dataclass, field
 from typing import Any
 
+import numpy as np
+
 from omnirag.chunking.models import Chunk, ChunkingConfig, ChunkingStrategy
+from omnirag.chunking.semantic import Embedder, distances, sentence_spans, window_texts
 from omnirag.chunking.text import (
     Assembled,
     Segment,
@@ -351,9 +354,15 @@ def chunk_document(
     elements: list[DocumentElement],
     config: ChunkingConfig,
     counter: TokenCounter,
+    embedder: Embedder | None = None,
 ) -> list[Chunk]:
     b = _Builder(record, elements, config, counter)
     c = config
+    if c.strategy is S.SEMANTIC:
+        if embedder is None:
+            raise ValueError("Semantic chunking needs an embedder (bge-m3 via Ollama)")
+        _semantic(b, embedder)
+        return b.chunks
     if c.strategy is S.FIXED:
         text = _linear(b)
         for span in token_windows(text.text, counter, c.chunk_size, c.chunk_overlap):
@@ -389,3 +398,53 @@ def chunk_document(
     else:  # pragma: no cover - enum is exhaustive
         raise ValueError(f"Unknown strategy {c.strategy}")
     return b.chunks
+
+
+def _semantic(b: _Builder, embedder: Embedder) -> None:
+    c = b.config
+    plan: list[tuple[str, Any]] = []
+    windows: list[str] = []
+    for group in b.pack(b.blocks(S.MULTIMODAL), size=1 << 30):  # one group per section
+        if any(block.standalone for block in group):
+            plan.append(("group", group))  # tables/figures: as multimodal
+            continue
+        assembled = b.render(group)
+        sentences = sentence_spans(assembled.text, 0, len(assembled.text))
+        plan.append(("prose", (assembled, sentences, len(windows))))
+        windows += window_texts(assembled.text, sentences)
+    vectors = embedder.embed(windows) if windows else None
+    gaps: dict[int, np.ndarray] = {}
+    for kind, payload in plan:
+        if kind == "prose":
+            _, sentences, offset = payload
+            gaps[offset] = distances(vectors[offset : offset + len(sentences)])
+    pooled = np.concatenate(list(gaps.values())) if gaps else np.zeros(0)
+    threshold = float(np.percentile(pooled, c.breakpoint_percentile)) if pooled.size else 2.0
+    meta = {"breakpoint_threshold": round(threshold, 4)}
+
+    def emit_span(assembled: Assembled, span: tuple[int, int]) -> None:
+        if b.counter.count(assembled.text[span[0] : span[1]]) <= c.chunk_size:
+            b.emit(assembled, span, metadata=meta)
+            return
+        for piece in split_spans(assembled.text, span, b.counter, c.chunk_size, 0,
+                                 keep_with_next=assembled.heading_ends()):  # fmt: skip
+            b.emit(assembled, piece, metadata=meta)
+
+    for kind, payload in plan:
+        if kind == "group":
+            b.emit_group(payload, c.chunk_size, metadata=meta)
+            continue
+        assembled, sentences, offset = payload
+        gap, headings = gaps[offset], assembled.heading_ends()
+        first, tokens = 0, 0
+        for i, (start, end) in enumerate(sentences):
+            n = b.counter.count(assembled.text[start:end])
+            if i > first and tokens + n > c.chunk_size:  # size limit: break before i
+                emit_span(assembled, (sentences[first][0], sentences[i - 1][1]))
+                first, tokens = i, 0
+            tokens += n
+            if i < len(gap) and gap[i] > threshold and end not in headings:
+                emit_span(assembled, (sentences[first][0], end))  # topic shift after i
+                first, tokens = i + 1, 0
+        if first < len(sentences):
+            emit_span(assembled, (sentences[first][0], sentences[-1][1]))

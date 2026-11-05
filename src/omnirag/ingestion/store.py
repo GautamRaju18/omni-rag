@@ -26,7 +26,8 @@ from typing import Any
 
 from omnirag.ingestion.models import DocumentElement, DocumentRecord
 
-_CONFIG_ID = re.compile(r"[a-z_]+(-[0-9]+)+(-ctx)?")  # e.g. "recursive-512-64", file-name safe
+# e.g. "recursive-512-64", "multimodal-256-ctx-llmctx": file-name safe by construction
+_CONFIG_ID = re.compile(r"[a-z_]+(-[0-9]+)+(-ctx)?(-llmctx)?")
 
 
 class DocumentStore:

@@ -12,8 +12,8 @@ A feature counts as done only when its tests pass and the result was observed, n
 | 2d | Docling + vision-model descriptions | ✅ Done 2026-11-04 | 147 unit + 5 integration + 1 docling tests; [learning/phase-02d](learning/phase-02d-layout-and-vision.md) |
 | 2e | `/documents` + `/ingestion` API, background jobs | ✅ Done 2026-11-05 | 176 unit + 6 live tests; [learning/phase-02e](learning/phase-02e-ingestion-api.md) |
 | 3a | Chunking engine: 7 strategies, bge-m3 tokens | ✅ Done 2026-11-05 | 218 unit + 7 live tests; [learning/phase-03a](learning/phase-03a-chunking-strategies.md) |
-| 3b | Semantic chunking, enrichment experiment, chunking benchmark | ⏭ Next | |
-| 4 | Embedding engine | ⬜ | |
+| 3b | Semantic chunking, enrichment experiment, chunking benchmark | ✅ Done 2026-11-05 | 236 unit + 8 live tests; [learning/phase-03b](learning/phase-03b-semantic-chunking-and-benchmark.md), [results](benchmarks/chunking-2026-11-05.json) |
+| 4 | Embedding engine | ⏭ Next | |
 | 5 | Neo4j graph construction | ⬜ | |
 | 6 | Dense + sparse retrieval | ⬜ | |
 | 7 | Graph-enhanced hybrid retrieval (RRF) | ⬜ | |
@@ -29,7 +29,7 @@ A feature counts as done only when its tests pass and the result was observed, n
 
 ## Success-criteria tracker (from the brief)
 - [x] All document types ingest (10/10 kinds: txt, md, html, json, csv, docx, xlsx, pptx, pdf, image) · [x] OCR on scans/images (Tesseract, with confidence) · [x] Table/figure provenance (tables in all formats incl. borderless via Docling; PPTX chart data; image descriptions with origin=generated)
-- [x] Multiple chunking strategies (7 of 8; semantic in 3b) · [ ] Embeddings in Neo4j · [ ] Graph queryable
+- [x] Multiple chunking strategies (all 8, benchmarked) · [ ] Embeddings in Neo4j · [ ] Graph queryable
 - [ ] Dense · [ ] BM25 · [ ] Graph retrieval · [ ] RRF · [ ] Reranking
 - [ ] Grounded answers · [ ] Verifiable citations · [ ] LangSmith tracing
 - [ ] Retrieval eval · [ ] Faithfulness eval · [ ] Reproducible benchmarks
@@ -45,6 +45,7 @@ A feature counts as done only when its tests pass and the result was observed, n
 - [ADR-0006](adr/0006-vision-model-image-descriptions.md): qwen3-vl:2b-instruct image descriptions as generated content
 - [ADR-0007](adr/0007-in-process-ingestion-jobs.md): in-process background ingestion jobs with persistent job records
 - [ADR-0008](adr/0008-chunking-tokens-and-element-provenance.md): chunk sizes in bge-m3 tokens; element-level provenance and ground truth
+- [ADR-0009](adr/0009-evidence-based-relevance-and-early-embeddings.md): relevance by verbatim evidence; minimal cached embedding client before Phase 4
 
 ## Measured baselines (2026-11-04)
 | Metric | Value |
@@ -100,3 +101,14 @@ A feature counts as done only when its tests pass and the result was observed, n
 | Elements kept whole at 128 tokens | fixed 53.6% · recursive 77.7% · structure 97.3% · table 97.3% · multimodal 95.3% |
 | Chunks at 512 (indexed) | fixed 16 · structure 48 · multimodal 55 · hierarchical 82 · parent–child 77 (+55 parents) |
 | All 7 strategies, 12 documents | 18–90 ms per strategy; rechunk incl. tokenizer load 2.9 s |
+
+## Measured baselines: chunking benchmark (2026-11-05, seed set 12 docs / 37 answerable questions, K=5)
+Full tables: [docs/benchmarks/chunking-2026-11-05.json](benchmarks/chunking-2026-11-05.json) and [learning/phase-03b](learning/phase-03b-semantic-chunking-and-benchmark.md).
+| Metric | Value |
+|---|---|
+| bge-m3 embedding throughput (Ollama) | 17 texts/s single, ~43 texts/s batched (8–64) |
+| Dense Recall@5 / MRR, multimodal-256 → + contextual headers | 0.878 / 0.786 → 0.932 / 0.863 (2 questions better, 0 worse) |
+| Dense Recall@5, structure-256 vs table-256 | 0.905 vs 0.851 (table-aware worse on 2 questions, 35 ties) |
+| BM25 Recall@5, multimodal-256 | 0.959 (dense 0.878) |
+| LLM contextual enrichment (qwen3:4b-instruct) | 58 chunks in 104 s (1.8 s/chunk); dense R@5 0.905, BM25 MRR 0.938 |
+| Caveat | 1 question = 0.027 recall; 512-token baselines hit 1.000 only because 12 docs → 16 chunks |
