@@ -11,7 +11,8 @@ A feature counts as done only when its tests pass and the result was observed, n
 | 2c | PDF (PyMuPDF) + Tesseract OCR + images | ✅ Done 2026-11-04 | 136 unit tests; [learning/phase-02c](learning/phase-02c-pdf-ocr.md) |
 | 2d | Docling + vision-model descriptions | ✅ Done 2026-11-04 | 147 unit + 5 integration + 1 docling tests; [learning/phase-02d](learning/phase-02d-layout-and-vision.md) |
 | 2e | `/documents` + `/ingestion` API, background jobs | ✅ Done 2026-11-05 | 176 unit + 6 live tests; [learning/phase-02e](learning/phase-02e-ingestion-api.md) |
-| 3 | Chunking engine | ⏭ Next | |
+| 3a | Chunking engine: 7 strategies, bge-m3 tokens | ✅ Done 2026-11-05 | 218 unit + 7 live tests; [learning/phase-03a](learning/phase-03a-chunking-strategies.md) |
+| 3b | Semantic chunking, enrichment experiment, chunking benchmark | ⏭ Next | |
 | 4 | Embedding engine | ⬜ | |
 | 5 | Neo4j graph construction | ⬜ | |
 | 6 | Dense + sparse retrieval | ⬜ | |
@@ -28,7 +29,7 @@ A feature counts as done only when its tests pass and the result was observed, n
 
 ## Success-criteria tracker (from the brief)
 - [x] All document types ingest (10/10 kinds: txt, md, html, json, csv, docx, xlsx, pptx, pdf, image) · [x] OCR on scans/images (Tesseract, with confidence) · [x] Table/figure provenance (tables in all formats incl. borderless via Docling; PPTX chart data; image descriptions with origin=generated)
-- [ ] Multiple chunking strategies · [ ] Embeddings in Neo4j · [ ] Graph queryable
+- [x] Multiple chunking strategies (7 of 8; semantic in 3b) · [ ] Embeddings in Neo4j · [ ] Graph queryable
 - [ ] Dense · [ ] BM25 · [ ] Graph retrieval · [ ] RRF · [ ] Reranking
 - [ ] Grounded answers · [ ] Verifiable citations · [ ] LangSmith tracing
 - [ ] Retrieval eval · [ ] Faithfulness eval · [ ] Reproducible benchmarks
@@ -43,6 +44,7 @@ A feature counts as done only when its tests pass and the result was observed, n
 - [ADR-0005](adr/0005-pdf-engine-routing-docling.md): PDF engine routing (auto: multi-column → Docling on CPU)
 - [ADR-0006](adr/0006-vision-model-image-descriptions.md): qwen3-vl:2b-instruct image descriptions as generated content
 - [ADR-0007](adr/0007-in-process-ingestion-jobs.md): in-process background ingestion jobs with persistent job records
+- [ADR-0008](adr/0008-chunking-tokens-and-element-provenance.md): chunk sizes in bge-m3 tokens; element-level provenance and ground truth
 
 ## Measured baselines (2026-11-04)
 | Metric | Value |
@@ -89,3 +91,12 @@ A feature counts as done only when its tests pass and the result was observed, n
 |---|---|
 | 12 sample uploads over HTTP → all jobs completed | 27.3 s (Docling note 11.6 s, deck with first vision call 7.7 s, text files < 6 ms) |
 | Crash recovery (`kill -9` during a Docling job) | requeued at start-up, completed on attempt 2 (10.9 s) |
+
+## Measured baselines: chunking (2026-11-05, 12 sample documents, bge-m3 tokenizer @5617a9f6)
+| Metric | Value |
+|---|---|
+| Tokenizer vs Ollama bge-m3 | 5/5 exact (ours + 2 special tokens = `prompt_eval_count`) |
+| Tokenizer load / memory | 2.3 s / +302 MB RSS |
+| Elements kept whole at 128 tokens | fixed 53.6% · recursive 77.7% · structure 97.3% · table 97.3% · multimodal 95.3% |
+| Chunks at 512 (indexed) | fixed 16 · structure 48 · multimodal 55 · hierarchical 82 · parent–child 77 (+55 parents) |
+| All 7 strategies, 12 documents | 18–90 ms per strategy; rechunk incl. tokenizer load 2.9 s |

@@ -60,11 +60,13 @@ class IngestionPipeline:
         *,
         max_bytes: int,
         enrichers: Sequence[Enricher] = (),
+        chunker: Any = None,  # omnirag.chunking.Chunker (untyped here to avoid an import cycle)
     ) -> None:
         self.store = store
         self.loaders = loaders
         self.max_bytes = max_bytes
         self.enrichers = enrichers
+        self.chunker = chunker
 
     def close(self) -> None:
         """End of a batch: let enrichers release resources (e.g. unload the vision model)."""
@@ -135,11 +137,22 @@ class IngestionPipeline:
         self.store.write_elements(document_id, ctx.elements)
         record.status = IngestionStatus.COMPLETED
         record.metadata = metadata
-        record.warnings = ctx.warnings
         record.element_count = len(ctx.elements)
         record.element_counts_by_type = dict(
             Counter(e.element_type.value for e in ctx.elements).most_common()
         )
+        if self.chunker is not None and ctx.elements:
+            # Chunking failure (e.g. tokenizer download offline) is a warning: the elements
+            # are stored and the document can be re-chunked later from the CLI.
+            try:
+                sets = self.chunker.chunk(record, ctx.elements)
+                for config_id, chunks in sets.items():
+                    self.store.write_chunks(document_id, config_id, chunks)
+                record.metadata["chunk_sets"] = {cid: len(c) for cid, c in sets.items()}
+            except Exception as exc:
+                log.exception("chunking_failed", document_id=document_id)
+                ctx.warn(f"Chunking failed: {type(exc).__name__}: {exc}")
+        record.warnings = ctx.warnings
         result = self._finish(record, started)
         log.info(
             "ingest_completed",

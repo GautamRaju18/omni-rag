@@ -76,6 +76,30 @@ class Settings(BaseSettings):
     vision_timeout_s: float = Field(default=180.0, gt=0)  # per image, includes cold load
     vision_max_images: int = Field(default=20, ge=0)  # per document
 
+    # --- chunking (Phase 3). Sizes are bge-m3 tokens; every strategy runs at ingestion (they
+    # take milliseconds) so they can be compared later on the same documents.
+    chunking_enabled: bool = True
+    chunking_strategies: list[str] = Field(
+        default=[
+            "fixed",
+            "recursive",
+            "structure",
+            "table",
+            "multimodal",
+            "hierarchical",
+            "parent_child",
+        ]  # fmt: skip
+    )
+    chunk_size: int = Field(default=512, ge=16, le=8192)
+    chunk_overlap: int = Field(default=64, ge=0)
+    chunk_child_size: int = Field(default=128, ge=16)
+    chunk_parent_size: int = Field(default=2048, ge=16)
+    chunk_contextual_headers: bool = False
+    # The embedding model's tokenizer, pinned: revision + SHA-256 of tokenizer.json.
+    chunk_tokenizer_repo: str = "BAAI/bge-m3"
+    chunk_tokenizer_revision: str = "5617a9f61b028005a4858fdac845db406aefb181"
+    chunk_tokenizer_sha256: str = "21106b6d7dab2952c1d496fb21d5dc9db75c28ed361a05f5020bbba27810dd08"
+
     # --- PDF engine (ADR-0005): "auto" routes multi-column documents to Docling's layout model
     # and everything else to PyMuPDF (~40x faster); "pymupdf" / "docling" force one engine.
     # Scanned pages always use PyMuPDF + Tesseract.

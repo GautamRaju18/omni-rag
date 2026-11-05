@@ -21,9 +21,12 @@ def build_enrichers(settings: Settings) -> list[Enricher]:
 
 def build_pipeline(settings: Settings, store: DocumentStore | None = None) -> IngestionPipeline:
     """Wire the default pipeline from settings (used by the CLI and the API)."""
+    from omnirag.chunking import build_chunker  # chunking imports ingestion models
+
     return IngestionPipeline(
         store or DocumentStore(settings.data_dir),
         default_loaders(settings),
         max_bytes=settings.max_upload_bytes,
         enrichers=build_enrichers(settings),
+        chunker=build_chunker(settings) if settings.chunking_enabled else None,
     )

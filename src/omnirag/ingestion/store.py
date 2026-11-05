@@ -6,9 +6,10 @@ Layout under ``<data_dir>/documents/<document_id>/``::
     document.json      DocumentRecord: status, hash, metadata, warnings, errors
     elements.jsonl     one DocumentElement per line, in reading order
     assets/            extracted originals (embedded images, page renders, ...)
+    chunks/<config>.jsonl   one Chunk per line per chunking configuration (Phase 3)
 
-This is the operational store for Phase 2. PostgreSQL (job/metadata tables) and Neo4j (graph)
-are layered on later; the original files and assets stay here.
+This is the file-level source of truth. Neo4j (graph, vectors, full-text) is built from it in
+Phase 5; originals and assets always stay here.
 
 Writes are atomic (write a temp file, then ``os.replace``), so a crash never leaves a
 half-written ``document.json`` that would make the document unreadable.
@@ -17,11 +18,15 @@ half-written ``document.json`` that would make the document unreadable.
 from __future__ import annotations
 
 import os
+import re
 import shutil
 import tempfile
 from pathlib import Path
+from typing import Any
 
 from omnirag.ingestion.models import DocumentElement, DocumentRecord
+
+_CONFIG_ID = re.compile(r"[a-z_]+(-[0-9]+)+(-ctx)?")  # e.g. "recursive-512-64", file-name safe
 
 
 class DocumentStore:
@@ -77,6 +82,30 @@ class DocumentStore:
         doc_dir = self.doc_dir(document_id)
         (doc_dir / "elements.jsonl").unlink(missing_ok=True)
         shutil.rmtree(doc_dir / "assets", ignore_errors=True)
+        shutil.rmtree(doc_dir / "chunks", ignore_errors=True)  # stale once elements change
+
+    # ------------------------------------------------------------------ chunks
+    def write_chunks(self, document_id: str, config_id: str, chunks: list[Any]) -> None:
+        if not _CONFIG_ID.fullmatch(config_id):
+            raise ValueError(f"Invalid chunk config id: {config_id!r}")
+        lines = "".join(c.model_dump_json() + "\n" for c in chunks)
+        target = self.doc_dir(document_id) / "chunks" / f"{config_id}.jsonl"
+        target.parent.mkdir(parents=True, exist_ok=True)
+        atomic_write_bytes(target, lines.encode())
+
+    def chunk_config_ids(self, document_id: str) -> list[str]:
+        return sorted(p.stem for p in (self.doc_dir(document_id) / "chunks").glob("*.jsonl"))
+
+    def read_chunks(self, document_id: str, config_id: str) -> list[Any]:
+        from omnirag.chunking.models import Chunk  # local import: chunking depends on us
+
+        if not _CONFIG_ID.fullmatch(config_id):
+            raise ValueError(f"Invalid chunk config id: {config_id!r}")
+        path = self.doc_dir(document_id) / "chunks" / f"{config_id}.jsonl"
+        if not path.exists():
+            return []
+        with path.open("rb") as fh:
+            return [Chunk.model_validate_json(line) for line in fh if line.strip()]
 
     def delete(self, document_id: str) -> bool:
         doc_dir = self.doc_dir(document_id)

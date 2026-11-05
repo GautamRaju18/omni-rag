@@ -31,6 +31,7 @@ async def api(tmp_path: Path) -> AsyncIterator[tuple[httpx.AsyncClient, object]]
     settings = Settings(
         _env_file=None, env="test", log_json=False, neo4j_password="x", data_dir=tmp_path,
         vision_enabled=False, ocr_enabled=False, pdf_engine="pymupdf", max_upload_mb=1,
+        chunking_enabled=False,  # the real tokenizer would be downloaded (17 MB)
     )  # fmt: skip
     app = create_app(settings)
     async with app.router.lifespan_context(app):
