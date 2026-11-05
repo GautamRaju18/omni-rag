@@ -166,7 +166,7 @@ class FakeGraph:
         self.indexed: list[str] = []
         self.deleted: list[str] = []
 
-    def index(self, record, elements, sets) -> dict:
+    def index(self, record, elements, sets, extraction=None) -> dict:
         if self.fail:
             raise GraphUnavailableError("Neo4j down")
         self.indexed.append(record.document_id)

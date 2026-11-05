@@ -177,3 +177,99 @@ def test_fulltext_search(store: GraphStore, graph_doc) -> None:
     hits = traversal.fulltext_search(store, '"cycle 412"', k=5, config_id=MM)
     assert [h["chunk_id"] for h in hits] == [f"{V1}-{MM}-00000"]
     assert traversal.fulltext_search(store, "nonexistentword") == []
+
+
+# ---------------------------------------------------------------- Phase 5b: entities
+def _extraction(doc_id: str, person: str, *, support: str = "stated"):
+    from omnirag.ingestion.models import ContentOrigin
+    from omnirag.knowledge_base.entities import (
+        ChunkExtraction,
+        DocumentExtraction,
+        EntityType,
+        Mention,
+        Relation,
+        RelationType,
+    )
+
+    def mention(key, surface, etype):
+        return Mention(key=key, surface=surface, type=etype, origin=ContentOrigin.ORIGINAL,
+                       confidence=1.0)  # fmt: skip
+
+    chunk = ChunkExtraction(
+        chunk_id=f"{doc_id}-{MM}-00000", input_sha256="x",
+        mentions=[mention("aur-c103", "AUR-C103", EntityType.SAMPLE),
+                  mention(person, person.title(), EntityType.PERSON)],
+        relations=[Relation(source="aur-c103", target=person, type=RelationType.TESTED_BY,
+                            support=support, evidence="Cell AUR-C103 failed at cycle 412.",
+                            evidence_verified=True, evidence_origin=ContentOrigin.ORIGINAL)],
+    )  # fmt: skip
+    return DocumentExtraction(document_id=doc_id, config_id=MM, model="m", model_digest="d",
+                              prompt_version="kg-test", extracted_at="2026-11-05",
+                              chunks=[chunk])  # fmt: skip
+
+
+V3 = "doc_00000000000000a3"
+
+
+def test_entities_are_shared_refreshed_and_cleaned_up(store: GraphStore, graph_doc) -> None:
+    writer = GraphWriter(store)
+    a = graph_doc(V1, "notes.md")
+    b = graph_doc(V3, "other.md")
+    writer.write_document(*a, {}, None, _extraction(V1, "aiko tanaka"))
+    writer.write_document(*a, {}, None, _extraction(V1, "aiko tanaka"))  # idempotent
+    writer.write_document(*b, {}, None, _extraction(V3, "aiko"))
+
+    rows = store.query("MATCH (e:Entity) RETURN e.key AS key, e.type AS type, "
+                       "e.mention_count AS m, e.document_count AS d ORDER BY key")  # fmt: skip
+    assert rows == [{"key": "aiko", "type": "PERSON", "m": 1, "d": 1},
+                    {"key": "aiko tanaka", "type": "PERSON", "m": 1, "d": 1},
+                    {"key": "aur-c103", "type": "SAMPLE", "m": 2, "d": 2}]  # fmt: skip
+    assert _counts(store)["RELATED_TO"] == 2 and _counts(store)["MENTIONS"] == 4
+    # "Aiko" in one document, "Aiko Tanaka" in another: linked, not merged.
+    same = store.query("MATCH (a:Entity)-[s:SAME_AS]->(b:Entity) "
+                       "RETURN a.key AS a, b.key AS b, s.rule AS rule")  # fmt: skip
+    assert same == [{"a": "aiko", "b": "aiko tanaka", "rule": "alias:first_name"}]
+
+    detail = traversal.entity_detail(store, "AUR-C103")
+    assert {(r["direction"], r["type"], r["other"], r["support"]) for r in detail["relations"]} == {
+        ("out", "TESTED_BY", "Aiko Tanaka", "stated"),
+        ("out", "TESTED_BY", "Aiko", "stated"),
+    }
+
+    assert writer.delete_document(V3) is True
+    keys = [r["key"] for r in store.query("MATCH (e:Entity) RETURN e.key AS key ORDER BY key")]
+    assert keys == ["aiko tanaka", "aur-c103"]  # orphan "aiko" removed, shared entity kept
+    assert store.query("MATCH (e:Entity {key: 'aur-c103'}) RETURN e.mention_count AS m") == [
+        {"m": 1}
+    ]
+    assert _counts(store).get("SAME_AS", 0) == 0 and _counts(store)["RELATED_TO"] == 1
+
+
+def test_old_version_relations_are_not_latest(store: GraphStore, graph_doc) -> None:
+    writer = GraphWriter(store)
+    old = graph_doc(V1, "notes.md", datetime(2026, 1, 1, tzinfo=UTC))
+    new = graph_doc(V2, "notes.md", datetime(2026, 2, 1, tzinfo=UTC))
+    writer.write_document(*old, {}, None, _extraction(V1, "aiko tanaka"))
+    writer.write_document(*new, {}, None, _extraction(V2, "aiko tanaka", support="inferred"))
+    rows = store.query("MATCH ()-[r:RELATED_TO]->() RETURN r.document_id AS d, "
+                       "r.is_latest AS latest, r.support AS support ORDER BY d")  # fmt: skip
+    assert rows == [{"d": V1, "latest": False, "support": "stated"},
+                    {"d": V2, "latest": True, "support": "inferred"}]  # fmt: skip
+    latest = traversal.entity_detail(store, "aur-c103")["relations"]
+    assert [r["support"] for r in latest] == ["inferred"]
+    everything = traversal.entity_detail(store, "aur-c103", latest_only=False)["relations"]
+    assert sorted(r["support"] for r in everything) == ["inferred", "stated"]
+    assert len(store.query("MATCH ()-[r:RELATED_TO]->() RETURN r")) == 2
+
+
+def test_cites_links_a_chunk_to_a_titled_document(store: GraphStore, graph_doc) -> None:
+    writer = GraphWriter(store)
+    cited = graph_doc(V1, "notes.md")  # title "Aurora Notes"
+    citing_record, elements, sets = graph_doc(V3, "summary.md")
+    citing_record.metadata["title"] = "Quarterly Summary 2026"  # its chunks say "Aurora Notes"
+    writer.write_document(*cited, {}, None)
+    counts = writer.write_document(citing_record, elements, sets, {}, None)
+    assert counts["cites"] == 1
+    rows = store.query("MATCH (c:Chunk)-[:CITES]->(d:Document) "
+                       "RETURN c.chunk_id AS chunk, d.document_id AS doc")  # fmt: skip
+    assert rows == [{"chunk": f"{V3}-{MM}-00000", "doc": V1}]

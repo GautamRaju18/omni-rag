@@ -37,6 +37,13 @@ from neo4j import ManagedTransaction
 from omnirag.chunking.models import Chunk
 from omnirag.embeddings.ollama import EmbeddingCache
 from omnirag.ingestion.models import ContentOrigin, DocumentElement, DocumentRecord, ElementType
+from omnirag.knowledge_base.entities import (
+    DocumentExtraction,
+    entity_id,
+    entity_summary,
+    group_mentions,
+    person_alias_map,
+)
 from omnirag.knowledge_base.graph_store import GraphStore
 from omnirag.knowledge_base.schema import SchemaReport, ensure_schema
 
@@ -62,6 +69,7 @@ def build_payload(
     chunk_sets: dict[str, list[Chunk]],
     vectors: dict[str, list[float]],
     embedding_space: str | None,
+    extraction: DocumentExtraction | None = None,
 ) -> dict[str, Any]:
     """Plain rows (primitives and lists only) for the Cypher statements."""
     doc_id = record.document_id
@@ -198,7 +206,9 @@ def build_payload(
     child_links = [{"child": c.chunk_id, "parent": c.parent_chunk_id}
                    for c in chunks if c.parent_chunk_id]  # fmt: skip
 
+    mentions, relations = entity_rows(extraction, {c.chunk_id for c in chunks})
     return {
+        "mentions": mentions, "relations": relations,
         "document": document,
         "source": {"source_key": source_key(record.source_file), "name": record.source_file},
         "pages": pages, "sections": sections, "tables": tables, "figures": figures,
@@ -209,9 +219,60 @@ def build_payload(
     }  # fmt: skip
 
 
+def entity_rows(
+    extraction: DocumentExtraction | None, chunk_ids: set[str]
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """MENTIONS and RELATED_TO rows for chunks that are in the graph."""
+    if extraction is None:
+        return [], []
+    provenance = {"model": extraction.model, "prompt_version": extraction.prompt_version}
+    mentions, relations = [], []
+    for c in extraction.chunks:
+        if c.chunk_id not in chunk_ids:
+            continue
+        mentions += [{"chunk_id": c.chunk_id, "entity_id": entity_id(m.key), "key": m.key,
+                      "props": {"surface": m.surface, "type": m.type.value,
+                                "origin": m.origin.value, "confidence": m.confidence,
+                                "resolution": m.resolution, **provenance}}
+                     for m in c.mentions]  # fmt: skip
+        relations += [{"source_id": entity_id(r.source), "target_id": entity_id(r.target),
+                       "props": {"type": r.type.value, "support": r.support,
+                                 "evidence": r.evidence, "evidence_verified": r.evidence_verified,
+                                 "evidence_origin": r.evidence_origin.value
+                                 if r.evidence_origin else None,
+                                 "direction_fixed": r.direction_fixed, "chunk_id": c.chunk_id,
+                                 "document_id": extraction.document_id, "is_latest": False,
+                                 **provenance}}
+                      for r in c.relations]  # fmt: skip
+    return mentions, relations
+
+
 # ------------------------------------------------------------- transactions
+def _owned_entities(tx: ManagedTransaction, doc_id: str) -> list[str]:
+    """Entities this document mentions; then drop its RELATED_TO edges (re-created on write)."""
+    row = tx.run("MATCH (:Chunk {document_id: $id})-[:MENTIONS]->(e:Entity) "
+                 "RETURN collect(DISTINCT e.entity_id) AS ids", id=doc_id).single()  # fmt: skip
+    ids = row["ids"]
+    tx.run("MATCH ()-[r:RELATED_TO {document_id: $id}]->() DELETE r", id=doc_id)
+    return ids
+
+
+def _refresh_entities(tx: ManagedTransaction, ids: list[str]) -> None:
+    """Recompute name/type/aliases/counts of these entities from their mentions; drop orphans."""
+    if not ids:
+        return
+    tx.run("MATCH (e:Entity) WHERE e.entity_id IN $ids AND NOT ()-[:MENTIONS]->(e) "
+           "DETACH DELETE e", ids=ids)  # fmt: skip
+    rows = tx.run("MATCH (c:Chunk)-[m:MENTIONS]->(e:Entity) WHERE e.entity_id IN $ids "
+                  "RETURN e.entity_id AS entity_id, m.surface AS surface, m.type AS type, "
+                  "c.document_id AS document_id", ids=ids).data()  # fmt: skip
+    updates = [{"id": eid, "props": entity_summary(ms)} for eid, ms in group_mentions(rows).items()]
+    tx.run("UNWIND $rows AS r MATCH (e:Entity {entity_id: r.id}) SET e += r.props", rows=updates)
+
+
 def _write(tx: ManagedTransaction, p: dict[str, Any]) -> dict[str, int]:
     doc_id = p["document"]["document_id"]
+    touched = _owned_entities(tx, doc_id)
     tx.run("MERGE (s:Source {source_key: $s.source_key}) "
            "ON CREATE SET s.created_at = $now SET s.name = $s.name",
            s=p["source"], now=datetime.now(UTC).isoformat())  # fmt: skip
@@ -261,6 +322,14 @@ def _write(tx: ManagedTransaction, p: dict[str, Any]) -> dict[str, int]:
                          "MATCH (b:Chunk {chunk_id: r.chunk_id}) CREATE (a)-[:DISCUSSED_IN]->(b)"),
     ):  # fmt: skip
         tx.run("UNWIND $rows AS r " + query, rows=p[key])
+    tx.run("UNWIND $rows AS r MERGE (e:Entity {entity_id: r.entity_id}) "
+           "ON CREATE SET e.key = r.key "
+           "WITH e, r MATCH (c:Chunk {chunk_id: r.chunk_id}) "
+           "CREATE (c)-[m:MENTIONS]->(e) SET m = r.props", rows=p["mentions"])  # fmt: skip
+    tx.run("UNWIND $rows AS r MATCH (a:Entity {entity_id: r.source_id}) "
+           "MATCH (b:Entity {entity_id: r.target_id}) "
+           "CREATE (a)-[x:RELATED_TO]->(b) SET x = r.props", rows=p["relations"])  # fmt: skip
+    _refresh_entities(tx, sorted(set(touched) | {m["entity_id"] for m in p["mentions"]}))
     _recompute_versions(tx, p["source"]["source_key"])
     return {k: len(v) for k, v in p.items() if isinstance(v, list)}
 
@@ -276,6 +345,9 @@ def _recompute_versions(tx: ManagedTransaction, key: str) -> None:
            "MERGE (d)-[:PREVIOUS_VERSION]->(previous)", key=key)  # fmt: skip
     tx.run("MATCH (:Source {source_key: $key})<-[:VERSION_OF]-(d:Document)-[:HAS_CHUNK]->(c) "
            "SET c.is_latest = d.is_latest", key=key)  # fmt: skip
+    tx.run("MATCH (:Source {source_key: $key})<-[:VERSION_OF]-(d:Document) "
+           "MATCH ()-[r:RELATED_TO {document_id: d.document_id}]->() "
+           "SET r.is_latest = d.is_latest", key=key)  # fmt: skip
 
 
 def _delete(tx: ManagedTransaction, document_id: str) -> bool:
@@ -283,13 +355,41 @@ def _delete(tx: ManagedTransaction, document_id: str) -> bool:
                    "RETURN s.source_key AS key", id=document_id).single()  # fmt: skip
     if found is None:
         return False
+    touched = _owned_entities(tx, document_id)
     for label in OWNED_LABELS:
         tx.run(f"MATCH (n:{label} {{document_id: $id}}) DETACH DELETE n", id=document_id)
     tx.run("MATCH (d:Document {document_id: $id}) DETACH DELETE d", id=document_id)
+    _refresh_entities(tx, touched)
     _recompute_versions(tx, found["key"])
     tx.run("MATCH (s:Source {source_key: $key}) WHERE NOT (s)<-[:VERSION_OF]-() DELETE s",
            key=found["key"])  # fmt: skip
     return True
+
+
+def _link_corpus(tx: ManagedTransaction, min_title_chars: int = 12) -> dict[str, int]:
+    """Corpus-wide links, recomputed from scratch (so independent of load order).
+
+    * ``(:Entity)-[:SAME_AS {rule}]->(:Entity)``: a single-name person ("Marco") to the one
+      full name it abbreviates ("Marco Lindqvist"), across documents.
+    * ``(:Chunk)-[:CITES]->(:Document)``: the chunk's text contains another source's title.
+    """
+    tx.run("MATCH ()-[r:SAME_AS]->() DELETE r")
+    persons = [r["key"] for r in tx.run("MATCH (e:Entity {type: 'PERSON'}) RETURN e.key AS key")]
+    full = {k for k in persons if len(k.split()) >= 2 and "." not in k.split()[0]}
+    aliases = person_alias_map(full, set(persons) - full)
+    tx.run("UNWIND $rows AS r MATCH (a:Entity {key: r.short}) MATCH (b:Entity {key: r.full}) "
+           "MERGE (a)-[s:SAME_AS]->(b) SET s.rule = r.rule",
+           rows=[{"short": s, "full": f, "rule": rule}
+                 for s, (f, rule) in sorted(aliases.items())])  # fmt: skip
+    tx.run("MATCH ()-[r:CITES]->() DELETE r")
+    cites = tx.run(
+        "MATCH (d:Document {is_latest: true}) WHERE size(d.title) >= $min "
+        "MATCH (c:Chunk {is_latest: true}) "
+        "WHERE toLower(c.source_file) <> toLower(d.source_file) "
+        "AND toLower(c.content) CONTAINS toLower(d.title) "
+        "MERGE (c)-[x:CITES]->(d) SET x.match = 'title' RETURN count(x) AS n", min=min_title_chars,
+    ).single()["n"]  # fmt: skip
+    return {"same_as": len(aliases), "cites": cites}
 
 
 class GraphWriter:
@@ -303,12 +403,22 @@ class GraphWriter:
         chunk_sets: dict[str, list[Chunk]],
         vectors: dict[str, list[float]],
         embedding_space: str | None = None,
+        extraction: DocumentExtraction | None = None,
     ) -> dict[str, int]:
-        payload = build_payload(record, elements, chunk_sets, vectors, embedding_space)
-        return self.store.write(_write, p=payload)
+        payload = build_payload(record, elements, chunk_sets, vectors, embedding_space,
+                                extraction)  # fmt: skip
+        counts = self.store.write(_write, p=payload)
+        counts.update(self.link_corpus())
+        return counts
 
     def delete_document(self, document_id: str) -> bool:
-        return self.store.write(_delete, document_id=document_id)
+        found = self.store.write(_delete, document_id=document_id)
+        if found:
+            self.link_corpus()
+        return found
+
+    def link_corpus(self) -> dict[str, int]:
+        return self.store.write(_link_corpus)
 
 
 def cached_vectors(
@@ -360,7 +470,11 @@ class GraphIndexer:
             return report
 
     def index(
-        self, record: DocumentRecord, elements: list[DocumentElement], sets: dict[str, list[Chunk]]
+        self,
+        record: DocumentRecord,
+        elements: list[DocumentElement],
+        sets: dict[str, list[Chunk]],
+        extraction: DocumentExtraction | None = None,
     ) -> dict[str, Any]:
         if not self._schema_ready:
             self.ensure_schema()
@@ -369,7 +483,8 @@ class GraphIndexer:
             self.cache, [c for cs in chosen.values() for c in cs]
         )
         started = time.perf_counter()
-        counts = self.writer.write_document(record, elements, chosen, vectors, space_id)
+        counts = self.writer.write_document(record, elements, chosen, vectors, space_id,
+                                            extraction)  # fmt: skip
         return {
             "configs": list(chosen),
             "nodes": {k: v for k, v in counts.items() if not k.endswith("_links")},

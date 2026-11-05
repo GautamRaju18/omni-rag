@@ -65,6 +65,7 @@ class IngestionPipeline:
         chunker: Any = None,  # omnirag.chunking.Chunker (untyped here to avoid an import cycle)
         embedder: Any = None,  # omnirag.embeddings.service.ChunkEmbedder
         graph: Any = None,  # omnirag.knowledge_base.graph_builder.GraphIndexer
+        extraction: Any = None,  # omnirag.knowledge_base.extractor.ExtractionStep
     ) -> None:
         self.store = store
         self.loaders = loaders
@@ -73,6 +74,7 @@ class IngestionPipeline:
         self.chunker = chunker
         self.embedder = embedder
         self.graph = graph
+        self.extraction = extraction
 
     def close(self) -> None:
         """End of a batch: let enrichers release resources (e.g. unload the vision model)."""
@@ -178,11 +180,25 @@ class IngestionPipeline:
                 self.store.write_chunks(document_id, config_id, chunks)
             if sets:
                 record.metadata["chunk_sets"] = {cid: len(c) for cid, c in sets.items()}
+            extracted = None
+            if sets and self.extraction is not None:
+                # LLM extraction failure (model missing, server down) is a warning; run
+                # `python -m omnirag.knowledge_base extract` later.
+                try:
+                    extracted = self.extraction.run(record, ctx.elements, sets)
+                    if extracted is not None:
+                        self.store.write_extraction(document_id, extracted.config_id, extracted)
+                        record.metadata["extraction"] = extracted.counts()
+                except Exception as exc:
+                    log.exception("extraction_failed", document_id=document_id)
+                    ctx.warn(f"Entity extraction failed: {type(exc).__name__}: {exc}")
             if sets and self.graph is not None:
                 # Graph failure (Neo4j down) is a warning: everything is on disk and
                 # `python -m omnirag.knowledge_base load` rebuilds the subgraph later.
                 try:
-                    record.metadata["graph"] = self.graph.index(record, ctx.elements, sets)
+                    record.metadata["graph"] = self.graph.index(
+                        record, ctx.elements, sets, extracted
+                    )
                 except Exception as exc:
                     log.exception("graph_failed", document_id=document_id)
                     ctx.warn(f"Graph write failed: {type(exc).__name__}: {exc}")

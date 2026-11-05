@@ -7,6 +7,7 @@ Layout under ``<data_dir>/documents/<document_id>/``::
     elements.jsonl     one DocumentElement per line, in reading order
     assets/            extracted originals (embedded images, page renders, ...)
     chunks/<config>.jsonl   one Chunk per line per chunking configuration (Phase 3)
+    extractions/<config>.json   entity/relation extraction: raw replies + validated (5b)
 
 This is the file-level source of truth. Neo4j (graph, vectors, full-text) is built from it in
 Phase 5; originals and assets always stay here.
@@ -84,6 +85,7 @@ class DocumentStore:
         (doc_dir / "elements.jsonl").unlink(missing_ok=True)
         shutil.rmtree(doc_dir / "assets", ignore_errors=True)
         shutil.rmtree(doc_dir / "chunks", ignore_errors=True)  # stale once elements change
+        shutil.rmtree(doc_dir / "extractions", ignore_errors=True)  # built from the chunks
 
     # ------------------------------------------------------------------ chunks
     def write_chunks(self, document_id: str, config_id: str, chunks: list[Any]) -> None:
@@ -107,6 +109,24 @@ class DocumentStore:
             return []
         with path.open("rb") as fh:
             return [Chunk.model_validate_json(line) for line in fh if line.strip()]
+
+    # ------------------------------------------------------------- extractions
+    def write_extraction(self, document_id: str, config_id: str, extraction: Any) -> None:
+        if not _CONFIG_ID.fullmatch(config_id):
+            raise ValueError(f"Invalid chunk config id: {config_id!r}")
+        target = self.doc_dir(document_id) / "extractions" / f"{config_id}.json"
+        target.parent.mkdir(parents=True, exist_ok=True)
+        atomic_write_bytes(target, extraction.model_dump_json(indent=1).encode())
+
+    def read_extraction(self, document_id: str, config_id: str) -> Any:
+        from omnirag.knowledge_base.entities import DocumentExtraction  # local: avoids a cycle
+
+        if not _CONFIG_ID.fullmatch(config_id):
+            raise ValueError(f"Invalid chunk config id: {config_id!r}")
+        path = self.doc_dir(document_id) / "extractions" / f"{config_id}.json"
+        if not path.exists():
+            return None
+        return DocumentExtraction.model_validate_json(path.read_bytes())
 
     def delete(self, document_id: str) -> bool:
         doc_dir = self.doc_dir(document_id)

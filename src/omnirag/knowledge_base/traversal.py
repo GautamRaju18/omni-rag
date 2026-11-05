@@ -26,6 +26,54 @@ def stats(store: GraphStore) -> dict[str, Any]:
     }
 
 
+def entities(
+    store: GraphStore, *, entity_type: str | None = None, limit: int = 50
+) -> list[dict[str, Any]]:
+    return store.query(
+        """
+        MATCH (e:Entity) WHERE $type IS NULL OR e.type = $type
+        RETURN e.name AS name, e.type AS type, e.mention_count AS mentions,
+               e.document_count AS documents, e.aliases AS aliases,
+               COUNT { (e)-[:RELATED_TO]-() } AS relations
+        ORDER BY mentions DESC, name LIMIT $limit
+        """,
+        type=entity_type, limit=limit,
+    )  # fmt: skip
+
+
+def entity_detail(store: GraphStore, name: str, *, latest_only: bool = True) -> dict | None:
+    """An entity (by name or alias key) with its relations, mentions and SAME_AS links."""
+    from omnirag.knowledge_base.entities import entity_key
+
+    rows = store.query(
+        """
+        MATCH (e:Entity) WHERE e.key = $key OR $name IN e.aliases
+        WITH e ORDER BY e.key = $key DESC, e.mention_count DESC LIMIT 1  // exact key first
+        OPTIONAL MATCH (e)-[s:SAME_AS]-(same:Entity)
+        WITH e, collect(DISTINCT {name: same.name, rule: s.rule}) AS same_as
+        OPTIONAL MATCH (e)-[r:RELATED_TO]-(other:Entity)
+        WHERE NOT $latest OR r.is_latest
+        WITH e, same_as, collect(DISTINCT {
+            direction: CASE WHEN startNode(r) = e THEN 'out' ELSE 'in' END,
+            type: r.type, other: other.name, support: r.support, evidence: r.evidence,
+            evidence_origin: r.evidence_origin, direction_fixed: r.direction_fixed,
+            chunk_id: r.chunk_id}) AS relations
+        OPTIONAL MATCH (c:Chunk)-[m:MENTIONS]->(e) WHERE NOT $latest OR c.is_latest
+        RETURN e {.*} AS entity, same_as, relations,
+               collect({chunk_id: c.chunk_id, surface: m.surface, origin: m.origin,
+                        confidence: m.confidence, resolution: m.resolution}) AS mentions
+        """,
+        key=entity_key(name), name=name, latest=latest_only,
+    )  # fmt: skip
+    if not rows:
+        return None
+    row = rows[0]
+    row["same_as"] = [s for s in row["same_as"] if s["name"]]
+    row["relations"] = [r for r in row["relations"] if r["type"]]
+    row["mentions"] = [m for m in row["mentions"] if m["chunk_id"]]
+    return row
+
+
 def chunk_context(store: GraphStore, chunk_id: str) -> dict[str, Any] | None:
     """A chunk with everything a citation or context expansion needs."""
     rows = store.query(

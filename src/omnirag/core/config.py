@@ -125,6 +125,14 @@ class Settings(BaseSettings):
     graph_fulltext_index: str = "chunk_fulltext"
     graph_fulltext_analyzer: str = "standard-no-stop-words"
 
+    # --- entity/relation extraction (Phase 5b, ADR-0012). Off at ingestion by default: about
+    # 15 s per chunk on a 6 GB GPU (measured). Run `python -m omnirag.knowledge_base extract`.
+    extraction_enabled: bool = False
+    extraction_model: str = "qwen3:4b-instruct"
+    extraction_config: str = ""  # chunk set to extract from; empty = the first graph set
+    extraction_timeout_s: float = Field(default=300.0, gt=0)
+    extraction_num_ctx: int = Field(default=8192, ge=2048)
+
     # --- PDF engine (ADR-0005): "auto" routes multi-column documents to Docling's layout model
     # and everything else to PyMuPDF (~40x faster); "pymupdf" / "docling" force one engine.
     # Scanned pages always use PyMuPDF + Tesseract.
@@ -137,6 +145,10 @@ class Settings(BaseSettings):
     @property
     def graph_configs(self) -> list[str]:
         return self.graph_chunk_configs or self.embedding_index_configs
+
+    @property
+    def extraction_config_id(self) -> str:
+        return self.extraction_config or self.graph_configs[0]
 
     @property
     def required_ollama_models(self) -> list[str]:

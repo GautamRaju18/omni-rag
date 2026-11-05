@@ -34,6 +34,9 @@ def build_pipeline(settings: Settings, store: DocumentStore | None = None) -> In
     graph = None
     if chunker is not None and settings.graph_enabled:
         graph = build_graph_indexer(settings)
+    extraction = None
+    if graph is not None and settings.extraction_enabled:
+        extraction = build_extraction_step(settings)
     return IngestionPipeline(
         store or DocumentStore(settings.data_dir),
         default_loaders(settings),
@@ -42,7 +45,20 @@ def build_pipeline(settings: Settings, store: DocumentStore | None = None) -> In
         chunker=chunker,
         embedder=embedder,
         graph=graph,
+        extraction=extraction,
     )
+
+
+def build_extraction_step(settings: Settings):  # -> ExtractionStep (lazy import)
+    from omnirag.knowledge_base.extractor import ExtractionStep, OllamaExtractor
+
+    extractor = OllamaExtractor(
+        settings.ollama_base_url,
+        settings.extraction_model,
+        timeout_s=settings.extraction_timeout_s,
+        num_ctx=settings.extraction_num_ctx,
+    )
+    return ExtractionStep(extractor, settings.extraction_config_id)
 
 
 def build_graph_indexer(settings: Settings):  # -> GraphIndexer (lazy import, see above)

@@ -1,0 +1,822 @@
+{
+  "summary": {
+    "gold_entities": 37,
+    "entity_recall": 0.973,
+    "entity_recall_by_type": {
+      "MATERIAL": "12/12",
+      "MILESTONE": "2/3",
+      "ORGANIZATION": "5/5",
+      "PERSON": "6/6",
+      "PRODUCT": "2/2",
+      "PROJECT": "1/1",
+      "SAMPLE": "8/8"
+    },
+    "type_agreement": 1.0,
+    "fragmented": [
+      "NaDFOB",
+      "EC"
+    ],
+    "gold_relations": 14,
+    "relation_pair_recall": 0.786,
+    "relation_typed_recall": 0.714,
+    "relation_typed_stated": 10,
+    "extracted_entities": 82,
+    "unlisted_entities": 43,
+    "same_as_links": 1,
+    "totals": {
+      "chunks": 58,
+      "entities": 179,
+      "errors": 0,
+      "inferred": 26,
+      "mentions": 217,
+      "rejected": 203,
+      "rejected_field_value": 6,
+      "rejected_measurement": 38,
+      "rejected_not_in_text": 24,
+      "rejected_type_signature": 17,
+      "rejected_unknown_endpoint": 118,
+      "relations": 97,
+      "stated": 71
+    }
+  },
+  "entities": [
+    {
+      "name": "Priya Raman",
+      "type": "PERSON",
+      "found": true,
+      "keys": [
+        "priya raman"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "Marco Lindqvist",
+      "type": "PERSON",
+      "found": true,
+      "keys": [
+        "marco",
+        "marco lindqvist"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "Aiko Tanaka",
+      "type": "PERSON",
+      "found": true,
+      "keys": [
+        "aiko tanaka"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "Samuel Okafor",
+      "type": "PERSON",
+      "found": true,
+      "keys": [
+        "samuel okafor"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "Lena Brandt",
+      "type": "PERSON",
+      "found": true,
+      "keys": [
+        "lena brandt"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "Jonas Weber",
+      "type": "PERSON",
+      "found": true,
+      "keys": [
+        "jonas weber"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "Helios Energy Lab",
+      "type": "ORGANIZATION",
+      "found": true,
+      "keys": [
+        "helios energy lab"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "Kokos Carbon Ltd",
+      "type": "ORGANIZATION",
+      "found": true,
+      "keys": [
+        "kokos carbon ltd"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "Carbonix Materials",
+      "type": "ORGANIZATION",
+      "found": true,
+      "keys": [
+        "carbonix materials"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "Nordic Salts AB",
+      "type": "ORGANIZATION",
+      "found": true,
+      "keys": [
+        "nordic salts ab"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "Laminex",
+      "type": "ORGANIZATION",
+      "found": true,
+      "keys": [
+        "laminex"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "Project Aurora",
+      "type": "PROJECT",
+      "found": true,
+      "keys": [
+        "aurora"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "Aurora S1",
+      "type": "PRODUCT",
+      "found": true,
+      "keys": [
+        "aurora s1"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "Aurora S1-P3",
+      "type": "PRODUCT",
+      "found": true,
+      "keys": [
+        "aurora s1-p3"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "E-5",
+      "type": "MATERIAL",
+      "found": true,
+      "keys": [
+        "e-5"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "E-5 + FEC",
+      "type": "MATERIAL",
+      "found": true,
+      "keys": [
+        "e-5 + fec"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "E-7",
+      "type": "MATERIAL",
+      "found": true,
+      "keys": [
+        "e-7"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "FEC",
+      "type": "MATERIAL",
+      "found": true,
+      "keys": [
+        "fec"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "NaPF6",
+      "type": "MATERIAL",
+      "found": true,
+      "keys": [
+        "napf6"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "NaDFOB",
+      "type": "MATERIAL",
+      "found": true,
+      "keys": [
+        "nadfob",
+        "sodium difluoro(oxalato)borate"
+      ],
+      "fragmented": true,
+      "type_ok": true
+    },
+    {
+      "name": "Prussian white",
+      "type": "MATERIAL",
+      "found": true,
+      "keys": [
+        "prussian white"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "hard carbon",
+      "type": "MATERIAL",
+      "found": true,
+      "keys": [
+        "hard carbon"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "EC",
+      "type": "MATERIAL",
+      "found": true,
+      "keys": [
+        "ec",
+        "ethylene carbonate"
+      ],
+      "fragmented": true,
+      "type_ok": true
+    },
+    {
+      "name": "DEC",
+      "type": "MATERIAL",
+      "found": true,
+      "keys": [
+        "dec"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "PC",
+      "type": "MATERIAL",
+      "found": true,
+      "keys": [
+        "pc"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "DMC",
+      "type": "MATERIAL",
+      "found": true,
+      "keys": [
+        "dmc"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "AUR-C101",
+      "type": "SAMPLE",
+      "found": true,
+      "keys": [
+        "aur-c101"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "AUR-C102",
+      "type": "SAMPLE",
+      "found": true,
+      "keys": [
+        "aur-c102"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "AUR-C103",
+      "type": "SAMPLE",
+      "found": true,
+      "keys": [
+        "aur-c103"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "AUR-C104",
+      "type": "SAMPLE",
+      "found": true,
+      "keys": [
+        "aur-c104"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "AUR-C105",
+      "type": "SAMPLE",
+      "found": true,
+      "keys": [
+        "aur-c105"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "AUR-C106",
+      "type": "SAMPLE",
+      "found": true,
+      "keys": [
+        "aur-c106"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "AUR-C107",
+      "type": "SAMPLE",
+      "found": true,
+      "keys": [
+        "aur-c107"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "AUR-C108",
+      "type": "SAMPLE",
+      "found": true,
+      "keys": [
+        "aur-c108"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "M1",
+      "type": "MILESTONE",
+      "found": false,
+      "keys": [],
+      "fragmented": false,
+      "type_ok": false
+    },
+    {
+      "name": "M2",
+      "type": "MILESTONE",
+      "found": true,
+      "keys": [
+        "m2"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    },
+    {
+      "name": "M3",
+      "type": "MILESTONE",
+      "found": true,
+      "keys": [
+        "m3"
+      ],
+      "fragmented": false,
+      "type_ok": true
+    }
+  ],
+  "relations": [
+    {
+      "source": "Marco Lindqvist",
+      "target": "E-7",
+      "types": [
+        "RESPONSIBLE_FOR"
+      ],
+      "pair": true,
+      "typed": true,
+      "stated": true,
+      "extracted": [
+        "marco lindqvist RESPONSIBLE_FOR e-7 (stated)"
+      ]
+    },
+    {
+      "source": "AUR-C103",
+      "target": "E-5",
+      "types": [
+        "USES"
+      ],
+      "pair": true,
+      "typed": true,
+      "stated": true,
+      "extracted": [
+        "aur-c103 USES e-5 (inferred)",
+        "aur-c103 USES e-5 (stated)"
+      ]
+    },
+    {
+      "source": "AUR-C105",
+      "target": "E-7",
+      "types": [
+        "USES"
+      ],
+      "pair": true,
+      "typed": true,
+      "stated": true,
+      "extracted": [
+        "aur-c105 USES e-7 (stated)"
+      ]
+    },
+    {
+      "source": "AUR-C106",
+      "target": "E-7",
+      "types": [
+        "USES"
+      ],
+      "pair": true,
+      "typed": true,
+      "stated": true,
+      "extracted": [
+        "aur-c106 USES e-7 (stated)"
+      ]
+    },
+    {
+      "source": "E-7",
+      "target": "E-5",
+      "types": [
+        "REPLACES"
+      ],
+      "pair": true,
+      "typed": true,
+      "stated": true,
+      "extracted": [
+        "e-5 REPLACES e-7 (stated)",
+        "e-7 REPLACES e-5 (stated)"
+      ]
+    },
+    {
+      "source": "AUR-C103",
+      "target": "Aiko Tanaka",
+      "types": [
+        "TESTED_BY"
+      ],
+      "pair": true,
+      "typed": true,
+      "stated": true,
+      "extracted": [
+        "aur-c103 TESTED_BY aiko tanaka (stated)"
+      ]
+    },
+    {
+      "source": "AUR-C107",
+      "target": "Jonas Weber",
+      "types": [
+        "TESTED_BY"
+      ],
+      "pair": true,
+      "typed": true,
+      "stated": true,
+      "extracted": [
+        "aur-c107 TESTED_BY jonas weber (stated)"
+      ]
+    },
+    {
+      "source": "M2",
+      "target": "E-7",
+      "types": [
+        "DEPENDS_ON"
+      ],
+      "pair": true,
+      "typed": true,
+      "stated": true,
+      "extracted": [
+        "e-7 RELATED_TO m2 (stated)",
+        "m2 DEPENDS_ON e-7 (stated)"
+      ]
+    },
+    {
+      "source": "Kokos Carbon Ltd",
+      "target": "hard carbon",
+      "types": [
+        "SUPPLIES"
+      ],
+      "pair": true,
+      "typed": true,
+      "stated": true,
+      "extracted": [
+        "kokos carbon ltd SUPPLIES hard carbon (stated)"
+      ]
+    },
+    {
+      "source": "Nordic Salts AB",
+      "target": "NaPF6",
+      "types": [
+        "SUPPLIES"
+      ],
+      "pair": false,
+      "typed": false,
+      "stated": false,
+      "extracted": []
+    },
+    {
+      "source": "Project Aurora",
+      "target": "Helios Energy Lab",
+      "types": [
+        "PART_OF"
+      ],
+      "pair": true,
+      "typed": false,
+      "stated": false,
+      "extracted": [
+        "aurora RELATED_TO helios energy lab (inferred)",
+        "helios energy lab RESPONSIBLE_FOR aurora (stated)"
+      ]
+    },
+    {
+      "source": "Priya Raman",
+      "target": "Project Aurora",
+      "types": [
+        "RESPONSIBLE_FOR",
+        "MEMBER_OF"
+      ],
+      "pair": false,
+      "typed": false,
+      "stated": false,
+      "extracted": []
+    },
+    {
+      "source": "E-7",
+      "target": "NaDFOB",
+      "types": [
+        "USES"
+      ],
+      "pair": true,
+      "typed": true,
+      "stated": true,
+      "extracted": [
+        "e-7 USES sodium difluoro(oxalato)borate (stated)"
+      ]
+    },
+    {
+      "source": "Aurora S1",
+      "target": "Prussian white",
+      "types": [
+        "USES"
+      ],
+      "pair": false,
+      "typed": false,
+      "stated": false,
+      "extracted": []
+    }
+  ],
+  "unlisted": [
+    {
+      "key": "e-7 qualification",
+      "type": "MILESTONE",
+      "mentions": 4
+    },
+    {
+      "key": "pilot line 100-cell batch",
+      "type": "MILESTONE",
+      "mentions": 4
+    },
+    {
+      "key": "steering committee",
+      "type": "ORGANIZATION",
+      "mentions": 4
+    },
+    {
+      "key": "baseline chemistry frozen",
+      "type": "MILESTONE",
+      "mentions": 3
+    },
+    {
+      "key": "electrolyte",
+      "type": "MATERIAL",
+      "mentions": 3
+    },
+    {
+      "key": "pilot line",
+      "type": "PROJECT",
+      "mentions": 3
+    },
+    {
+      "key": "c2h4",
+      "type": "MATERIAL",
+      "mentions": 2
+    },
+    {
+      "key": "cathode",
+      "type": "PRODUCT",
+      "mentions": 2
+    },
+    {
+      "key": "co2",
+      "type": "MATERIAL",
+      "mentions": 2
+    },
+    {
+      "key": "figure 1",
+      "type": "DOCUMENT",
+      "mentions": 2
+    },
+    {
+      "key": "pilot-line pouch tooling",
+      "type": "PRODUCT",
+      "mentions": 2
+    },
+    {
+      "key": "aurora e-5",
+      "type": "PROJECT",
+      "mentions": 1
+    },
+    {
+      "key": "aurora e-5 high-temperature failure: safety review",
+      "type": "DOCUMENT",
+      "mentions": 1
+    },
+    {
+      "key": "aurora s1 pilot-line cell",
+      "type": "PRODUCT",
+      "mentions": 1
+    },
+    {
+      "key": "cell testing",
+      "type": "PROJECT",
+      "mentions": 1
+    },
+    {
+      "key": "ceramic-coated polyethylene",
+      "type": "MATERIAL",
+      "mentions": 1
+    },
+    {
+      "key": "cobalt",
+      "type": "MATERIAL",
+      "mentions": 1
+    },
+    {
+      "key": "cycling progress",
+      "type": "MILESTONE",
+      "mentions": 1
+    },
+    {
+      "key": "e-7 qualification plan",
+      "type": "DOCUMENT",
+      "mentions": 1
+    },
+    {
+      "key": "ec:dec (1:1)",
+      "type": "MATERIAL",
+      "mentions": 1
+    },
+    {
+      "key": "ec:pc:dmc",
+      "type": "MATERIAL",
+      "mentions": 1
+    },
+    {
+      "key": "electrolyte workstream",
+      "type": "PROJECT",
+      "mentions": 1
+    },
+    {
+      "key": "engineering samples",
+      "type": "SAMPLE",
+      "mentions": 1
+    },
+    {
+      "key": "ethylene",
+      "type": "MATERIAL",
+      "mentions": 1
+    },
+    {
+      "key": "fill volume",
+      "type": "MATERIAL",
+      "mentions": 1
+    },
+    {
+      "key": "gc-ms",
+      "type": "PRODUCT",
+      "mentions": 1
+    },
+    {
+      "key": "hard carbon anode",
+      "type": "MATERIAL",
+      "mentions": 1
+    },
+    {
+      "key": "high-temperature testing",
+      "type": "PROJECT",
+      "mentions": 1
+    },
+    {
+      "key": "lithium",
+      "type": "MATERIAL",
+      "mentions": 1
+    },
+    {
+      "key": "na2fe[fe(cn)6]",
+      "type": "MATERIAL",
+      "mentions": 1
+    },
+    {
+      "key": "napf6 salt",
+      "type": "MATERIAL",
+      "mentions": 1
+    },
+    {
+      "key": "nickel",
+      "type": "MATERIAL",
+      "mentions": 1
+    },
+    {
+      "key": "pilot-line pouches",
+      "type": "PRODUCT",
+      "mentions": 1
+    },
+    {
+      "key": "pilot-line tooling",
+      "type": "PRODUCT",
+      "mentions": 1
+    },
+    {
+      "key": "pouch assembly",
+      "type": "PROJECT",
+      "mentions": 1
+    },
+    {
+      "key": "pouch film",
+      "type": "MATERIAL",
+      "mentions": 1
+    },
+    {
+      "key": "program management",
+      "type": "PROJECT",
+      "mentions": 1
+    },
+    {
+      "key": "prussian white cathode",
+      "type": "MATERIAL",
+      "mentions": 1
+    },
+    {
+      "key": "risk register",
+      "type": "DOCUMENT",
+      "mentions": 1
+    },
+    {
+      "key": "room-temperature cycling",
+      "type": "PROJECT",
+      "mentions": 1
+    },
+    {
+      "key": "ruler",
+      "type": "MATERIAL",
+      "mentions": 1
+    },
+    {
+      "key": "safety cabinet",
+      "type": "MATERIAL",
+      "mentions": 1
+    },
+    {
+      "key": "seal integrity tests",
+      "type": "MILESTONE",
+      "mentions": 1
+    }
+  ],
+  "setup": {
+    "model": "qwen3:4b-instruct",
+    "model_digest": "0edcdef34593eac1aa2be9c7d06c432dcf81945adca5eca2f27662c18f168ba0",
+    "prompt_version": "kg-v2",
+    "config_id": "multimodal-256-ctx",
+    "documents": 12
+  }
+}

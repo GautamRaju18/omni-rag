@@ -41,6 +41,13 @@ Local-first multimodal GraphRAG platform, built phase by phase (see `docs/PROGRE
 - Delete order: graph first, then files (503 if Neo4j is down). A graph write failure during ingestion is a warning.
 - Graph integration tests wipe the database: only against `neo4j-test` (`docker compose --profile test up -d neo4j-test`, port 7688); the fixture refuses other ports. Drop constraints before indexes.
 
+## Entity extraction invariants (Phase 5b, ADR-0012)
+- The LLM proposes, `knowledge_base/entities.py` decides: entities must be grounded in the chunk text (word boundaries, after `norm`), never only in GENERATED text; relations need accepted endpoints and a fitting type signature (`SIGNATURES`). Never relax grounding to raise recall.
+- `support` is `stated` only when the evidence is found in original/OCR text and names both endpoints; everything else is `inferred`. Keep both, labelled; keep every rejection with its reason.
+- Entity identity = `entity_key` (canonical name) → `entity_id`; type is the majority over mentions. Cross-document person aliases are `SAME_AS` links (recomputed), never merges.
+- Raw replies live in `extractions/<config>.json` keyed by input hash + model digest + `PROMPT_VERSION`; bump `PROMPT_VERSION` whenever the prompt or schema changes. Rule changes: `revalidate` (no model calls).
+- Extraction is off at ingestion (`extraction_enabled=false`); run `python -m omnirag.knowledge_base extract`. Quality is measured with `evaluation/extraction_eval.py` against `data/eval/entities_seed.json` (names and quotes verified against the samples by a test).
+
 ## Conventions
 - Code lives in `src/omnirag/<module>/` (ADR-0001). Create a module's package only in its phase.
 - Config only through `omnirag.core.config.Settings` (`OMNIRAG_*`). No hardcoded secrets.

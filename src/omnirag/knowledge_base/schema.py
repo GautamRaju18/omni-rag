@@ -32,6 +32,7 @@ UNIQUE_KEYS = [
     ("Chunk", "chunk_id"),
     ("Table", "table_id"),
     ("Figure", "figure_id"),
+    ("Entity", "entity_id"),
 ]
 # Lookup indexes for per-document replacement/deletion and common filters.
 LOOKUPS = [
@@ -42,7 +43,11 @@ LOOKUPS = [
     ("Table", "document_id"),
     ("Figure", "document_id"),
     ("Document", "is_latest"),
+    ("Entity", "key"),
+    ("Entity", "type"),
 ]
+# Relationship property index: per-document deletion of extracted relations.
+REL_LOOKUPS = [("RELATED_TO", "document_id")]
 
 
 class SchemaMismatchError(RuntimeError):
@@ -86,6 +91,10 @@ def ensure_schema(
         name = f"{label.lower()}_{prop}"
         _note(report, name, name in existing)
         store.schema(f"CREATE INDEX {name} IF NOT EXISTS FOR (n:{label}) ON (n.{prop})")
+    for rel, prop in REL_LOOKUPS:
+        name = f"{rel.lower()}_{prop}"
+        _note(report, name, name in existing)
+        store.schema(f"CREATE INDEX {name} IF NOT EXISTS FOR ()-[r:{rel}]-() ON (r.{prop})")
 
     current = existing.get(vector_index)
     if current is not None:
