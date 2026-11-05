@@ -126,5 +126,19 @@ async def test_domain_errors_use_json_envelope(settings: Settings) -> None:
 
 
 async def test_openapi_lists_versioned_routes_only(healthy_client: httpx.AsyncClient) -> None:
-    paths = (await healthy_client.get("/openapi.json")).json()["paths"]
-    assert set(paths) == {"/api/v1/health", "/api/v1/health/ollama", "/api/v1/health/neo4j"}
+    paths = set((await healthy_client.get("/openapi.json")).json()["paths"])
+    assert all(p.startswith("/api/v1/") for p in paths)  # the root /health alias stays hidden
+    assert {
+        "/api/v1/health",
+        "/api/v1/health/ollama",
+        "/api/v1/health/neo4j",
+        "/api/v1/documents",
+        "/api/v1/documents/{document_id}",
+        "/api/v1/documents/{document_id}/elements",
+        "/api/v1/documents/{document_id}/original",
+        "/api/v1/documents/{document_id}/assets/{name}",
+        "/api/v1/documents/{document_id}/reingest",
+        "/api/v1/ingestion/jobs",
+        "/api/v1/ingestion/jobs/{job_id}",
+        "/api/v1/ingestion/status",
+    } == paths

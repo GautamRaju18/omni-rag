@@ -53,6 +53,11 @@ class Settings(BaseSettings):
     # plenty of space (the repo drive P: has only a few GB free).
     data_dir: Path = Field(default_factory=lambda: Path.home() / "omnirag-data")
     max_upload_mb: int = Field(default=100, gt=0)
+    # Background ingestion (API). One worker: OCR, Docling and the vision model all compete
+    # for the same CPU/GPU, so parallel jobs would mostly slow each other down.
+    ingestion_workers: int = Field(default=1, ge=1, le=4)
+    ingestion_queue_max: int = Field(default=100, ge=1, le=10_000)
+    ingestion_shutdown_grace_s: float = Field(default=30.0, ge=0)
 
     # --- OCR (Tesseract CLI, installed with `sudo apt install tesseract-ocr`)
     ocr_enabled: bool = True

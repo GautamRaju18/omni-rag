@@ -27,6 +27,7 @@ Local-first multimodal GraphRAG platform, built phase by phase (see `docs/PROGRE
 - Enrichers (e.g. vision) only APPEND elements after the loader; never change loader element order/IDs. Generated text: `ElementType.DESCRIPTION`, `origin=GENERATED`, child of its IMAGE.
 - torch/torchvision stay as direct deps in the `layout` group (CPU index); uv ignores sources for transitive deps (ADR-0005). Docling tests: `-m docling`.
 - Call `pipeline.close()` after a batch (unloads the VLM).
+- API ingestion runs through `ingestion/jobs.JobManager` (one process only: never `uvicorn --workers N`). Job files in `<data_dir>/jobs/`, upload copies in `<data_dir>/uploads/<job_id>/`. Originals are served as `application/octet-stream` attachments with `nosniff`.
 
 ## Conventions
 - Code lives in `src/omnirag/<module>/` (ADR-0001). Create a module's package only in its phase.

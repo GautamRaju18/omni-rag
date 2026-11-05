@@ -10,8 +10,8 @@ A feature counts as done only when its tests pass and the result was observed, n
 | 2b | DOCX / XLSX / PPTX loaders | ✅ Done 2026-11-04 | 117 unit tests; [learning/phase-02b](learning/phase-02b-office-loaders.md) |
 | 2c | PDF (PyMuPDF) + Tesseract OCR + images | ✅ Done 2026-11-04 | 136 unit tests; [learning/phase-02c](learning/phase-02c-pdf-ocr.md) |
 | 2d | Docling + vision-model descriptions | ✅ Done 2026-11-04 | 147 unit + 5 integration + 1 docling tests; [learning/phase-02d](learning/phase-02d-layout-and-vision.md) |
-| 2e | `/documents` + `/ingestion` API, background jobs | ⏭ Next | |
-| 3 | Chunking engine | ⬜ | |
+| 2e | `/documents` + `/ingestion` API, background jobs | ✅ Done 2026-11-05 | 176 unit + 6 live tests; [learning/phase-02e](learning/phase-02e-ingestion-api.md) |
+| 3 | Chunking engine | ⏭ Next | |
 | 4 | Embedding engine | ⬜ | |
 | 5 | Neo4j graph construction | ⬜ | |
 | 6 | Dense + sparse retrieval | ⬜ | |
@@ -32,7 +32,7 @@ A feature counts as done only when its tests pass and the result was observed, n
 - [ ] Dense · [ ] BM25 · [ ] Graph retrieval · [ ] RRF · [ ] Reranking
 - [ ] Grounded answers · [ ] Verifiable citations · [ ] LangSmith tracing
 - [ ] Retrieval eval · [ ] Faithfulness eval · [ ] Reproducible benchmarks
-- [ ] FastAPI endpoints (health ✅; documents/ingestion/chat/evaluate/analytics pending)
+- [ ] FastAPI endpoints (health ✅, documents ✅, ingestion ✅; chat/evaluate/analytics pending)
 - [ ] Frontend upload + QA · [x] Tests pass (Phase 1 scope) · [ ] Docker deploy · [ ] Docs complete
 
 ## Decisions log
@@ -42,6 +42,7 @@ A feature counts as done only when its tests pass and the result was observed, n
 - [ADR-0004](adr/0004-pdf-pymupdf-and-tesseract-cli.md): PyMuPDF 1.28.2 (AGPL) for PDFs; Tesseract CLI for OCR
 - [ADR-0005](adr/0005-pdf-engine-routing-docling.md): PDF engine routing (auto: multi-column → Docling on CPU)
 - [ADR-0006](adr/0006-vision-model-image-descriptions.md): qwen3-vl:2b-instruct image descriptions as generated content
+- [ADR-0007](adr/0007-in-process-ingestion-jobs.md): in-process background ingestion jobs with persistent job records
 
 ## Measured baselines (2026-11-04)
 | Metric | Value |
@@ -82,3 +83,9 @@ A feature counts as done only when its tests pass and the result was observed, n
 | gemma3:4b / qwen3-vl:4b-instruct | 24/24, 8/8, 2.4–4.7 s, 2.80 GB / 19/24, 0/8, 2.1–2.6 s, 3.76 GB |
 | Full sample batch (12 files, 4 images described) | 24.9 s with per-batch VLM unload (40.9 s with per-document unload) |
 | venv size | 1.6 GB with CPU torch (5.9 GB with the accidental CUDA build) |
+
+## Measured baselines: ingestion API (2026-11-05, one worker, real models)
+| Metric | Value |
+|---|---|
+| 12 sample uploads over HTTP → all jobs completed | 27.3 s (Docling note 11.6 s, deck with first vision call 7.7 s, text files < 6 ms) |
+| Crash recovery (`kill -9` during a Docling job) | requeued at start-up, completed on attempt 2 (10.9 s) |

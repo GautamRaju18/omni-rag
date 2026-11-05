@@ -19,10 +19,10 @@ def build_enrichers(settings: Settings) -> list[Enricher]:
     return enrichers
 
 
-def build_pipeline(settings: Settings) -> IngestionPipeline:
-    """Wire the default pipeline from settings (used by the CLI and, in 2e, the API)."""
+def build_pipeline(settings: Settings, store: DocumentStore | None = None) -> IngestionPipeline:
+    """Wire the default pipeline from settings (used by the CLI and the API)."""
     return IngestionPipeline(
-        DocumentStore(settings.data_dir),
+        store or DocumentStore(settings.data_dir),
         default_loaders(settings),
         max_bytes=settings.max_upload_bytes,
         enrichers=build_enrichers(settings),

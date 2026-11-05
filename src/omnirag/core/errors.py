@@ -66,6 +66,27 @@ class NotFoundError(OmniRAGError):
     code = "not_found"
 
 
+class PayloadTooLargeError(OmniRAGError):
+    """Upload exceeds ``OMNIRAG_MAX_UPLOAD_MB``."""
+
+    status_code = status.HTTP_413_CONTENT_TOO_LARGE
+    code = "payload_too_large"
+
+
+class ConflictError(OmniRAGError):
+    """The request conflicts with current state (e.g. deleting a document being ingested)."""
+
+    status_code = status.HTTP_409_CONFLICT
+    code = "conflict"
+
+
+class IngestionQueueFullError(OmniRAGError):
+    """Too many queued ingestion jobs; the client should retry later."""
+
+    status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+    code = "ingestion_queue_full"
+
+
 def _envelope(request: Request, code: str, message: str, details: dict) -> dict:
     request_id = structlog.contextvars.get_contextvars().get("request_id")
     return {

@@ -15,10 +15,13 @@ from fastapi import FastAPI
 
 from omnirag import __version__
 from omnirag.api.middleware import request_context_middleware
-from omnirag.api.routers import health
+from omnirag.api.routers import documents, health, ingestion
 from omnirag.core.config import Settings, get_settings
 from omnirag.core.errors import register_exception_handlers
 from omnirag.core.logging import configure_logging
+from omnirag.ingestion import build_pipeline
+from omnirag.ingestion.jobs import JobManager
+from omnirag.ingestion.store import DocumentStore
 from omnirag.knowledge_base.neo4j_client import Neo4jClient
 from omnirag.llm.ollama_client import OllamaClient
 
@@ -45,10 +48,20 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         timeout_s=settings.ollama_timeout_s,
         connect_retries=settings.ollama_connect_retries,
     )
+    # One store and one pipeline per process; the job manager runs ingestion in the background.
+    app.state.store = DocumentStore(settings.data_dir)
+    app.state.jobs = JobManager(
+        build_pipeline(settings, app.state.store),
+        settings.data_dir,
+        workers=settings.ingestion_workers,
+        queue_max=settings.ingestion_queue_max,
+    )
+    await app.state.jobs.start()
     log.info("startup", env=settings.env, neo4j=settings.neo4j_uri, ollama=settings.ollama_base_url)
     try:
         yield
     finally:
+        await app.state.jobs.stop(settings.ingestion_shutdown_grace_s)
         await app.state.ollama.aclose()
         await app.state.neo4j.close()
         log.info("shutdown")
@@ -71,6 +84,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     register_exception_handlers(app)
 
     app.include_router(health.router, prefix=settings.api_prefix)
+    app.include_router(documents.router, prefix=settings.api_prefix)
+    app.include_router(ingestion.router, prefix=settings.api_prefix)
     # Unversioned liveness alias for container/orchestrator probes; hidden from OpenAPI.
     app.add_api_route("/health", health.health, methods=["GET"], include_in_schema=False)
     return app

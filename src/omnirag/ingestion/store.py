@@ -60,17 +60,17 @@ class DocumentStore:
             raise ValueError(f"Invalid asset name: {name!r}")
         target = self.doc_dir(document_id) / "assets" / safe_name
         target.parent.mkdir(parents=True, exist_ok=True)
-        _atomic_write_bytes(target, data)
+        atomic_write_bytes(target, data)
         return target.relative_to(self.data_dir).as_posix()
 
     def write_record(self, record: DocumentRecord) -> None:
         path = self.doc_dir(record.document_id) / "document.json"
         path.parent.mkdir(parents=True, exist_ok=True)
-        _atomic_write_bytes(path, record.model_dump_json(indent=2).encode())
+        atomic_write_bytes(path, record.model_dump_json(indent=2).encode())
 
     def write_elements(self, document_id: str, elements: list[DocumentElement]) -> None:
         lines = "".join(e.model_dump_json() + "\n" for e in elements)
-        _atomic_write_bytes(self.doc_dir(document_id) / "elements.jsonl", lines.encode())
+        atomic_write_bytes(self.doc_dir(document_id) / "elements.jsonl", lines.encode())
 
     def clear_derived(self, document_id: str) -> None:
         """Remove extraction outputs (before re-processing) but keep the original file."""
@@ -107,7 +107,7 @@ class DocumentStore:
         return sorted(records, key=lambda r: r.created_at)
 
 
-def _atomic_write_bytes(path: Path, data: bytes) -> None:
+def atomic_write_bytes(path: Path, data: bytes) -> None:
     fd, tmp = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.", suffix=".tmp")
     try:
         with os.fdopen(fd, "wb") as fh:

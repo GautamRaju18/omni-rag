@@ -12,6 +12,8 @@ from typing import Annotated
 from fastapi import Depends, Request
 
 from omnirag.core.config import Settings
+from omnirag.ingestion.jobs import JobManager
+from omnirag.ingestion.store import DocumentStore
 from omnirag.knowledge_base.neo4j_client import Neo4jClient
 from omnirag.llm.ollama_client import OllamaClient
 
@@ -28,6 +30,16 @@ def get_ollama(request: Request) -> OllamaClient:
     return request.app.state.ollama
 
 
+def get_store(request: Request) -> DocumentStore:
+    return request.app.state.store
+
+
+def get_jobs(request: Request) -> JobManager:
+    return request.app.state.jobs
+
+
 SettingsDep = Annotated[Settings, Depends(get_app_settings)]
 Neo4jDep = Annotated[Neo4jClient, Depends(get_neo4j)]
 OllamaDep = Annotated[OllamaClient, Depends(get_ollama)]
+StoreDep = Annotated[DocumentStore, Depends(get_store)]
+JobsDep = Annotated[JobManager, Depends(get_jobs)]
