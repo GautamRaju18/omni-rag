@@ -1,7 +1,7 @@
 """Minimal synchronous chat client for Ollama, used by the retrieval workflow (Phase 9).
 
-Phase 10 builds the full generation engine (streaming, prompt templates, context budgets);
-this covers what query transforms and the context check need:
+Phase 10 added ``stream`` (token deltas, for the chat endpoint); prompt templates and answer
+validation live in ``omnirag.generation``. This client covers:
 
 * one ``/api/chat`` call, optionally with ``format`` = JSON schema (structured output: the
   reply always parses and enum values are respected; *content* is never trusted blindly);
@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import json
 import time
+from collections.abc import Iterator
 from dataclasses import dataclass
 from typing import Any
 
@@ -93,6 +94,62 @@ class OllamaChat:
                 last = exc
                 log.warning("llm_unusable_json", attempt=attempt, model=self.model)
         raise LLMError(f"{self.model} returned unusable JSON twice: {last}")
+
+    def stream(
+        self,
+        system: str,
+        user: str,
+        *,
+        schema: dict[str, Any] | None = None,
+        temperature: float = 0.0,
+        num_predict: int = 512,
+        seed: int = 42,
+    ) -> Iterator[dict[str, Any]]:
+        """Yield ``{"delta": str}`` as tokens arrive, then one ``{"done": True, ...}`` with
+        the token counts and duration. Connection errors before the first token are retried
+        like ``chat``; a failure mid-stream raises ``LLMError`` (partial output is not
+        retried: the caller has already shown it)."""
+        payload: dict[str, Any] = {
+            "model": self.model, "stream": True, "keep_alive": self.keep_alive,
+            "messages": [{"role": "system", "content": system},
+                         {"role": "user", "content": user}],
+            "options": {"temperature": temperature, "seed": seed, "num_ctx": self.num_ctx,
+                        "num_predict": num_predict},
+        }  # fmt: skip
+        if schema is not None:
+            payload["format"] = schema
+        started = time.perf_counter()
+        for attempt in range(self.retries + 1):
+            emitted = False
+            try:
+                with self._client.stream("POST", "/api/chat", json=payload) as response:
+                    if response.status_code == 404:
+                        raise LLMError(f"Model {self.model!r} not found (ollama pull it)")
+                    response.raise_for_status()
+                    for line in response.iter_lines():
+                        if not line:
+                            continue
+                        body = json.loads(line)
+                        if body.get("error"):
+                            raise LLMError(f"Ollama: {body['error']}")
+                        delta = body.get("message", {}).get("content", "")
+                        if delta:
+                            emitted = True
+                            yield {"delta": delta}
+                        if body.get("done"):
+                            ms = (time.perf_counter() - started) * 1000
+                            self.stats["calls"] += 1
+                            self.stats["seconds"] += ms / 1000
+                            self.stats["tokens"] += body.get("eval_count", 0)
+                            yield {"done": True, "eval_tokens": body.get("eval_count", 0),
+                                   "prompt_tokens": body.get("prompt_eval_count", 0),
+                                   "ms": ms}  # fmt: skip
+                            return
+                raise LLMError("stream ended without a final message")
+            except (httpx.TransportError, httpx.HTTPStatusError) as exc:
+                if emitted or attempt == self.retries:
+                    raise LLMError(f"Ollama stream failed: {exc}") from exc
+                time.sleep(self.backoff_s * 2**attempt)
 
     def _post(self, payload: dict[str, Any]) -> tuple[dict[str, Any], float]:
         for attempt in range(self.retries + 1):

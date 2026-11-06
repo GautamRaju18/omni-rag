@@ -1,0 +1,5706 @@
+{
+ "created": "2026-11-06T13:24:54.724499+00:00",
+ "dataset": "omnirag-eval-v1",
+ "dataset_version": 1,
+ "questions": 110,
+ "k": 5,
+ "candidates": 20,
+ "context_budget": 1024,
+ "generation_model": "qwen3:4b-instruct",
+ "judge_model": "qwen3:4b-instruct",
+ "prompt_version": "answer-v1",
+ "judge_version": "judge-v2",
+ "chunk_config": "multimodal-256-ctx",
+ "wall_s": null,
+ "stopped_early": true,
+ "memory": {
+  "eval_process_max_rss_mb": 222.0,
+  "vm_total_mb": 7942,
+  "vm_used_mb": 2749,
+  "ollama_vram_mb": {
+   "qwen3:4b-instruct": 3158
+  }
+ },
+ "rescored": "2026-11-06T13:24:55.230631+00:00",
+ "dataset_errata": [
+  {
+   "date": "2026-11-06",
+   "questions": [
+    "e27",
+    "e28",
+    "e29",
+    "e31"
+   ],
+   "change": "must_include of four 'which X?' comparative questions now names the entity the question asks for; the supporting numbers were listed instead (before: {\"e27\": [\"90.2\", \"89.6\"], \"e28\": [\"cathode\", \"67.5\"], \"e29\": [\"E-7\", \"3.2\"], \"e31\": [\"91.4\", \"88\"]}). Found reading the first E1-E4 answers (e27: 'AUR-C106 retained more capacity' was scored wrong). Evidence quotes unchanged; every experiment re-scored the same way."
+  }
+ ],
+ "experiments": {
+  "E1": {
+   "label": "Dense only",
+   "questions": 110,
+   "answerable": 100,
+   "unanswerable": 10,
+   "retrieval": {
+    "recall": 0.915,
+    "precision": 0.268,
+    "mrr": 0.844,
+    "ndcg": 0.8,
+    "hit": 0.95,
+    "context_precision": 0.294,
+    "context_recall": 0.93
+   },
+   "generation": {
+    "answer_correctness": 0.9,
+    "completeness": 0.915,
+    "faithfulness": 0.843,
+    "citation_accuracy": 0.847,
+    "hallucination_rate": 0.045,
+    "unanswerable_refused": 10,
+    "false_refusals": 5,
+    "refused_by": {
+     "model": 15
+    },
+    "claims": 148,
+    "claim_status": {
+     "verified": 117,
+     "partial": 21,
+     "unsupported": 6,
+     "relocated": 4
+    }
+   },
+   "judge": {
+    "judged": 109,
+    "correctness": {
+     "correct": 99,
+     "refused": 5,
+     "partial": 5
+    },
+    "correct_rate": 0.908,
+    "relevance": 4.954,
+    "supported_rate": 0.972,
+    "agreement_with_answer_check": 0.963,
+    "errors": 1,
+    "refusal_overrides": {
+     "refusals_judged": 5,
+     "raw_said_correct": 5
+    }
+   },
+   "performance": {
+    "end_to_end_ms_p50": 6024.3,
+    "retrieval_ms_p50": 74.1,
+    "embed_ms_p50": 46.7,
+    "rerank_ms_p50": 0.0,
+    "generation_ms_p50": 5681.4,
+    "context_ms_p50": 16.2,
+    "judge_ms_p50": 4493.1,
+    "end_to_end_ms_p95": 15541.9,
+    "retrieval_ms_p95": 868.0,
+    "embed_ms_p95": 516.5,
+    "rerank_ms_p95": 0.0,
+    "generation_ms_p95": 15418.0,
+    "context_ms_p95": 62.7,
+    "judge_ms_p95": 6503.3,
+    "throughput_q_per_min": 8.1,
+    "wall_s": null,
+    "prompt_tokens_p50": 1364,
+    "eval_tokens_p50": 92
+   },
+   "by_type": {
+    "comparative": {
+     "n": 9,
+     "correct": 1.0,
+     "recall": 0.778,
+     "context_recall": 0.833
+    },
+    "cross_document": {
+     "n": 7,
+     "correct": 0.857,
+     "recall": 0.786,
+     "context_recall": 0.857
+    },
+    "factual": {
+     "n": 26,
+     "correct": 0.923,
+     "recall": 0.962,
+     "context_recall": 0.962
+    },
+    "image": {
+     "n": 11,
+     "correct": 0.727,
+     "recall": 1.0,
+     "context_recall": 1.0
+    },
+    "keyword": {
+     "n": 11,
+     "correct": 1.0,
+     "recall": 1.0,
+     "context_recall": 1.0
+    },
+    "multi_hop": {
+     "n": 15,
+     "correct": 0.8,
+     "recall": 0.867,
+     "context_recall": 0.9
+    },
+    "table": {
+     "n": 21,
+     "correct": 0.952,
+     "recall": 0.905,
+     "context_recall": 0.905
+    },
+    "unanswerable": {
+     "n": 10,
+     "correct": 1.0,
+     "recall": null,
+     "context_recall": null
+    }
+   },
+   "failures": {
+    "root_causes": {
+     "context_construction_failure": 10,
+     "generation_failure": 6,
+     "citation_failure": 4,
+     "hallucination": 2,
+     "retrieval_failure": 1
+    },
+    "questions": {
+     "generation_failure": [
+      "e08",
+      "e21",
+      "e51",
+      "q17",
+      "q20",
+      "q34"
+     ],
+     "context_construction_failure": [
+      "e17",
+      "e33",
+      "e34",
+      "e41",
+      "e48",
+      "q04",
+      "q22",
+      "q35",
+      "r02",
+      "r05"
+     ],
+     "hallucination": [
+      "e30",
+      "e33",
+      "e51",
+      "q29",
+      "q34"
+     ],
+     "citation_failure": [
+      "e32",
+      "e42",
+      "e45",
+      "e52"
+     ],
+     "retrieval_failure": [
+      "e53"
+     ]
+    },
+    "failed": 23,
+    "total": 110
+   },
+   "per_question": {
+    "q01": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q02": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q03": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q04": {
+     "correct": false,
+     "refused": true,
+     "hallucination": false,
+     "recall": 0.0,
+     "context_recall": 0.0,
+     "judge": "refused",
+     "failures": [
+      "context_construction_failure"
+     ]
+    },
+    "q05": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q06": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q07": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q08": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q09": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q10": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q11": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q12": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q13": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q14": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q15": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q16": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q17": {
+     "correct": false,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": [
+      "generation_failure"
+     ]
+    },
+    "q18": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q19": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q20": {
+     "correct": false,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "partial",
+     "failures": [
+      "generation_failure"
+     ]
+    },
+    "q21": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q22": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 0.5,
+     "judge": "correct",
+     "failures": [
+      "context_construction_failure"
+     ]
+    },
+    "q23": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q24": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q25": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q26": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q27": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q28": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q29": {
+     "correct": true,
+     "refused": false,
+     "hallucination": true,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": [
+      "hallucination"
+     ]
+    },
+    "q30": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q31": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q32": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q33": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q34": {
+     "correct": false,
+     "refused": false,
+     "hallucination": true,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": [
+      "generation_failure",
+      "hallucination"
+     ]
+    },
+    "q35": {
+     "correct": false,
+     "refused": true,
+     "hallucination": false,
+     "recall": 0.0,
+     "context_recall": 0.0,
+     "judge": "refused",
+     "failures": [
+      "context_construction_failure"
+     ]
+    },
+    "q36": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q37": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q38": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "q39": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "q40": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "r01": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "r02": {
+     "correct": false,
+     "refused": true,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 0.5,
+     "judge": "refused",
+     "failures": [
+      "context_construction_failure"
+     ]
+    },
+    "r03": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "r04": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "r05": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 0.5,
+     "judge": "correct",
+     "failures": [
+      "context_construction_failure"
+     ]
+    },
+    "r06": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "partial",
+     "failures": []
+    },
+    "r07": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "r08": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "partial",
+     "failures": []
+    },
+    "e01": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e02": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e03": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e04": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e05": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e06": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e07": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e08": {
+     "correct": false,
+     "refused": true,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "refused",
+     "failures": [
+      "generation_failure"
+     ]
+    },
+    "e09": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e10": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e45": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": [
+      "citation_failure"
+     ]
+    },
+    "e54": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e55": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e11": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e12": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e13": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e14": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e15": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e16": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e17": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.0,
+     "context_recall": 0.0,
+     "judge": "correct",
+     "failures": [
+      "context_construction_failure"
+     ]
+    },
+    "e18": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e19": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e20": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e21": {
+     "correct": false,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "partial",
+     "failures": [
+      "generation_failure"
+     ]
+    },
+    "e22": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e23": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e24": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e25": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e26": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e27": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e28": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e29": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e30": {
+     "correct": true,
+     "refused": false,
+     "hallucination": true,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": [
+      "hallucination"
+     ]
+    },
+    "e31": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e32": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": null,
+     "failures": [
+      "citation_failure"
+     ]
+    },
+    "e33": {
+     "correct": true,
+     "refused": false,
+     "hallucination": true,
+     "recall": 0.0,
+     "context_recall": 0.5,
+     "judge": "correct",
+     "failures": [
+      "context_construction_failure",
+      "hallucination"
+     ]
+    },
+    "e34": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 0.5,
+     "judge": "correct",
+     "failures": [
+      "context_construction_failure"
+     ]
+    },
+    "e35": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e36": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e37": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e38": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e39": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e40": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e41": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 0.5,
+     "judge": "correct",
+     "failures": [
+      "context_construction_failure"
+     ]
+    },
+    "e42": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": [
+      "citation_failure"
+     ]
+    },
+    "e43": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e44": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e46": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e47": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e48": {
+     "correct": false,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 0.5,
+     "judge": "partial",
+     "failures": [
+      "context_construction_failure"
+     ]
+    },
+    "e49": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e50": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e51": {
+     "correct": false,
+     "refused": true,
+     "hallucination": true,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "refused",
+     "failures": [
+      "generation_failure",
+      "hallucination"
+     ]
+    },
+    "e52": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": [
+      "citation_failure"
+     ]
+    },
+    "e53": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.0,
+     "context_recall": 0.5,
+     "judge": "correct",
+     "failures": [
+      "retrieval_failure"
+     ]
+    },
+    "e56": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "e57": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "e58": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "e59": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "e60": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "e61": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "e62": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    }
+   },
+   "gpu": null,
+   "complete": true
+  },
+  "E2": {
+   "label": "BM25 only",
+   "questions": 110,
+   "answerable": 100,
+   "unanswerable": 10,
+   "retrieval": {
+    "recall": 0.895,
+    "precision": 0.343,
+    "mrr": 0.799,
+    "ndcg": 0.765,
+    "hit": 0.96,
+    "context_precision": 0.377,
+    "context_recall": 0.9
+   },
+   "generation": {
+    "answer_correctness": 0.84,
+    "completeness": 0.855,
+    "faithfulness": 0.855,
+    "citation_accuracy": 0.888,
+    "hallucination_rate": 0.009,
+    "unanswerable_refused": 10,
+    "false_refusals": 12,
+    "refused_by": {
+     "model": 19,
+     "empty_context": 3
+    },
+    "claims": 120,
+    "claim_status": {
+     "verified": 98,
+     "partial": 20,
+     "relocated": 1,
+     "unsupported": 1
+    }
+   },
+   "judge": {
+    "judged": 110,
+    "correctness": {
+     "correct": 93,
+     "refused": 12,
+     "partial": 5
+    },
+    "correct_rate": 0.845,
+    "relevance": 4.891,
+    "supported_rate": 1.0,
+    "agreement_with_answer_check": 0.955,
+    "errors": 0,
+    "refusal_overrides": {
+     "refusals_judged": 12,
+     "raw_said_correct": 10
+    }
+   },
+   "performance": {
+    "end_to_end_ms_p50": 4909.4,
+    "retrieval_ms_p50": 22.9,
+    "embed_ms_p50": 0.0,
+    "rerank_ms_p50": 0.0,
+    "generation_ms_p50": 4846.2,
+    "context_ms_p50": 5.4,
+    "judge_ms_p50": 3978.0,
+    "end_to_end_ms_p95": 12514.5,
+    "retrieval_ms_p95": 48.8,
+    "embed_ms_p95": 0.0,
+    "rerank_ms_p95": 0.0,
+    "generation_ms_p95": 12448.2,
+    "context_ms_p95": 19.4,
+    "judge_ms_p95": 5408.3,
+    "throughput_q_per_min": 10.62,
+    "wall_s": null,
+    "prompt_tokens_p50": 1260,
+    "eval_tokens_p50": 89
+   },
+   "by_type": {
+    "comparative": {
+     "n": 9,
+     "correct": 0.889,
+     "recall": 0.778,
+     "context_recall": 0.833
+    },
+    "cross_document": {
+     "n": 7,
+     "correct": 0.571,
+     "recall": 0.5,
+     "context_recall": 0.5
+    },
+    "factual": {
+     "n": 26,
+     "correct": 0.885,
+     "recall": 1.0,
+     "context_recall": 1.0
+    },
+    "image": {
+     "n": 11,
+     "correct": 0.818,
+     "recall": 1.0,
+     "context_recall": 1.0
+    },
+    "keyword": {
+     "n": 11,
+     "correct": 0.909,
+     "recall": 0.909,
+     "context_recall": 0.909
+    },
+    "multi_hop": {
+     "n": 15,
+     "correct": 0.6,
+     "recall": 0.733,
+     "context_recall": 0.733
+    },
+    "table": {
+     "n": 21,
+     "correct": 1.0,
+     "recall": 1.0,
+     "context_recall": 1.0
+    },
+    "unanswerable": {
+     "n": 10,
+     "correct": 1.0,
+     "recall": null,
+     "context_recall": null
+    }
+   },
+   "failures": {
+    "root_causes": {
+     "retrieval_failure": 15,
+     "generation_failure": 5,
+     "citation_failure": 1,
+     "context_construction_failure": 1,
+     "hallucination": 1
+    },
+    "questions": {
+     "generation_failure": [
+      "e08",
+      "e10",
+      "e21",
+      "q05",
+      "q17"
+     ],
+     "hallucination": [
+      "e30"
+     ],
+     "retrieval_failure": [
+      "e32",
+      "e33",
+      "e34",
+      "e37",
+      "e42",
+      "e43",
+      "e44",
+      "e47",
+      "e48",
+      "e51",
+      "e52",
+      "e53",
+      "r02",
+      "r03",
+      "r04"
+     ],
+     "citation_failure": [
+      "q14"
+     ],
+     "context_construction_failure": [
+      "r08"
+     ]
+    },
+    "failed": 23,
+    "total": 110
+   },
+   "per_question": {
+    "q01": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q02": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q03": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q04": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q05": {
+     "correct": false,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": [
+      "generation_failure"
+     ]
+    },
+    "q06": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q07": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q08": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q09": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q10": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q11": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q12": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q13": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q14": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": [
+      "citation_failure"
+     ]
+    },
+    "q15": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q16": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q17": {
+     "correct": false,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": [
+      "generation_failure"
+     ]
+    },
+    "q18": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q19": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q20": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q21": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q22": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q23": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q24": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q25": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q26": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q27": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q28": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q29": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q30": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q31": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q32": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q33": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q34": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q35": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q36": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q37": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q38": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "q39": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "q40": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "r01": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "r02": {
+     "correct": false,
+     "refused": true,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 0.5,
+     "judge": "refused",
+     "failures": [
+      "retrieval_failure"
+     ]
+    },
+    "r03": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 0.5,
+     "judge": "correct",
+     "failures": [
+      "retrieval_failure"
+     ]
+    },
+    "r04": {
+     "correct": false,
+     "refused": true,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 0.5,
+     "judge": "refused",
+     "failures": [
+      "retrieval_failure"
+     ]
+    },
+    "r05": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "r06": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "partial",
+     "failures": []
+    },
+    "r07": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "r08": {
+     "correct": false,
+     "refused": true,
+     "hallucination": false,
+     "recall": 0.0,
+     "context_recall": 0.0,
+     "judge": "refused",
+     "failures": [
+      "context_construction_failure"
+     ]
+    },
+    "e01": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e02": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e03": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e04": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e05": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e06": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e07": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e08": {
+     "correct": false,
+     "refused": true,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "refused",
+     "failures": [
+      "generation_failure"
+     ]
+    },
+    "e09": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e10": {
+     "correct": false,
+     "refused": true,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "refused",
+     "failures": [
+      "generation_failure"
+     ]
+    },
+    "e45": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e54": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e55": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e11": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e12": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e13": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e14": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e15": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e16": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e17": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e18": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e19": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e20": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e21": {
+     "correct": false,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "partial",
+     "failures": [
+      "generation_failure"
+     ]
+    },
+    "e22": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e23": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e24": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e25": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e26": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e27": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e28": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e29": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e30": {
+     "correct": true,
+     "refused": false,
+     "hallucination": true,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": [
+      "hallucination"
+     ]
+    },
+    "e31": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e32": {
+     "correct": false,
+     "refused": true,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 0.5,
+     "judge": "refused",
+     "failures": [
+      "retrieval_failure"
+     ]
+    },
+    "e33": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 0.5,
+     "judge": "partial",
+     "failures": [
+      "retrieval_failure"
+     ]
+    },
+    "e34": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 0.5,
+     "judge": "correct",
+     "failures": [
+      "retrieval_failure"
+     ]
+    },
+    "e35": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e36": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e37": {
+     "correct": false,
+     "refused": true,
+     "hallucination": false,
+     "recall": 0.0,
+     "context_recall": 0.0,
+     "judge": "refused",
+     "failures": [
+      "retrieval_failure"
+     ]
+    },
+    "e38": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e39": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e40": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e41": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e42": {
+     "correct": false,
+     "refused": true,
+     "hallucination": false,
+     "recall": 0.0,
+     "context_recall": 0.0,
+     "judge": "refused",
+     "failures": [
+      "retrieval_failure"
+     ]
+    },
+    "e43": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 0.5,
+     "judge": "correct",
+     "failures": [
+      "retrieval_failure"
+     ]
+    },
+    "e44": {
+     "correct": false,
+     "refused": true,
+     "hallucination": false,
+     "recall": 0.0,
+     "context_recall": 0.0,
+     "judge": "refused",
+     "failures": [
+      "retrieval_failure"
+     ]
+    },
+    "e46": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "partial",
+     "failures": []
+    },
+    "e47": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 0.5,
+     "judge": "correct",
+     "failures": [
+      "retrieval_failure"
+     ]
+    },
+    "e48": {
+     "correct": false,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 0.5,
+     "judge": "partial",
+     "failures": [
+      "retrieval_failure"
+     ]
+    },
+    "e49": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e50": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e51": {
+     "correct": false,
+     "refused": true,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 0.5,
+     "judge": "refused",
+     "failures": [
+      "retrieval_failure"
+     ]
+    },
+    "e52": {
+     "correct": false,
+     "refused": true,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 0.5,
+     "judge": "refused",
+     "failures": [
+      "retrieval_failure"
+     ]
+    },
+    "e53": {
+     "correct": false,
+     "refused": true,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 0.5,
+     "judge": "refused",
+     "failures": [
+      "retrieval_failure"
+     ]
+    },
+    "e56": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "e57": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "e58": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "e59": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "e60": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "e61": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "e62": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    }
+   },
+   "gpu": null,
+   "complete": true
+  },
+  "E3": {
+   "label": "Dense + BM25",
+   "questions": 110,
+   "answerable": 100,
+   "unanswerable": 10,
+   "retrieval": {
+    "recall": 0.95,
+    "precision": 0.29,
+    "mrr": 0.879,
+    "ndcg": 0.841,
+    "hit": 0.99,
+    "context_precision": 0.32,
+    "context_recall": 0.98
+   },
+   "generation": {
+    "answer_correctness": 0.9,
+    "completeness": 0.915,
+    "faithfulness": 0.853,
+    "citation_accuracy": 0.864,
+    "hallucination_rate": 0.064,
+    "unanswerable_refused": 9,
+    "false_refusals": 5,
+    "refused_by": {
+     "model": 14
+    },
+    "claims": 141,
+    "claim_status": {
+     "verified": 112,
+     "partial": 19,
+     "relocated": 4,
+     "unsupported": 6
+    }
+   },
+   "judge": {
+    "judged": 109,
+    "correctness": {
+     "correct": 97,
+     "incorrect": 2,
+     "refused": 5,
+     "partial": 5
+    },
+    "correct_rate": 0.89,
+    "relevance": 4.945,
+    "supported_rate": 0.972,
+    "agreement_with_answer_check": 0.954,
+    "errors": 1,
+    "refusal_overrides": {
+     "refusals_judged": 5,
+     "raw_said_correct": 5
+    }
+   },
+   "performance": {
+    "end_to_end_ms_p50": 4995.8,
+    "retrieval_ms_p50": 20.3,
+    "embed_ms_p50": 0.9,
+    "rerank_ms_p50": 0.0,
+    "generation_ms_p50": 4969.9,
+    "context_ms_p50": 9.0,
+    "judge_ms_p50": 4042.7,
+    "end_to_end_ms_p95": 13715.5,
+    "retrieval_ms_p95": 47.2,
+    "embed_ms_p95": 2.6,
+    "rerank_ms_p95": 0.0,
+    "generation_ms_p95": 13694.4,
+    "context_ms_p95": 15.7,
+    "judge_ms_p95": 5701.0,
+    "throughput_q_per_min": 9.65,
+    "wall_s": null,
+    "prompt_tokens_p50": 1354,
+    "eval_tokens_p50": 90
+   },
+   "by_type": {
+    "comparative": {
+     "n": 9,
+     "correct": 0.889,
+     "recall": 0.833,
+     "context_recall": 0.944
+    },
+    "cross_document": {
+     "n": 7,
+     "correct": 0.857,
+     "recall": 0.857,
+     "context_recall": 0.929
+    },
+    "factual": {
+     "n": 26,
+     "correct": 0.923,
+     "recall": 1.0,
+     "context_recall": 1.0
+    },
+    "image": {
+     "n": 11,
+     "correct": 0.818,
+     "recall": 1.0,
+     "context_recall": 1.0
+    },
+    "keyword": {
+     "n": 11,
+     "correct": 1.0,
+     "recall": 0.909,
+     "context_recall": 1.0
+    },
+    "multi_hop": {
+     "n": 15,
+     "correct": 0.8,
+     "recall": 0.9,
+     "context_recall": 0.933
+    },
+    "table": {
+     "n": 21,
+     "correct": 0.952,
+     "recall": 1.0,
+     "context_recall": 1.0
+    },
+    "unanswerable": {
+     "n": 10,
+     "correct": 0.9,
+     "recall": null,
+     "context_recall": null
+    }
+   },
+   "failures": {
+    "root_causes": {
+     "generation_failure": 6,
+     "hallucination": 5,
+     "citation_failure": 4,
+     "context_construction_failure": 3,
+     "retrieval_failure": 1
+    },
+    "questions": {
+     "generation_failure": [
+      "e08",
+      "e10",
+      "e21",
+      "e51",
+      "q17",
+      "q33"
+     ],
+     "hallucination": [
+      "e29",
+      "e30",
+      "e33",
+      "e34",
+      "e51",
+      "e59",
+      "r03"
+     ],
+     "citation_failure": [
+      "e32",
+      "e42",
+      "e52",
+      "q14"
+     ],
+     "retrieval_failure": [
+      "e34"
+     ],
+     "context_construction_failure": [
+      "e48",
+      "e53",
+      "r02"
+     ]
+    },
+    "failed": 19,
+    "total": 110
+   },
+   "per_question": {
+    "q01": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q02": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q03": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q04": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q05": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q06": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q07": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q08": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q09": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q10": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q11": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q12": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q13": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q14": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": [
+      "citation_failure"
+     ]
+    },
+    "q15": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q16": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q17": {
+     "correct": false,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": [
+      "generation_failure"
+     ]
+    },
+    "q18": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q19": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q20": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q21": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q22": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q23": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q24": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q25": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q26": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q27": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q28": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q29": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q30": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q31": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q32": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q33": {
+     "correct": false,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "incorrect",
+     "failures": [
+      "generation_failure"
+     ]
+    },
+    "q34": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q35": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q36": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q37": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q38": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "q39": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "q40": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "r01": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "r02": {
+     "correct": false,
+     "refused": true,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 0.5,
+     "judge": "refused",
+     "failures": [
+      "context_construction_failure"
+     ]
+    },
+    "r03": {
+     "correct": true,
+     "refused": false,
+     "hallucination": true,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": [
+      "hallucination"
+     ]
+    },
+    "r04": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "r05": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "r06": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "partial",
+     "failures": []
+    },
+    "r07": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "r08": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "partial",
+     "failures": []
+    },
+    "e01": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e02": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e03": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e04": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e05": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e06": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e07": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e08": {
+     "correct": false,
+     "refused": true,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "refused",
+     "failures": [
+      "generation_failure"
+     ]
+    },
+    "e09": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e10": {
+     "correct": false,
+     "refused": true,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "refused",
+     "failures": [
+      "generation_failure"
+     ]
+    },
+    "e45": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e54": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "partial",
+     "failures": []
+    },
+    "e55": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e11": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e12": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e13": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e14": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e15": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e16": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e17": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e18": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e19": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e20": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e21": {
+     "correct": false,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "partial",
+     "failures": [
+      "generation_failure"
+     ]
+    },
+    "e22": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e23": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e24": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e25": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e26": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e27": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e28": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e29": {
+     "correct": true,
+     "refused": false,
+     "hallucination": true,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": [
+      "hallucination"
+     ]
+    },
+    "e30": {
+     "correct": true,
+     "refused": false,
+     "hallucination": true,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": [
+      "hallucination"
+     ]
+    },
+    "e31": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e32": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": null,
+     "failures": [
+      "citation_failure"
+     ]
+    },
+    "e33": {
+     "correct": true,
+     "refused": false,
+     "hallucination": true,
+     "recall": 0.5,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": [
+      "hallucination"
+     ]
+    },
+    "e34": {
+     "correct": false,
+     "refused": false,
+     "hallucination": true,
+     "recall": 0.5,
+     "context_recall": 0.5,
+     "judge": "correct",
+     "failures": [
+      "retrieval_failure",
+      "hallucination"
+     ]
+    },
+    "e35": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e36": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e37": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e38": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e39": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e40": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e41": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e42": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": [
+      "citation_failure"
+     ]
+    },
+    "e43": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e44": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e46": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e47": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e48": {
+     "correct": false,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 0.5,
+     "judge": "partial",
+     "failures": [
+      "context_construction_failure"
+     ]
+    },
+    "e49": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e50": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e51": {
+     "correct": false,
+     "refused": true,
+     "hallucination": true,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "refused",
+     "failures": [
+      "generation_failure",
+      "hallucination"
+     ]
+    },
+    "e52": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": [
+      "citation_failure"
+     ]
+    },
+    "e53": {
+     "correct": false,
+     "refused": true,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 0.5,
+     "judge": "refused",
+     "failures": [
+      "context_construction_failure"
+     ]
+    },
+    "e56": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "e57": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "e58": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "e59": {
+     "correct": false,
+     "refused": false,
+     "hallucination": true,
+     "recall": null,
+     "context_recall": null,
+     "judge": "incorrect",
+     "failures": [
+      "hallucination"
+     ]
+    },
+    "e60": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "e61": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "e62": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    }
+   },
+   "gpu": null,
+   "complete": true
+  },
+  "E4": {
+   "label": "Dense + BM25 + Graph",
+   "questions": 110,
+   "answerable": 100,
+   "unanswerable": 10,
+   "retrieval": {
+    "recall": 0.9,
+    "precision": 0.268,
+    "mrr": 0.805,
+    "ndcg": 0.767,
+    "hit": 0.96,
+    "context_precision": 0.301,
+    "context_recall": 0.96
+   },
+   "generation": {
+    "answer_correctness": 0.89,
+    "completeness": 0.905,
+    "faithfulness": 0.846,
+    "citation_accuracy": 0.853,
+    "hallucination_rate": 0.036,
+    "unanswerable_refused": 10,
+    "false_refusals": 5,
+    "refused_by": {
+     "model": 15
+    },
+    "claims": 139,
+    "claim_status": {
+     "verified": 110,
+     "partial": 22,
+     "relocated": 3,
+     "unsupported": 4
+    }
+   },
+   "judge": {
+    "judged": 110,
+    "correctness": {
+     "correct": 96,
+     "incorrect": 2,
+     "partial": 7,
+     "refused": 5
+    },
+    "correct_rate": 0.873,
+    "relevance": 4.964,
+    "supported_rate": 0.964,
+    "agreement_with_answer_check": 0.955,
+    "errors": 0,
+    "refusal_overrides": {
+     "refusals_judged": 5,
+     "raw_said_correct": 5
+    }
+   },
+   "performance": {
+    "end_to_end_ms_p50": 4995.7,
+    "retrieval_ms_p50": 75.7,
+    "embed_ms_p50": 1.3,
+    "rerank_ms_p50": 0.0,
+    "generation_ms_p50": 4766.8,
+    "context_ms_p50": 8.2,
+    "judge_ms_p50": 4114.7,
+    "end_to_end_ms_p95": 12909.0,
+    "retrieval_ms_p95": 254.7,
+    "embed_ms_p95": 2.4,
+    "rerank_ms_p95": 0.0,
+    "generation_ms_p95": 12672.8,
+    "context_ms_p95": 15.5,
+    "judge_ms_p95": 5597.7,
+    "throughput_q_per_min": 9.7,
+    "wall_s": null,
+    "prompt_tokens_p50": 1350,
+    "eval_tokens_p50": 89
+   },
+   "by_type": {
+    "comparative": {
+     "n": 9,
+     "correct": 1.0,
+     "recall": 0.778,
+     "context_recall": 0.944
+    },
+    "cross_document": {
+     "n": 7,
+     "correct": 0.857,
+     "recall": 0.571,
+     "context_recall": 0.857
+    },
+    "factual": {
+     "n": 26,
+     "correct": 0.885,
+     "recall": 0.962,
+     "context_recall": 0.962
+    },
+    "image": {
+     "n": 11,
+     "correct": 0.727,
+     "recall": 0.909,
+     "context_recall": 0.909
+    },
+    "keyword": {
+     "n": 11,
+     "correct": 1.0,
+     "recall": 0.909,
+     "context_recall": 1.0
+    },
+    "multi_hop": {
+     "n": 15,
+     "correct": 0.8,
+     "recall": 0.867,
+     "context_recall": 0.967
+    },
+    "table": {
+     "n": 21,
+     "correct": 0.952,
+     "recall": 1.0,
+     "context_recall": 1.0
+    },
+    "unanswerable": {
+     "n": 10,
+     "correct": 1.0,
+     "recall": null,
+     "context_recall": null
+    }
+   },
+   "failures": {
+    "root_causes": {
+     "generation_failure": 7,
+     "citation_failure": 3,
+     "context_construction_failure": 3,
+     "retrieval_failure": 3,
+     "hallucination": 2
+    },
+    "questions": {
+     "generation_failure": [
+      "e08",
+      "e10",
+      "e21",
+      "e51",
+      "q17",
+      "q33",
+      "q34"
+     ],
+     "context_construction_failure": [
+      "e23",
+      "e43",
+      "q26"
+     ],
+     "hallucination": [
+      "e30",
+      "e33",
+      "e51",
+      "q34"
+     ],
+     "citation_failure": [
+      "e32",
+      "e52",
+      "q23"
+     ],
+     "retrieval_failure": [
+      "e34",
+      "e48",
+      "r02"
+     ]
+    },
+    "failed": 18,
+    "total": 110
+   },
+   "per_question": {
+    "q01": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q02": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q03": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q04": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q05": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q06": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q07": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q08": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q09": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q10": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q11": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q12": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q13": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q14": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q15": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q16": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q17": {
+     "correct": false,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": [
+      "generation_failure"
+     ]
+    },
+    "q18": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q19": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q20": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q21": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q22": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q23": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": [
+      "citation_failure"
+     ]
+    },
+    "q24": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q25": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q26": {
+     "correct": false,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.0,
+     "context_recall": 0.0,
+     "judge": "incorrect",
+     "failures": [
+      "context_construction_failure"
+     ]
+    },
+    "q27": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q28": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q29": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q30": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q31": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q32": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q33": {
+     "correct": false,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "incorrect",
+     "failures": [
+      "generation_failure"
+     ]
+    },
+    "q34": {
+     "correct": false,
+     "refused": false,
+     "hallucination": true,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "partial",
+     "failures": [
+      "generation_failure",
+      "hallucination"
+     ]
+    },
+    "q35": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q36": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q37": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q38": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "q39": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "q40": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "r01": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "r02": {
+     "correct": false,
+     "refused": true,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 0.5,
+     "judge": "refused",
+     "failures": [
+      "retrieval_failure"
+     ]
+    },
+    "r03": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "r04": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "r05": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "r06": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 1.0,
+     "judge": "partial",
+     "failures": []
+    },
+    "r07": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "r08": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e01": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e02": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e03": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e04": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e05": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e06": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e07": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e08": {
+     "correct": false,
+     "refused": true,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "refused",
+     "failures": [
+      "generation_failure"
+     ]
+    },
+    "e09": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e10": {
+     "correct": false,
+     "refused": true,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "refused",
+     "failures": [
+      "generation_failure"
+     ]
+    },
+    "e45": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e54": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e55": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e11": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e12": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e13": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e14": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e15": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e16": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e17": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e18": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e19": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e20": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e21": {
+     "correct": false,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "partial",
+     "failures": [
+      "generation_failure"
+     ]
+    },
+    "e22": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e23": {
+     "correct": false,
+     "refused": true,
+     "hallucination": false,
+     "recall": 0.0,
+     "context_recall": 0.0,
+     "judge": "refused",
+     "failures": [
+      "context_construction_failure"
+     ]
+    },
+    "e24": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e25": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e26": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e27": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e28": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e29": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e30": {
+     "correct": true,
+     "refused": false,
+     "hallucination": true,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": [
+      "hallucination"
+     ]
+    },
+    "e31": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e32": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 1.0,
+     "judge": "partial",
+     "failures": [
+      "citation_failure"
+     ]
+    },
+    "e33": {
+     "correct": true,
+     "refused": false,
+     "hallucination": true,
+     "recall": 0.5,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": [
+      "hallucination"
+     ]
+    },
+    "e34": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 0.5,
+     "judge": "correct",
+     "failures": [
+      "retrieval_failure"
+     ]
+    },
+    "e35": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e36": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e37": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e38": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e39": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e40": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e41": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e42": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 1.0,
+     "judge": "partial",
+     "failures": []
+    },
+    "e43": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 0.5,
+     "judge": "correct",
+     "failures": [
+      "context_construction_failure"
+     ]
+    },
+    "e44": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e46": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "partial",
+     "failures": []
+    },
+    "e47": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e48": {
+     "correct": false,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 0.5,
+     "judge": "partial",
+     "failures": [
+      "retrieval_failure"
+     ]
+    },
+    "e49": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e50": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e51": {
+     "correct": false,
+     "refused": true,
+     "hallucination": true,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "refused",
+     "failures": [
+      "generation_failure",
+      "hallucination"
+     ]
+    },
+    "e52": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": [
+      "citation_failure"
+     ]
+    },
+    "e53": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 0.5,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e56": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "e57": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "e58": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "e59": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "e60": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "e61": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "e62": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    }
+   },
+   "gpu": null,
+   "complete": true
+  },
+  "E5": {
+   "label": "Hybrid + reranking",
+   "questions": 76,
+   "answerable": 73,
+   "unanswerable": 3,
+   "retrieval": {
+    "recall": 1.0,
+    "precision": 0.285,
+    "mrr": 0.966,
+    "ndcg": 0.94,
+    "hit": 1.0,
+    "context_precision": 0.295,
+    "context_recall": 1.0
+   },
+   "generation": {
+    "answer_correctness": 0.932,
+    "completeness": 0.938,
+    "faithfulness": 0.82,
+    "citation_accuracy": 0.853,
+    "hallucination_rate": 0.039,
+    "unanswerable_refused": 3,
+    "false_refusals": 2,
+    "refused_by": {
+     "model": 5
+    },
+    "claims": 99,
+    "claim_status": {
+     "partial": 18,
+     "verified": 76,
+     "unsupported": 4,
+     "relocated": 1
+    }
+   },
+   "judge": {
+    "judged": 76,
+    "correctness": {
+     "correct": 67,
+     "refused": 2,
+     "partial": 7
+    },
+    "correct_rate": 0.882,
+    "relevance": 4.934,
+    "supported_rate": 0.961,
+    "agreement_with_answer_check": 0.921,
+    "errors": 0,
+    "refusal_overrides": {
+     "refusals_judged": 2,
+     "raw_said_correct": 2
+    }
+   },
+   "performance": {
+    "end_to_end_ms_p50": 22396.9,
+    "retrieval_ms_p50": 19680.8,
+    "embed_ms_p50": 1.2,
+    "rerank_ms_p50": 19659.0,
+    "generation_ms_p50": 2680.8,
+    "context_ms_p50": 18.4,
+    "judge_ms_p50": 2237.8,
+    "end_to_end_ms_p95": 32955.7,
+    "retrieval_ms_p95": 27724.6,
+    "embed_ms_p95": 3.3,
+    "rerank_ms_p95": 27671.1,
+    "generation_ms_p95": 5829.7,
+    "context_ms_p95": 43.4,
+    "judge_ms_p95": 3091.7,
+    "throughput_q_per_min": 2.55,
+    "wall_s": null,
+    "prompt_tokens_p50": 1352,
+    "eval_tokens_p50": 92
+   },
+   "by_type": {
+    "comparative": {
+     "n": 1,
+     "correct": 1.0,
+     "recall": 1.0,
+     "context_recall": 1.0
+    },
+    "factual": {
+     "n": 26,
+     "correct": 0.962,
+     "recall": 1.0,
+     "context_recall": 1.0
+    },
+    "image": {
+     "n": 10,
+     "correct": 0.8,
+     "recall": 1.0,
+     "context_recall": 1.0
+    },
+    "keyword": {
+     "n": 5,
+     "correct": 1.0,
+     "recall": 1.0,
+     "context_recall": 1.0
+    },
+    "multi_hop": {
+     "n": 10,
+     "correct": 0.9,
+     "recall": 1.0,
+     "context_recall": 1.0
+    },
+    "table": {
+     "n": 21,
+     "correct": 0.952,
+     "recall": 1.0,
+     "context_recall": 1.0
+    },
+    "unanswerable": {
+     "n": 3,
+     "correct": 1.0,
+     "recall": null,
+     "context_recall": null
+    }
+   },
+   "failures": {
+    "root_causes": {
+     "generation_failure": 5,
+     "citation_failure": 1,
+     "hallucination": 1
+    },
+    "questions": {
+     "generation_failure": [
+      "e08",
+      "e21",
+      "q04",
+      "q17",
+      "q34"
+     ],
+     "hallucination": [
+      "q04",
+      "q34",
+      "r04"
+     ],
+     "citation_failure": [
+      "q23"
+     ]
+    },
+    "failed": 7,
+    "total": 76
+   },
+   "per_question": {
+    "q01": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q02": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q03": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q04": {
+     "correct": false,
+     "refused": true,
+     "hallucination": true,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "refused",
+     "failures": [
+      "generation_failure",
+      "hallucination"
+     ]
+    },
+    "q05": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q06": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q07": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q08": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q09": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q10": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q11": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q12": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q13": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q14": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "partial",
+     "failures": []
+    },
+    "q15": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q16": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q17": {
+     "correct": false,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": [
+      "generation_failure"
+     ]
+    },
+    "q18": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q19": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q20": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q21": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q22": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q23": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": [
+      "citation_failure"
+     ]
+    },
+    "q24": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q25": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q26": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q27": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q28": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q29": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q30": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q31": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q32": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q33": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "partial",
+     "failures": []
+    },
+    "q34": {
+     "correct": false,
+     "refused": false,
+     "hallucination": true,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "partial",
+     "failures": [
+      "generation_failure",
+      "hallucination"
+     ]
+    },
+    "q35": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q36": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q37": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "q38": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "q39": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "q40": {
+     "correct": true,
+     "refused": true,
+     "hallucination": false,
+     "recall": null,
+     "context_recall": null,
+     "judge": "correct",
+     "failures": []
+    },
+    "r01": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "r02": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "r03": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "partial",
+     "failures": []
+    },
+    "r04": {
+     "correct": true,
+     "refused": false,
+     "hallucination": true,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": [
+      "hallucination"
+     ]
+    },
+    "r05": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "r06": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "partial",
+     "failures": []
+    },
+    "r07": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "partial",
+     "failures": []
+    },
+    "r08": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e01": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e02": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e03": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e04": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e05": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e06": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e07": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e08": {
+     "correct": false,
+     "refused": true,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "refused",
+     "failures": [
+      "generation_failure"
+     ]
+    },
+    "e09": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e10": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e45": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e54": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e55": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e11": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e12": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e13": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e14": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e15": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e16": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e17": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e18": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e19": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e20": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e21": {
+     "correct": false,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "partial",
+     "failures": [
+      "generation_failure"
+     ]
+    },
+    "e22": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e23": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e24": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    },
+    "e25": {
+     "correct": true,
+     "refused": false,
+     "hallucination": false,
+     "recall": 1.0,
+     "context_recall": 1.0,
+     "judge": "correct",
+     "failures": []
+    }
+   },
+   "gpu": null,
+   "complete": false
+  }
+ },
+ "not_measured": [
+  "E6",
+  "E7"
+ ]
+}

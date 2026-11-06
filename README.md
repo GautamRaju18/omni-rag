@@ -1,98 +1,131 @@
 # OmniRAG
 
-**Multimodal Graph-Based Retrieval Intelligence**: a local-first RAG platform. It ingests heterogeneous documents (PDF, scans, Office files, images, HTML, JSON), builds a Neo4j knowledge graph with vector and full-text indexes, runs dense + BM25 + graph hybrid retrieval with reranking, and generates cited, grounded answers with local LLMs through Ollama. Every stage is measured by an evaluation harness.
+**Multimodal Graph-Based Retrieval Intelligence**: a local-first RAG platform.
+- It ingests heterogeneous documents (PDF, scans, Office files, images, HTML, JSON, CSV) and builds a Neo4j knowledge graph with vector and full-text indexes and validated entities.
+- It retrieves with dense + BM25 + graph hybrid search, fused and optionally reranked, through a bounded LangGraph workflow.
+- It answers with a local LLM (Ollama), and **every claim carries a quote that code checks against the cited source**.
+- A 110-question evaluation harness measures every stage.
 
-> 🚧 Work in progress, built in 16 tested phases. Current status: **Phase 9b complete** (multimodal ingestion with upload API; 8 chunking strategies; versioned bge-m3 embeddings; Neo4j knowledge graph with vector + full-text indexes, document versioning, and LLM-extracted entities/relations validated against the source; dense, identifier-aware BM25 and graph retrieval with metadata filters, fused by RRF and optionally reranked by a BGE cross-encoder, benchmarked against exact baselines; a LangGraph retrieval workflow with a query router, a bounded search agent, query transforms and a context check; a Streamlit dashboard to run and inspect every step). See [docs/PROGRESS.md](docs/PROGRESS.md).
+Built in 16 tested phases ([docs/PROGRESS.md](docs/PROGRESS.md)), with an architecture decision record per design choice ([docs/adr/](docs/adr/)) and a learning guide per phase ([docs/learning/](docs/learning/)).
 
-## Target hardware
-Built for and measured on a 16 GB RAM laptop with a 6 GB RTX 3060 (Windows 11 + WSL2). Memory and VRAM budgets are documented in [docs/learning/phase-00-environment.md](docs/learning/phase-00-environment.md).
+## Highlights (measured; sources in docs/benchmarks)
+- **Answers you can check.**
+  - The model must return a verbatim quote per claim; code verifies quotes and numbers in the cited block, corrects wrong source numbers, and removes unsupported claims.
+  - Questions about things no document mentions are refused without a model call (26 ms).
+  - ([ADR-0019](docs/adr/0019-grounded-generation-and-citations.md))
+- **110-question evaluation** (8 question types, 10 unanswerable), dense + BM25 configuration (E3): Recall@5 0.950, context recall 0.980, answer correctness 0.900, quote-verified faithfulness 0.853, 9/10 unanswerable refused. Reranking (E5) reaches 0.932 correct on the 76 questions it covered, at 4.6× the latency on CPU. Every failure is attributed to the pipeline stage that lost it. ([ADR-0020](docs/adr/0020-evaluation-framework.md))
+- **Every component kept or dropped by measurement**, with per-question wins and losses:
+  - kept: identifier-aware BM25, RRF fusion, a rule router over an LLM router, a grounded search agent for multi-hop questions, a token budget over a fixed top-k;
+  - dropped: graph retrieval and query rewriting as defaults, because they didn't help on this corpus.
+- **Runs on a laptop:** 6 GB GPU (qwen3:4b-instruct + bge-m3 on Ollama), 8 GB WSL VM, everything local. LangSmith is opt-in and redacting.
 
-## Architecture (current)
+## Architecture
 ```
-Documents ─► validate ─► loader (TXT/MD/HTML/JSON/CSV/DOCX/XLSX/PPTX/PDF/image)
-                            PDF: PyMuPDF │ Docling layout model (multi-column, auto) │ Tesseract OCR (scans)
-                         ─► enrich: image descriptions (qwen3-vl:2b via Ollama, origin=generated)
-                         ─► elements + originals + assets  (~/omnirag-data)
-                         ─► chunk: fixed │ recursive │ structure │ table │ multimodal │
-                                   hierarchical │ parent-child   (bge-m3 tokens, element provenance)
-                         ─► embed: bge-m3 via Ollama (versioned space, cached, embedding_ref per chunk)
+Documents ─► validate ─► loaders (TXT/MD/HTML/JSON/CSV/DOCX/XLSX/PPTX/PDF/image)
+             PDF: PyMuPDF │ Docling layout model │ Tesseract OCR      images: qwen3-vl:2b descriptions (origin=generated)
+          ─► elements + originals ─► chunks (bge-m3 tokens, element provenance) ─► bge-m3 embeddings (versioned, cached)
+          ─► Neo4j 2026: Document/Section/Page/Chunk/Table/Figure, vector + full-text indexes,
+             Entity/RELATED_TO extracted by the LLM and validated against the text, versions
 
-FastAPI (WSL2, uvicorn) ──Bolt──► Neo4j 2026.10 (Docker, ≤2 GB)
-        └──────HTTP──────► Ollama (native Windows, GPU)
-                              ├─ qwen3:4b-instruct     (generation)
-                              ├─ bge-m3                (embeddings, 1024-d)
-                              └─ qwen3-vl:2b-instruct  (image descriptions, loaded per batch)
+Question ─► LangGraph workflow (bounded):  route ─► [transform] ─► retrieve ⇄ agent ─► [rerank] ─► check ─► [correct] ─► assemble
+             retrieve = dense (vector) + BM25 (identifier-aware Lucene) [+ graph], fused by RRF
+             assemble = 1,024-token context of numbered sources (optional expansion / extractive compression)
+          ─► answer: qwen3:4b-instruct, structured claims + quotes ─► citation validation ─► SQLite trace
+          ─► FastAPI (/chat, /chat/stream SSE) ─► Streamlit dashboard
 ```
 
 ## Tech stack
-Python 3.11 · uv · FastAPI · Pydantic v2 · structlog · Neo4j (async driver) · Ollama · httpx · PyMuPDF · Docling (CPU) · Tesseract · python-docx/openpyxl/python-pptx · pytest · Ruff · Docker Compose. More components (LangGraph, LangSmith, Streamlit …) are added in their phases.
+Python 3.11 · uv · FastAPI · Pydantic v2 · structlog · Neo4j 2026.10 (vector + full-text, Cypher 25) · Ollama (qwen3:4b-instruct, bge-m3, qwen3-vl:2b) · LangGraph · bge-reranker-v2-m3 (torch CPU) · PyMuPDF · Docling · Tesseract · python-docx / openpyxl / python-pptx · SQLite · Streamlit + Altair · LangSmith (opt-in) · pytest · Ruff · Docker Compose.
 
 ## Quick start
 Prerequisites: WSL2 Ubuntu, Docker Desktop with WSL integration, Ollama for Windows, `uv`, and `sudo apt install tesseract-ocr`.
-
 ```bash
 # PowerShell (Windows): models
 ollama pull qwen3:4b-instruct
 ollama pull bge-m3
 ollama pull qwen3-vl:2b-instruct
 ```
-
+**Option A: containers** (API + dashboard + Neo4j; Ollama stays on the host)
 ```bash
-# Ubuntu (WSL)
 cd /mnt/p/omni-rag
-cp .env.example .env               # set a real password in both NEO4J_PASSWORD and OMNIRAG_NEO4J_PASSWORD
-docker compose up -d               # Neo4j
-uv sync                            # install from uv.lock (~1.6 GB venv incl. CPU-only torch for Docling)
-# uv sync --no-group layout        # slim install without Docling (PDFs then always use PyMuPDF)
-uv run python -m omnirag.ingestion ingest data/samples   # first Docling use downloads ~506 MB of models
-uv run uvicorn omnirag.api.main:app --reload --no-access-log   # one process: the job queue lives in it
-curl -s localhost:8000/api/v1/health
+cp .env.example .env                              # set NEO4J_PASSWORD and OMNIRAG_NEO4J_PASSWORD
+docker compose --profile app up -d --build        # first build ~11 min → http://localhost:8501
 ```
-API docs: http://localhost:8000/docs · Neo4j Browser: http://localhost:7474
-
-## Environment variables
-See [.env.example](.env.example). All application settings use the `OMNIRAG_` prefix and are validated at startup by [config.py](src/omnirag/core/config.py).
-
-## API (so far)
-| Method | Path | Purpose |
-|---|---|---|
-| GET | `/api/v1/health` | Aggregate status (200 ok/degraded, 503 if a dependency is down) |
-| GET | `/api/v1/health/ollama` | Ollama version, required/missing models, loaded models + VRAM |
-| GET | `/api/v1/health/neo4j` | Neo4j connectivity, version, edition |
-| POST | `/api/v1/documents` | Upload a file → 202 + background job (200 if duplicate) |
-| GET | `/api/v1/documents` | List documents (filter by status/kind) |
-| GET | `/api/v1/documents/{id}` · `/elements` · `/original` · `/assets/{name}` | Record, extracted elements, original file, extracted images |
-| POST | `/api/v1/documents/{id}/reingest` | Process the stored original again |
-| DELETE | `/api/v1/documents/{id}` | Delete (409 while being ingested) |
-| GET | `/api/v1/ingestion/jobs` · `/jobs/{id}` · `/status` | Job list, one job (poll after upload), worker/queue state |
-| POST | `/api/v1/retrieval/search` | One retrieval mode: dense, bm25, graph, their RRF fusions, `+rerank` |
-| POST | `/api/v1/retrieval/advanced` | LangGraph workflow: router, transforms, agent, context check, retries; returns the per-node trace and every ranked list |
-| GET | `/api/v1/graph/stats` · `/graph/entities` | Graph size; most-mentioned entities |
-
-Upload example: `curl -F "file=@data/samples/aurora_safety_review.pdf" localhost:8000/api/v1/documents`
+**Option B: local development**
+```bash
+cp .env.example .env
+docker compose up -d                              # Neo4j only
+uv sync                                           # from uv.lock (CPU-only torch)
+uv run python -m omnirag.ingestion ingest data/samples
+uv run python -m omnirag.chunking rechunk --all && uv run python -m omnirag.embeddings embed --all
+uv run python -m omnirag.knowledge_base init && uv run python -m omnirag.knowledge_base load --all
+uv run python -m omnirag.knowledge_base extract --all   # entities + relations (optional, LLM)
+uv run uvicorn omnirag.api.main:app --no-access-log                 # http://localhost:8000/docs
+uv run streamlit run src/omnirag/frontend/app.py                    # http://localhost:8501
+```
+Ask from the command line:
+```bash
+curl -s localhost:8000/api/v1/chat -H 'content-type: application/json' \
+     -d '{"question": "Why did cell AUR-C103 fail?"}' | jq '.answer | {text, grounded, citations}'
+```
 
 ## Dashboard
-A Streamlit app to try every retrieval feature and watch each step (it talks to the API only):
-```bash
-uv run uvicorn omnirag.api.main:app --no-access-log          # terminal 1
-uv run streamlit run src/omnirag/frontend/app.py             # terminal 2 → http://localhost:8501
-```
-- **Overview**: health of Neo4j and Ollama, what is in the graph, the system's stages.
-- **Retrieval lab**: one question through several modes side by side: where each chunk ranks in each mode, overlap, latency.
-- **Workflow inspector**: every Phase 9 option (router, self-query, transforms, agent, rerank, context check, retries, per-document cap); shows the path through the LangGraph graph, a timeline, what each node did, every ranked list and how RRF built the final context.
-- **Benchmarks**: the measured results in `docs/benchmarks/` (read, never recomputed).
+| Group | Page | What it does |
+|---|---|---|
+| Use | **Ask** | Chat with streaming claims, numbered citations (file › section · page, the exact passage), refusals explained, "how this answer was checked" |
+| Use | **Documents** | Library with preview (original + extracted elements), upload, re-ingest, delete; ingestion status |
+| Use | **Graph explorer** | Documents ↔ entities overview; an entity's relations (stated solid, inferred dashed) and mentions; a document's chunks and entities |
+| Inspect | **Overview** | Health of API, Neo4j, Ollama; system diagram; graph contents |
+| Inspect | **Retrieval lab** | One question through every retrieval mode side by side |
+| Inspect | **Workflow inspector** | Every workflow option; the path through the graph, timeline, ranked lists, RRF, the generator's context |
+| Measure | **Evaluation** | E1–E7 reports compared, any metric charted, failure root causes, per-question results; start a run |
+| Measure | **Performance** | Live latency per component, answer quality signals, failure flags; evaluation latency, memory, indexing |
+| Measure | **Benchmarks** | Every measured benchmark file |
 
-Streamlit telemetry is off (`.streamlit/config.toml`).
+## API
+| Method | Path | Purpose |
+|---|---|---|
+| GET | `/health` · `/api/v1/health` · `/health/ollama` · `/health/neo4j` | Liveness; aggregate and per-component health |
+| POST | `/api/v1/documents/upload` (also `/documents`) | Upload a file → background ingestion job (duplicates detected) |
+| GET / DELETE | `/api/v1/documents` · `/documents/{id}` (+ `/elements`, `/original`, `/assets/{name}`) | Library, record, elements, original file; delete |
+| POST | `/api/v1/ingestion/start` | (Re)ingest a stored document |
+| GET | `/api/v1/ingestion/{job_id}/status` · `/ingestion/jobs` · `/ingestion/status` | Job status, job list, worker and queue state |
+| POST | `/api/v1/retrieval/search` · `/retrieval/advanced` | One retrieval mode; the LangGraph workflow with its full trace and context |
+| POST | `/api/v1/chat` · `/chat/stream` | Grounded answer with verified citations; Server-Sent Events (claims as they're written) |
+| GET / DELETE | `/api/v1/chat/history` · `/chat/history/{id}` · `/chat/turns/{id}` | Conversations and full query traces |
+| POST / GET | `/api/v1/evaluate` · `/evaluate/{run_id}` · `/evaluate/experiments` | Start an evaluation run (background), results |
+| GET | `/api/v1/analytics` | Answer quality, latency per component, failure flags, latest evaluation |
+| GET | `/api/v1/graph/stats` · `/graph/entities` · `/graph/entity` · `/graph/neighborhood` | Graph size, entities, one entity's evidence, explorer data |
+
+## Evaluation
+```bash
+uv run python -m omnirag.evaluation.rag_eval --experiments E3,E7 --limit 20 --out /tmp/quick.json
+uv run python -m omnirag.evaluation.rag_eval --indexing --out docs/benchmarks/rag-eval-<date>.json   # all E1-E7
+```
+The 2026-11-06 report ([JSON](docs/benchmarks/rag-eval-2026-11-06.json)) covers:
+- E1–E4 complete;
+- E5 on the first 76 questions (the run was stopped early);
+- E6–E7 not yet measured.
+
+Results and per-question analysis are in [ADR-0020](docs/adr/0020-evaluation-framework.md).
 
 ## Testing
 ```bash
 uv run ruff format --check . && uv run ruff check .
-uv run pytest                  # unit tests (no services needed, ~7 s)
-uv run pytest -m integration   # against live Neo4j + Ollama (incl. the vision model)
-uv run pytest -m docling       # real Docling layout models (~1 min first start-up)
+uv run pytest                  # 419 unit tests, no services needed (~1 min)
+uv run pytest -m integration   # 37 tests against live Neo4j + Ollama (needs: docker compose --profile test up -d neo4j-test)
+uv run pytest -m docling       # real Docling layout models
 ```
 
+## Configuration and privacy
+- All settings use the `OMNIRAG_` prefix ([.env.example](.env.example)), validated by [config.py](src/omnirag/core/config.py). Secrets only come from `.env` (git-ignored, never in the image).
+- Everything runs locally.
+- LangSmith tracing needs both `OMNIRAG_LANGSMITH_TRACING=true` and `LANGSMITH_API_KEY`, and hides inputs/outputs by default. Evaluation uploads send questions and scores, not documents.
+- Cypher is always parameterized; user text never reaches Lucene unescaped; uploads are validated; originals are served as attachments with `nosniff`.
+
 ## Documentation
-- Progress and measured baselines: [docs/PROGRESS.md](docs/PROGRESS.md)
-- Learning notes per phase: [docs/learning/](docs/learning/)
-- Architecture decisions: [docs/adr/](docs/adr/)
+- [docs/PROGRESS.md](docs/PROGRESS.md): phases, checklist, measured baselines
+- [docs/adr/](docs/adr/): 21 architecture decision records
+- [docs/learning/](docs/learning/): per-phase guides (concepts, walkthrough, how to run, real outputs, common errors, exercise, acceptance criteria)
+- [docs/RESUME.md](docs/RESUME.md): portfolio summary and interview notes
+- [CLAUDE.md](CLAUDE.md): working invariants for the codebase

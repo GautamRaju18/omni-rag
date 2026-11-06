@@ -32,6 +32,14 @@ class EvalQuestion(BaseModel):
     answer: str | None
     facts: list[list[Evidence]] = Field(default_factory=list)
     evidence_origin: str = "original"  # "generated": only model-written text holds the fact
+    # Phase 12: terms a correct answer contains (an inner list = alternatives), compared after
+    # NFKC / case / whitespace normalisation (``answer_includes``).
+    must_include: list[str | list[str]] = Field(default_factory=list)
+
+    @property
+    def expected_sources(self) -> list[str]:
+        """Files that hold the evidence (any alternative)."""
+        return sorted({a.file for alts in self.facts for a in alts})
 
     @property
     def answerable(self) -> bool:
@@ -44,6 +52,7 @@ class EvalDataset(BaseModel):
     created: str
     description: str
     questions: list[EvalQuestion]
+    errata: list[dict] = Field(default_factory=list)  # recorded changes after publication
 
     @classmethod
     def load(cls, path: Path) -> EvalDataset:

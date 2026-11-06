@@ -167,7 +167,8 @@ def test_agent_bridges_to_a_second_fact() -> None:
     assert d["queries"] == [q, "NaPF6 supplier"]
     assert {h.chunk_id for h in result.hits} == {"salt", "row"}
     assert [t["node"] for t in d["trace"]] == ["route", "transform", "retrieve", "plan",
-                                               "retrieve", "plan", "check"]  # fmt: skip
+                                               "retrieve", "plan", "check",
+                                               "assemble"]  # fmt: skip
     assert "[1] (d.md) E-5" in [u for n, u in llm.calls if n == "agent"][0]
 
 
@@ -212,7 +213,7 @@ def test_worst_case_is_bounded() -> None:
     # The agent replaces corrective retries (ADR-0017); each path stays under the limit.
     assert len(agent["agent"]["steps"]) == 3 and agent["attempts"] == 0
     assert retries["attempts"] == 3 and not retries["agent"]["steps"]
-    assert agent["recursion_limit"] == recursion_limit(s) == 4 * 4 + 2 * 3 + 5
+    assert agent["recursion_limit"] == recursion_limit(s) == 4 * 4 + 2 * 3 + 6
     assert max(len(agent["trace"]), len(retries["trace"])) < recursion_limit(s)
 
 

@@ -21,23 +21,23 @@ A feature counts as done only when its tests pass and the result was observed, n
 | 8 | Reranking | ✅ Done 2026-11-05 | 332 unit + 30 live tests; bge-reranker-v2-m3 depth 20: seed MRR 0.980 / nDCG 0.948, relational R@5 1.000; 17 s/query on CPU (opt-in mode; GPU open); [learning/phase-08](learning/phase-08-reranking.md), [results](benchmarks/rerank-2026-11-05.json) |
 | 9a | Corrective retrieval workflow (LangGraph): transforms, context check, bounded retries | ✅ Done 2026-11-06 | 344 unit + 32 live tests; transforms don't help these sets; context check 37/40 seed, catches 3/3 unanswerable; [learning/phase-09a](learning/phase-09a-corrective-retrieval-workflow.md), [results](benchmarks/workflow-2026-11-05.json) |
 | 9b | Query router, self-query, grounded search agent, per-document cap; Streamlit dashboard (Phase 14's retrieval lab, pulled forward) | ✅ Done 2026-11-06 | 373 unit tests; rules router 30/40 · 7/8 · 23/24 (LLM router worse); default (router + agent) relational R@5 0.875 → 0.938, MRR 0.838 → 0.917, +r02 no loss, seed unchanged; [learning/phase-09b](learning/phase-09b-routing-and-agentic-retrieval.md), [results](benchmarks/workflow-9b-2026-11-06.json) |
-| 9c | Context assembly: parent-child / neighbour expansion, compression, token budget | ⏭ Next | |
-| 10 | Ollama generation | ⬜ | |
-| 11 | Citations + answer validation | ⬜ | |
-| 12 | LangSmith evaluation | ⬜ | |
-| 13 | Failure analysis + observability | ⬜ | |
-| 14 | Frontend (Streamlit) | 🟡 Started in 9b | Overview, retrieval lab, workflow inspector, benchmarks done; upload, library, chat, citations, graph explorer, evaluation and performance screens remain |
-| 15 | Dockerization + deployment | ⬜ | |
-| 16 | Tests, docs, resume prep | ⬜ | |
+| 9c | Context assembly: parent-child / neighbour expansion, compression, token budget | ✅ Done 2026-11-06 | 383 unit + 33 live tests; budget 1,024 vs top 5: context recall seed 0.986 → 1.000, relational 0.875 → 0.938 (+q22 +r05, no loss); expansion and lexical/embedding compression lose evidence; LLM compression best at 256 tokens (relational 0.562 → 0.812); [learning/phase-09c](learning/phase-09c-context-assembly.md), [results](benchmarks/context-2026-11-06.json) |
+| 10 | Ollama generation: claims with quotes, structured output, streaming (SSE), refusal without a model call, chat history + traces (SQLite) | ✅ Done 2026-11-06 | 418 unit + 37 live tests; live answers quote-verified (AUR-C103 2/2, 8-claim comparison 8/8), AUR-C109 refused in 26 ms with 0 model calls; [learning/phase-10](learning/phase-10-generation.md) |
+| 11 | Citations + answer validation: quotes checked in every block (verified / relocated / elided on one line), numbers checked, unsupported claims removed, generated-only evidence → inferred | ✅ Done 2026-11-06 | 16 generation tests incl. every status; two rules found live (elided table quote, OCR vs description); [learning/phase-11](learning/phase-11-citations-and-validation.md) |
+| 12 | Evaluation: 110-question set, E1–E7 runner, deterministic metrics + local LLM judge, LangSmith (opt-in, redacting), `POST /evaluate` | ✅ Done 2026-11-06 (run stopped early by request: E1–E4 complete, E5 76/110, E6–E7 not measured) | E3 dense+BM25: R@5 0.950, context recall 0.980, correct 0.900, faithfulness 0.853, 9/10 unanswerable refused; E5 rerank on 76 q: correct 0.932 vs E3 0.918, 4.6× latency; judge called 25/27 refusals "correct" → refusals scored by rule; [ADR-0020](adr/0020-evaluation-framework.md), [learning/phase-12](learning/phase-12-evaluation.md), [report](benchmarks/rag-eval-2026-11-06.json) |
+| 13 | Failure analysis + observability: root cause per failed question (11 categories in pipeline order), query lifecycle traces, `/analytics` | ✅ Done 2026-11-06 | BM25 alone fails at retrieval (15), dense alone at context construction (10), dense+BM25 mostly at generation (6); no parsing/OCR/chunking/graph/embedding failures; [learning/phase-13](learning/phase-13-failure-analysis.md) |
+| 14 | Frontend (Streamlit): all 11 screens | ✅ Done 2026-11-06 | Ask (streaming, citation cards, checks), Documents (library, upload, ingestion status, preview), Graph explorer, Retrieval lab, Workflow inspector, Evaluation, Performance, Benchmarks; every page rendered headless in tests; [learning/phase-14](learning/phase-14-frontend.md) |
+| 15 | Dockerization + deployment: one image for API + dashboard, compose profile `app`, Ollama on the host | ✅ Done 2026-11-06 | 3.56 GB image, ~11 min cold build; api/dashboard/neo4j healthy; Ollama reached via host.docker.internal; grounded chat through the container; no secrets in the image; [learning/phase-15](learning/phase-15-deployment.md) |
+| 16 | Tests, docs, resume prep | ✅ Done 2026-11-06 | 419 unit + 37 live tests; README, 21 ADRs, learning guide per phase, [RESUME.md](RESUME.md); [learning/phase-16](learning/phase-16-final.md) |
 
 ## Success-criteria tracker (from the brief)
 - [x] All document types ingest (10/10 kinds: txt, md, html, json, csv, docx, xlsx, pptx, pdf, image) · [x] OCR on scans/images (Tesseract, with confidence) · [x] Table/figure provenance (tables in all formats incl. borderless via Docling; PPTX chart data; image descriptions with origin=generated)
 - [x] Multiple chunking strategies (all 8, benchmarked) · [x] Embeddings in Neo4j (58 chunks, 1024-d, cosine, no quantization) · [x] Graph queryable (structure + validated entities/relations)
 - [x] Dense (Neo4j vector index, in-index filters) · [x] BM25 (full-text, identifier-aware) · [x] Graph retrieval (linking, 2-hop traversal, provenance; opt-in, ADR-0014) · [x] RRF · [x] Reranking (cross-encoder, CPU; ADR-0015)
-- [ ] Grounded answers · [ ] Verifiable citations · [ ] LangSmith tracing
-- [ ] Retrieval eval · [ ] Faithfulness eval · [ ] Reproducible benchmarks
-- [ ] FastAPI endpoints (health ✅, documents ✅, ingestion ✅; chat/evaluate/analytics pending)
-- [ ] Frontend upload + QA · [x] Tests pass (Phase 1 scope) · [ ] Docker deploy · [ ] Docs complete
+- [x] Grounded answers (claims with quotes, refusal without a model call) · [x] Verifiable citations (quotes + numbers checked by code) · [~] LangSmith tracing + experiment upload (implemented, redacting, tested with a fake client; not run against the hosted service: no API key)
+- [x] Retrieval eval (110 questions) · [x] Faithfulness eval (quote-verified + judge) · [x] Reproducible benchmarks (resumable records, `--from-partial`) · [~] E6/E7 on the full set (run stopped early)
+- [x] FastAPI endpoints (all the brief lists: health, documents/upload, ingestion/start + status, chat + history, evaluate, analytics; plus retrieval and graph)
+- [x] Frontend (all 11 screens) · [x] Tests pass (419 unit + 37 live) · [x] Docker deploy (compose profile `app`) · [x] Docs complete (README, 21 ADRs, learning guides, resume notes)
 
 ## Decisions log
 - [ADR-0001](adr/0001-src-layout.md): `src/omnirag` package layout
@@ -57,6 +57,10 @@ A feature counts as done only when its tests pass and the result was observed, n
 - [ADR-0015](adr/0015-cross-encoder-reranking.md): bge-reranker-v2-m3 cross-encoder (pinned, CPU with CUDA auto-detect); quality mode, not default; its score doesn't detect unanswerable questions
 - [ADR-0016](adr/0016-corrective-retrieval-workflow.md): LangGraph corrective loop (bounded); transforms off by default (no gain measured); identifier + LLM context check on
 - [ADR-0017](adr/0017-routing-self-query-agentic-retrieval.md): rule router (beats the LLM router); grounded search agent for multi-hop routes (+r02); BM25 requires only the user's identifiers; no corrective retry after the agent; self-query opt-in (precise, no gain)
+- [ADR-0018](adr/0018-context-assembly.md): token budget (1,024 bge-m3) instead of top-k; expansion and extractive compression opt-in (measured); LLM compression for small budgets
+- [ADR-0019](adr/0019-grounded-generation-and-citations.md): claims with verbatim quotes checked by code; refusal without a model call; SQLite chat traces
+- [ADR-0020](adr/0020-evaluation-framework.md): 110-question evaluation, deterministic metrics first, local LLM judge with reported agreement, failure root causes, LangSmith opt-in and redacting
+- [ADR-0021](adr/0021-docker-deployment.md): one image for API + dashboard, Ollama on the host, data as a bind mount
 
 ## Measured baselines (2026-11-04)
 | Metric | Value |

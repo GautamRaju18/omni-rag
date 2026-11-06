@@ -1,0 +1,2320 @@
+{
+ "name": "omnirag-eval-v1",
+ "version": 1,
+ "created": "2026-11-06",
+ "description": "Phase 12 evaluation set: the 40 seed questions (Phase 3b), the 8 relational questions (Phase 7, typed multi_hop here) and 62 new ones written from data/samples. Evidence is verbatim text (ADR-0009); every quote is checked against the samples by tests. must_include lists the terms a correct answer contains (a list = alternatives), compared after NFKC/case/whitespace normalisation. Relevant chunk IDs are derived from the evidence at run time for the chunk set in use (ADR-0008) and recorded in reports.",
+ "questions": [
+  {
+   "id": "q01",
+   "type": "factual",
+   "question": "Who is the project lead of Project Aurora?",
+   "answer": "Dr. Priya Raman.",
+   "facts": [
+    [
+     {
+      "file": "aurora_config.json",
+      "text": "lead: Dr. Priya Raman"
+     },
+     {
+      "file": "aurora_config.json",
+      "text": "name: Dr. Priya Raman role: Project lead"
+     }
+    ]
+   ],
+   "must_include": [
+    "Priya Raman"
+   ]
+  },
+  {
+   "id": "q02",
+   "type": "factual",
+   "question": "What cathode material does the Aurora cell use?",
+   "answer": "Prussian white (Na2Fe[Fe(CN)6]).",
+   "facts": [
+    [
+     {
+      "file": "aurora_research_notes.md",
+      "text": "The cathode is a Prussian white"
+     },
+     {
+      "file": "helios_aurora_s1.html",
+      "text": "a Prussian white cathode and hard carbon anode"
+     }
+    ]
+   ],
+   "must_include": [
+    "Prussian white"
+   ]
+  },
+  {
+   "id": "q03",
+   "type": "factual",
+   "question": "Why was Prussian white chosen over layered oxides?",
+   "answer": "It avoids nickel and cobalt entirely.",
+   "facts": [
+    [
+     {
+      "file": "aurora_research_notes.md",
+      "text": "because it avoids nickel and cobalt entirely"
+     }
+    ]
+   ],
+   "must_include": [
+    "nickel",
+    "cobalt"
+   ]
+  },
+  {
+   "id": "q04",
+   "type": "table",
+   "question": "What capacity retention did cell AUR-C103 reach, and after how many cycles?",
+   "answer": "72.5% after 412 cycles.",
+   "facts": [
+    [
+     {
+      "file": "aurora_research_notes.md",
+      "text": "| AUR-C103 | E-5 | 45 | 412 | 72.5 |"
+     },
+     {
+      "file": "cell_test_results.csv",
+      "text": "| AUR-C103 | E-5 | 45 | 412 | 72.5 | failed |"
+     }
+    ]
+   ],
+   "must_include": [
+    "72.5",
+    "412"
+   ]
+  },
+  {
+   "id": "q05",
+   "type": "factual",
+   "question": "Why did cell AUR-C103 fail?",
+   "answer": "Gas evolution from decomposition of the E-5 electrolyte at 45 °C.",
+   "facts": [
+    [
+     {
+      "file": "aurora_research_notes.md",
+      "text": "failed at cycle 412 because of gas evolution at 45 °C"
+     },
+     {
+      "file": "aurora_safety_review.pdf",
+      "text": "consistent with decomposition of ethylene carbonate (EC) in the E-5 electrolyte"
+     },
+     {
+      "file": "meeting_notes_2026-03-12.txt",
+      "text": "Gas analysis points to electrolyte decomposition of the E-5 baseline"
+     }
+    ]
+   ],
+   "must_include": [
+    "E-5",
+    [
+     "decompos",
+     "gas"
+    ]
+   ]
+  },
+  {
+   "id": "q06",
+   "type": "table",
+   "question": "How much did the pouch of AUR-C103 swell?",
+   "answer": "14%.",
+   "facts": [
+    [
+     {
+      "file": "aurora_safety_review.pdf",
+      "text": "| AUR-C103 | E-5 | 45 | 412 | 14.0 |"
+     },
+     {
+      "file": "aurora_research_notes.md",
+      "text": "the pouch swelled by 14%"
+     },
+     {
+      "file": "aurora_safety_review.pdf",
+      "text": "The pouch swelled by 14%"
+     },
+     {
+      "file": "meeting_notes_2026-03-12.txt",
+      "text": "14% pouch swelling"
+     }
+    ]
+   ],
+   "must_include": [
+    "14"
+   ]
+  },
+  {
+   "id": "q07",
+   "type": "multi_hop",
+   "question": "Which electrolyte replaced the one used in the cell that failed at 45 °C, and who owns its qualification?",
+   "answer": "E-7, owned by Marco Lindqvist.",
+   "facts": [
+    [
+     {
+      "file": "meeting_notes_2026-03-12.txt",
+      "text": "move high-temperature testing to electrolyte E-7"
+     },
+     {
+      "file": "aurora_status_report_2026-03.docx",
+      "text": "so high-temperature testing moved to electrolyte E-7"
+     },
+     {
+      "file": "aurora_q1_review.pptx",
+      "text": "high-temperature testing moved to E-7"
+     }
+    ],
+    [
+     {
+      "file": "meeting_notes_2026-03-12.txt",
+      "text": "Marco Lindqvist owns the E-7 qualification"
+     },
+     {
+      "file": "aurora_config.json",
+      "text": "Marco Lindqvist role: Electrolyte chemist workstreams: electrolyte, E-7 qualification"
+     },
+     {
+      "file": "e7_technical_note.pdf",
+      "text": "Qualification continues to 1500 cycles under Marco Lindqvist"
+     }
+    ]
+   ],
+   "must_include": [
+    "E-7",
+    "Marco Lindqvist"
+   ]
+  },
+  {
+   "id": "q08",
+   "type": "table",
+   "question": "What is the planned budget of the electrolyte workstream?",
+   "answer": "EUR 240,000.",
+   "facts": [
+    [
+     {
+      "file": "aurora_budget_2026.xlsx",
+      "text": "| Electrolyte | Marco Lindqvist | 240000 |"
+     },
+     {
+      "file": "aurora_status_report_2026-03.docx",
+      "text": "raising the electrolyte workstream budget to EUR 240,000"
+     }
+    ]
+   ],
+   "must_include": [
+    [
+     "240,000",
+     "240000"
+    ]
+   ]
+  },
+  {
+   "id": "q09",
+   "type": "factual",
+   "question": "When did the steering committee approve extra funding for the E-7 qualification, and how much?",
+   "answer": "On 2026-03-19, EUR 85,000.",
+   "facts": [
+    [
+     {
+      "file": "aurora_status_report_2026-03.docx",
+      "text": "On 2026-03-19 the steering committee approved an additional EUR 85,000"
+     },
+     {
+      "file": "aurora_q1_review.pptx",
+      "text": "approved an extra EUR 85,000 for the E-7 qualification on 2026-03-19"
+     }
+    ]
+   ],
+   "must_include": [
+    "2026-03-19",
+    [
+     "85,000",
+     "85000"
+    ]
+   ]
+  },
+  {
+   "id": "q10",
+   "type": "table",
+   "question": "What share of the cathode budget has been spent?",
+   "answer": "67.5% (EUR 121,500 of 180,000).",
+   "facts": [
+    [
+     {
+      "file": "aurora_budget_2026.xlsx",
+      "text": "| Cathode | Dr. Priya Raman | 180000 | 121500 | 67.5% |"
+     }
+    ]
+   ],
+   "must_include": [
+    "67.5"
+   ]
+  },
+  {
+   "id": "q11",
+   "type": "table",
+   "question": "Which hard-carbon supplier is not yet qualified?",
+   "answer": "Carbonix Materials.",
+   "facts": [
+    [
+     {
+      "file": "aurora_budget_2026.xlsx",
+      "text": "| Hard carbon | Carbonix Materials | 10 | FALSE |"
+     },
+     {
+      "file": "aurora_status_report_2026-03.docx",
+      "text": "Qualify Carbonix Materials as second supplier"
+     }
+    ]
+   ],
+   "must_include": [
+    "Carbonix"
+   ]
+  },
+  {
+   "id": "q12",
+   "type": "keyword",
+   "question": "What is the lead time for NaPF6 salt from Nordic Salts AB?",
+   "answer": "4 weeks.",
+   "facts": [
+    [
+     {
+      "file": "aurora_budget_2026.xlsx",
+      "text": "| NaPF6 salt | Nordic Salts AB | 4 | TRUE |"
+     }
+    ]
+   ],
+   "must_include": [
+    [
+     "4 weeks",
+     "four weeks",
+     "4-week",
+     "4 week"
+    ]
+   ]
+  },
+  {
+   "id": "q13",
+   "type": "table",
+   "question": "When is milestone M3 due?",
+   "answer": "2026-09-30.",
+   "facts": [
+    [
+     {
+      "file": "aurora_budget_2026.xlsx",
+      "text": "| M3 | Pilot line 100-cell batch | 2026-09-30 |"
+     },
+     {
+      "file": "aurora_q1_review.pptx",
+      "text": "| M3 | Pilot line 100-cell batch | 2026-09-30 | On track |"
+     },
+     {
+      "file": "aurora_config.json",
+      "text": "id: M3 name: Pilot line 100-cell batch due: 2026-09-30"
+     }
+    ]
+   ],
+   "must_include": [
+    "2026-09-30"
+   ]
+  },
+  {
+   "id": "q14",
+   "type": "factual",
+   "question": "What is the status of milestone M2?",
+   "answer": "At risk (due 2026-05-30).",
+   "facts": [
+    [
+     {
+      "file": "aurora_q1_review.pptx",
+      "text": "| M2 | 45 °C stability demonstrated | 2026-05-30 | At risk |"
+     },
+     {
+      "file": "aurora_status_report_2026-03.docx",
+      "text": "Milestone M2 (45 °C stability demonstrated, due 2026-05-30) is at risk."
+     }
+    ]
+   ],
+   "must_include": [
+    "at risk"
+   ]
+  },
+  {
+   "id": "q15",
+   "type": "table",
+   "question": "What capacity retention did AUR-C106 have after 300 cycles at 45 °C?",
+   "answer": "96.2%.",
+   "facts": [
+    [
+     {
+      "file": "aurora_q1_review.pptx",
+      "text": "| 300 | 95.9 | 96.2 |"
+     }
+    ]
+   ],
+   "must_include": [
+    "96.2"
+   ]
+  },
+  {
+   "id": "q16",
+   "type": "image",
+   "question": "What swelling did the lab notebook record for AUR-C106?",
+   "answer": "2.4% after 600 cycles.",
+   "facts": [
+    [
+     {
+      "file": "aurora_lab_notebook_scan.pdf",
+      "text": "AUR-C106 (E-7, 45 C): 600 cycles, retention 90.2 %, swelling 2.4 %"
+     }
+    ]
+   ],
+   "must_include": [
+    "2.4"
+   ]
+  },
+  {
+   "id": "q17",
+   "type": "image",
+   "question": "When is the next checkpoint noted in the scanned lab notebook?",
+   "answer": "700 cycles on 2026-03-21.",
+   "facts": [
+    [
+     {
+      "file": "aurora_lab_notebook_scan.pdf",
+      "text": "Next checkpoint: 700 cycles on 2026-03-21."
+     }
+    ]
+   ],
+   "must_include": [
+    "700",
+    "2026-03-21"
+   ]
+  },
+  {
+   "id": "q18",
+   "type": "image",
+   "question": "What pilot batch size is written on the E-7 qualification plan whiteboard?",
+   "answer": "100 cells (milestone M3).",
+   "facts": [
+    [
+     {
+      "file": "whiteboard_2026-03-20.jpg",
+      "text": "Pilot batch: 100 cells (M3)"
+     }
+    ]
+   ],
+   "must_include": [
+    "100"
+   ]
+  },
+  {
+   "id": "q19",
+   "type": "image",
+   "question": "Which cell has the lowest bar in the capacity retention bar chart?",
+   "answer": "C103 (72.5).",
+   "evidence_origin": "generated",
+   "facts": [
+    [
+     {
+      "file": "aurora_safety_review.pdf",
+      "text": "with a notable dip at C103"
+     },
+     {
+      "file": "aurora_status_report_2026-03.docx",
+      "text": "with a notable dip at C103"
+     }
+    ]
+   ],
+   "must_include": [
+    "C103"
+   ]
+  },
+  {
+   "id": "q20",
+   "type": "image",
+   "question": "What does the photo on the Aurora S1 product page show?",
+   "answer": "The Aurora S1 pouch cell next to a ruler for scale.",
+   "facts": [
+    [
+     {
+      "file": "helios_aurora_s1.html",
+      "text": "Aurora S1 pouch cell next to a ruler for scale"
+     }
+    ]
+   ],
+   "must_include": [
+    "ruler"
+   ]
+  },
+  {
+   "id": "q21",
+   "type": "table",
+   "question": "What is the nominal voltage of the Aurora S1 cell?",
+   "answer": "3.1 V.",
+   "facts": [
+    [
+     {
+      "file": "helios_aurora_s1.html",
+      "text": "| Nominal voltage | 3.1 V | 25 °C |"
+     }
+    ]
+   ],
+   "must_include": [
+    "3.1"
+   ]
+  },
+  {
+   "id": "q22",
+   "type": "comparative",
+   "question": "Does the Aurora S1's rated cycle life match the project's cycle target?",
+   "answer": "Yes: 3000 cycles to 80%, matching the 3000-cycle target.",
+   "facts": [
+    [
+     {
+      "file": "helios_aurora_s1.html",
+      "text": "| Cycle life | 3000 cycles to 80% |"
+     }
+    ],
+    [
+     {
+      "file": "aurora_config.json",
+      "text": "target_cycles: 3000"
+     }
+    ]
+   ],
+   "must_include": [
+    "3000"
+   ]
+  },
+  {
+   "id": "q23",
+   "type": "keyword",
+   "question": "What is the role of NaDFOB in the E-7 electrolyte?",
+   "answer": "SEI additive (1 wt%) that forms a stable interphase on hard carbon.",
+   "facts": [
+    [
+     {
+      "file": "e7_technical_note.pdf",
+      "text": "| NaDFOB | SEI additive | 1 wt% |"
+     },
+     {
+      "file": "e7_technical_note.pdf",
+      "text": "The additive NaDFOB forms a stable interphase on hard carbon."
+     }
+    ]
+   ],
+   "must_include": [
+    [
+     "SEI",
+     "interphase"
+    ]
+   ]
+  },
+  {
+   "id": "q24",
+   "type": "factual",
+   "question": "Which solvents replace DEC in the E-7 blend?",
+   "answer": "PC and DMC.",
+   "facts": [
+    [
+     {
+      "file": "e7_technical_note.pdf",
+      "text": "The solvent blend replaces DEC with PC and DMC."
+     }
+    ]
+   ],
+   "must_include": [
+    "PC",
+    "DMC"
+   ]
+  },
+  {
+   "id": "q25",
+   "type": "table",
+   "question": "What volume fraction of DMC does E-7 contain?",
+   "answer": "40 vol%.",
+   "facts": [
+    [
+     {
+      "file": "e7_technical_note.pdf",
+      "text": "| DMC | Co-solvent | 40 vol% |"
+     }
+    ]
+   ],
+   "must_include": [
+    "40"
+   ]
+  },
+  {
+   "id": "q26",
+   "type": "factual",
+   "question": "Who prepared the safety review of the E-5 failure?",
+   "answer": "Lena Brandt (Safety Officer).",
+   "facts": [
+    [
+     {
+      "file": "aurora_safety_review.pdf",
+      "text": "Prepared by Lena Brandt (Safety Officer) on 2026-03-24."
+     }
+    ]
+   ],
+   "must_include": [
+    "Lena Brandt"
+   ]
+  },
+  {
+   "id": "q27",
+   "type": "factual",
+   "question": "Which gases were found in the failed pouch?",
+   "answer": "CO2 and ethylene (C2H4).",
+   "facts": [
+    [
+     {
+      "file": "aurora_safety_review.pdf",
+      "text": "GC-MS of the pouch gas found CO2 and ethylene (C2H4)"
+     },
+     {
+      "file": "aurora_q1_review.pptx",
+      "text": "CO₂ and C₂H₄ detected after failure"
+     }
+    ]
+   ],
+   "must_include": [
+    [
+     "CO2",
+     "CO₂",
+     "carbon dioxide"
+    ],
+    [
+     "ethylene",
+     "C2H4",
+     "C₂H₄"
+    ]
+   ]
+  },
+  {
+   "id": "q28",
+   "type": "factual",
+   "question": "What does the safety review recommend for pilot-line pouches?",
+   "answer": "Add a gas-sampling port before milestone M3.",
+   "facts": [
+    [
+     {
+      "file": "aurora_safety_review.pdf",
+      "text": "Add a gas-sampling port to pilot-line pouches before milestone M3."
+     }
+    ]
+   ],
+   "must_include": [
+    [
+     "gas-sampling port",
+     "gas sampling port"
+    ]
+   ]
+  },
+  {
+   "id": "q29",
+   "type": "factual",
+   "question": "Which cells meet the 5% swelling limit?",
+   "answer": "All except AUR-C103.",
+   "facts": [
+    [
+     {
+      "file": "aurora_safety_review.pdf",
+      "text": "All cells except AUR-C103 meet the 5% swelling limit"
+     }
+    ]
+   ],
+   "must_include": [
+    [
+     "except AUR-C103",
+     "AUR-C104"
+    ]
+   ]
+  },
+  {
+   "id": "q30",
+   "type": "factual",
+   "question": "What separator does the Aurora cell use?",
+   "answer": "Ceramic-coated polyethylene, 16 µm.",
+   "facts": [
+    [
+     {
+      "file": "aurora_research_notes.md",
+      "text": "Separator: ceramic-coated polyethylene, 16 µm"
+     }
+    ]
+   ],
+   "must_include": [
+    [
+     "ceramic-coated",
+     "ceramic coated"
+    ],
+    "16"
+   ]
+  },
+  {
+   "id": "q31",
+   "type": "keyword",
+   "question": "What is the N/P ratio of the anode?",
+   "answer": "1.10.",
+   "facts": [
+    [
+     {
+      "file": "aurora_research_notes.md",
+      "text": "Anode: hard carbon, N/P ratio 1.10"
+     }
+    ]
+   ],
+   "must_include": [
+    "1.1"
+   ]
+  },
+  {
+   "id": "q32",
+   "type": "keyword",
+   "question": "What voltage window is used in the cycling protocol?",
+   "answer": "1.5 to 3.9 V.",
+   "facts": [
+    [
+     {
+      "file": "aurora_research_notes.md",
+      "text": "voltage_window: [1.5, 3.9]"
+     }
+    ]
+   ],
+   "must_include": [
+    "1.5",
+    "3.9"
+   ]
+  },
+  {
+   "id": "q33",
+   "type": "table",
+   "question": "Who tested cell AUR-C107?",
+   "answer": "Jonas Weber.",
+   "facts": [
+    [
+     {
+      "file": "cell_test_results.csv",
+      "text": "| AUR-C107 | E-7 | 25 | 600 | 94.8 | in_progress | Jonas Weber |"
+     }
+    ]
+   ],
+   "must_include": [
+    "Jonas Weber"
+   ]
+  },
+  {
+   "id": "q34",
+   "type": "multi_hop",
+   "question": "What is the fallback if E-7 swelling exceeds the limit, and how is that fallback performing?",
+   "answer": "E-5 + FEC, at 83.1% retention after 800 cycles (AUR-C104).",
+   "facts": [
+    [
+     {
+      "file": "aurora_status_report_2026-03.docx",
+      "text": "| E-7 swelling exceeds the 5% limit | Marco Lindqvist | Medium | Fall back to E-5 + FEC |"
+     },
+     {
+      "file": "meeting_notes_2026-03-12.txt",
+      "text": "A fallback is E-5 + FEC"
+     }
+    ],
+    [
+     {
+      "file": "meeting_notes_2026-03-12.txt",
+      "text": "which is at 83.1% after 800 cycles on AUR-C104"
+     },
+     {
+      "file": "aurora_research_notes.md",
+      "text": "| AUR-C104 | E-5 + FEC | 45 | 800 | 83.1 |"
+     },
+     {
+      "file": "cell_test_results.csv",
+      "text": "| AUR-C104 | E-5 + FEC | 45 | 800 | 83.1 |"
+     }
+    ]
+   ],
+   "must_include": [
+    [
+     "E-5 + FEC",
+     "E-5+FEC"
+    ],
+    "83.1"
+   ]
+  },
+  {
+   "id": "q35",
+   "type": "factual",
+   "question": "When is the next technical review meeting?",
+   "answer": "2026-04-02.",
+   "facts": [
+    [
+     {
+      "file": "meeting_notes_2026-03-12.txt",
+      "text": "Next review: 2026-04-02"
+     }
+    ]
+   ],
+   "must_include": [
+    "2026-04-02"
+   ]
+  },
+  {
+   "id": "q36",
+   "type": "keyword",
+   "question": "Who owns risk R2 in the risk register?",
+   "answer": "Samuel Okafor.",
+   "facts": [
+    [
+     {
+      "file": "aurora_status_report_2026-03.docx",
+      "text": "| R2 | Pilot-line pouch tooling arrives late | Samuel Okafor |"
+     }
+    ]
+   ],
+   "must_include": [
+    "Samuel Okafor"
+   ]
+  },
+  {
+   "id": "q37",
+   "type": "table",
+   "question": "What is the energy density of the Aurora S1?",
+   "answer": "160 Wh/kg at cell level.",
+   "facts": [
+    [
+     {
+      "file": "helios_aurora_s1.html",
+      "text": "| Energy density | 160 Wh/kg | cell level |"
+     }
+    ]
+   ],
+   "must_include": [
+    "160"
+   ]
+  },
+  {
+   "id": "q38",
+   "type": "unanswerable",
+   "question": "What is the price per kWh of the Aurora S1 cell?",
+   "answer": null,
+   "facts": [],
+   "must_include": []
+  },
+  {
+   "id": "q39",
+   "type": "unanswerable",
+   "question": "Who is the CEO of Helios Energy Lab?",
+   "answer": null,
+   "facts": [],
+   "must_include": []
+  },
+  {
+   "id": "q40",
+   "type": "unanswerable",
+   "question": "What capacity retention did cell AUR-C109 reach?",
+   "answer": null,
+   "facts": [],
+   "must_include": []
+  },
+  {
+   "id": "r01",
+   "type": "multi_hop",
+   "question": "Which cells are being tested with the electrolyte whose qualification Marco Lindqvist owns?",
+   "answer": "E-7: AUR-C105 and AUR-C106 at 45 °C (AUR-C107 and AUR-C108 at 25 °C).",
+   "facts": [
+    [
+     {
+      "file": "meeting_notes_2026-03-12.txt",
+      "text": "Marco Lindqvist owns the E-7 qualification"
+     },
+     {
+      "file": "e7_technical_note.pdf",
+      "text": "Qualification continues to 1500 cycles under Marco Lindqvist."
+     }
+    ],
+    [
+     {
+      "file": "meeting_notes_2026-03-12.txt",
+      "text": "Early E-7 cells (AUR-C105 and AUR-C106)"
+     },
+     {
+      "file": "cell_test_results.csv",
+      "text": "| AUR-C105 | E-7 | 45 | 600 | 89.6 | in_progress | Aiko Tanaka |"
+     },
+     {
+      "file": "aurora_safety_review.pdf",
+      "text": "| AUR-C105 | E-7 | 45 | 600 | 2.1 |"
+     }
+    ]
+   ],
+   "must_include": [
+    "AUR-C105",
+    "AUR-C106"
+   ]
+  },
+  {
+   "id": "r02",
+   "type": "multi_hop",
+   "question": "Who supplies the salt that the E-5 electrolyte is made with?",
+   "answer": "Nordic Salts AB (NaPF6, lead time 4 weeks).",
+   "facts": [
+    [
+     {
+      "file": "aurora_research_notes.md",
+      "text": "1.0 M NaPF₆ in EC:DEC (1:1), the original baseline"
+     }
+    ],
+    [
+     {
+      "file": "aurora_budget_2026.xlsx",
+      "text": "| NaPF6 salt | Nordic Salts AB | 4 | TRUE |"
+     }
+    ]
+   ],
+   "must_include": [
+    "Nordic Salts"
+   ]
+  },
+  {
+   "id": "r03",
+   "type": "multi_hop",
+   "question": "What swelling limit must the electrolyte that replaced E-5 stay below for milestone M2?",
+   "answer": "E-7 must stay below the 5% swelling limit.",
+   "facts": [
+    [
+     {
+      "file": "e7_technical_note.pdf",
+      "text": "developed to replace the E-5 baseline at elevated temperature"
+     },
+     {
+      "file": "aurora_status_report_2026-03.docx",
+      "text": "so high-temperature testing moved to electrolyte E-7"
+     }
+    ],
+    [
+     {
+      "file": "aurora_budget_2026.xlsx",
+      "text": "M2 depends on E-7 swelling staying below the 5% limit."
+     }
+    ]
+   ],
+   "must_include": [
+    [
+     "5%",
+     "5 %",
+     "5.0"
+    ]
+   ]
+  },
+  {
+   "id": "r04",
+   "type": "multi_hop",
+   "question": "What is the planned budget of the workstream owned by the person responsible for risk R2?",
+   "answer": "Samuel Okafor owns R2; his pilot line workstream is planned at EUR 320,000.",
+   "facts": [
+    [
+     {
+      "file": "aurora_status_report_2026-03.docx",
+      "text": "| R2 | Pilot-line pouch tooling arrives late | Samuel Okafor |"
+     }
+    ],
+    [
+     {
+      "file": "aurora_budget_2026.xlsx",
+      "text": "| Pilot line | Samuel Okafor | 320000 | 64000 | 20.0% |"
+     }
+    ]
+   ],
+   "must_include": [
+    [
+     "320,000",
+     "320000"
+    ]
+   ]
+  },
+  {
+   "id": "r05",
+   "type": "multi_hop",
+   "question": "Which supplier is being qualified as a second source for the anode material of the Aurora cell?",
+   "answer": "The anode is hard carbon; Carbonix Materials is to be qualified as the second supplier.",
+   "facts": [
+    [
+     {
+      "file": "aurora_research_notes.md",
+      "text": "the anode is hard carbon derived from coconut shell"
+     },
+     {
+      "file": "helios_aurora_s1.html",
+      "text": "a Prussian white cathode and hard carbon anode"
+     }
+    ],
+    [
+     {
+      "file": "aurora_status_report_2026-03.docx",
+      "text": "Qualify Carbonix Materials as second supplier"
+     }
+    ]
+   ],
+   "must_include": [
+    "Carbonix"
+   ]
+  },
+  {
+   "id": "r06",
+   "type": "multi_hop",
+   "question": "Who reviewed the E-5 safety review, and what did that person approve on 2026-03-25?",
+   "answer": "Dr. Priya Raman; the continuation of E-7 testing.",
+   "facts": [
+    [
+     {
+      "file": "aurora_safety_review.pdf",
+      "text": "Reviewed by Dr. Priya Raman."
+     }
+    ],
+    [
+     {
+      "file": "aurora_safety_review.pdf",
+      "text": "Continuation of E-7 testing approved by Dr. Priya Raman on 2026-03-25."
+     }
+    ]
+   ],
+   "must_include": [
+    "Priya Raman",
+    "E-7"
+   ]
+  },
+  {
+   "id": "r07",
+   "type": "multi_hop",
+   "question": "How much of the budget of the workstream owned by the electrolyte chemist has been spent?",
+   "answer": "Marco Lindqvist is the electrolyte chemist; the electrolyte workstream has spent EUR 97,200 (40.5%).",
+   "facts": [
+    [
+     {
+      "file": "aurora_config.json",
+      "text": "role: Electrolyte chemist"
+     }
+    ],
+    [
+     {
+      "file": "aurora_budget_2026.xlsx",
+      "text": "| Electrolyte | Marco Lindqvist | 240000 | 97200 | 40.5% |"
+     }
+    ]
+   ],
+   "must_include": [
+    [
+     "97,200",
+     "97200",
+     "40.5"
+    ]
+   ]
+  },
+  {
+   "id": "r08",
+   "type": "multi_hop",
+   "question": "Which person tests the cells that use the E-7 electrolyte at room temperature?",
+   "answer": "Jonas Weber (AUR-C107 and AUR-C108 at 25 °C).",
+   "facts": [
+    [
+     {
+      "file": "cell_test_results.csv",
+      "text": "| AUR-C107 | E-7 | 25 | 600 | 94.8 | in_progress | Jonas Weber |"
+     }
+    ],
+    [
+     {
+      "file": "cell_test_results.csv",
+      "text": "| AUR-C108 | E-7 | 25 | 600 | 95.1 | in_progress | Jonas Weber |"
+     }
+    ]
+   ],
+   "must_include": [
+    "Jonas Weber"
+   ]
+  },
+  {
+   "id": "e01",
+   "type": "factual",
+   "question": "Which organization runs Project Aurora?",
+   "answer": "Helios Energy Lab.",
+   "facts": [
+    [
+     {
+      "file": "aurora_config.json",
+      "text": "organization: Helios Energy Lab"
+     }
+    ]
+   ],
+   "must_include": [
+    "Helios Energy Lab"
+   ]
+  },
+  {
+   "id": "e02",
+   "type": "factual",
+   "question": "What is Aiko Tanaka's role in the project?",
+   "answer": "Test engineer (cell testing, high-temperature cycling).",
+   "facts": [
+    [
+     {
+      "file": "aurora_config.json",
+      "text": "name: Aiko Tanaka role: Test engineer"
+     }
+    ]
+   ],
+   "must_include": [
+    "test engineer"
+   ]
+  },
+  {
+   "id": "e03",
+   "type": "factual",
+   "question": "Which workstreams does Samuel Okafor work on?",
+   "answer": "Pouch assembly and the pilot line.",
+   "facts": [
+    [
+     {
+      "file": "aurora_config.json",
+      "text": "workstreams: pouch assembly, pilot line"
+     }
+    ]
+   ],
+   "must_include": [
+    "pouch assembly",
+    "pilot line"
+   ]
+  },
+  {
+   "id": "e04",
+   "type": "factual",
+   "question": "What was done with cell AUR-C103 after it vented?",
+   "answer": "It was moved to the safety cabinet within 10 minutes; no one was exposed.",
+   "facts": [
+    [
+     {
+      "file": "aurora_safety_review.pdf",
+      "text": "The cell was moved to the safety cabinet within 10 minutes and no one was exposed."
+     }
+    ]
+   ],
+   "must_include": [
+    "safety cabinet",
+    "10 minutes"
+   ]
+  },
+  {
+   "id": "e05",
+   "type": "factual",
+   "question": "Did the AUR-C103 pouch catch fire when it failed?",
+   "answer": "No: it swelled by 14% and vented without flame.",
+   "facts": [
+    [
+     {
+      "file": "aurora_safety_review.pdf",
+      "text": "The pouch swelled by 14% and vented without flame."
+     }
+    ]
+   ],
+   "must_include": [
+    [
+     "without flame",
+     "no flame",
+     "not catch fire",
+     "without a flame",
+     "did not ignite"
+    ]
+   ]
+  },
+  {
+   "id": "e06",
+   "type": "factual",
+   "question": "What did the seal integrity tests on the AUR-C103 batch show?",
+   "answer": "They passed: no manufacturing defect was found.",
+   "facts": [
+    [
+     {
+      "file": "aurora_safety_review.pdf",
+      "text": "No manufacturing defect was found: the seal integrity tests on the same batch passed."
+     },
+     {
+      "file": "meeting_notes_2026-03-12.txt",
+      "text": "Samuel confirmed the seal integrity tests on the same batch passed."
+     }
+    ]
+   ],
+   "must_include": [
+    "passed"
+   ]
+  },
+  {
+   "id": "e07",
+   "type": "factual",
+   "question": "Who presented the post-mortem for AUR-C103?",
+   "answer": "Aiko (Aiko Tanaka).",
+   "facts": [
+    [
+     {
+      "file": "meeting_notes_2026-03-12.txt",
+      "text": "Aiko presented the post-mortem for AUR-C103."
+     }
+    ]
+   ],
+   "must_include": [
+    "Aiko"
+   ]
+  },
+  {
+   "id": "e08",
+   "type": "factual",
+   "question": "What application is the Aurora S1 cell designed for?",
+   "answer": "Stationary energy storage (a 50 Ah pouch cell).",
+   "facts": [
+    [
+     {
+      "file": "helios_aurora_s1.html",
+      "text": "The Aurora S1 is a 50 Ah pouch cell for stationary energy storage"
+     },
+     {
+      "file": "aurora_research_notes.md",
+      "text": "low-cost sodium-ion cell for stationary storage"
+     }
+    ]
+   ],
+   "must_include": [
+    "stationary"
+   ]
+  },
+  {
+   "id": "e09",
+   "type": "factual",
+   "question": "Why does the FEC additive improve retention at room temperature?",
+   "answer": "FEC forms a more stable solid-electrolyte interphase on hard carbon.",
+   "facts": [
+    [
+     {
+      "file": "aurora_research_notes.md",
+      "text": "FEC forms a more stable solid-electrolyte interphase on hard carbon"
+     }
+    ]
+   ],
+   "must_include": [
+    [
+     "solid-electrolyte interphase",
+     "solid electrolyte interphase",
+     "SEI"
+    ]
+   ]
+  },
+  {
+   "id": "e10",
+   "type": "factual",
+   "question": "On what date was the Q1 2026 review presented to the steering committee?",
+   "answer": "2026-04-02.",
+   "facts": [
+    [
+     {
+      "file": "aurora_q1_review.pptx",
+      "text": "Helios Energy Lab steering committee, 2026-04-02"
+     }
+    ]
+   ],
+   "must_include": [
+    "2026-04-02"
+   ]
+  },
+  {
+   "id": "e45",
+   "type": "factual",
+   "question": "When is the E-7 qualification report draft due?",
+   "answer": "2026-03-26.",
+   "facts": [
+    [
+     {
+      "file": "meeting_notes_2026-03-12.txt",
+      "text": "Marco: E-7 qualification report draft by 2026-03-26."
+     },
+     {
+      "file": "aurora_status_report_2026-03.docx",
+      "text": "Submit the E-7 qualification draft (2026-03-26)"
+     }
+    ]
+   ],
+   "must_include": [
+    "2026-03-26"
+   ]
+  },
+  {
+   "id": "e54",
+   "type": "factual",
+   "question": "When are engineering samples of the Aurora S1 expected?",
+   "answer": "After milestone M3 (the pilot line 100-cell batch).",
+   "facts": [
+    [
+     {
+      "file": "helios_aurora_s1.html",
+      "text": "Engineering samples are expected after milestone M3"
+     }
+    ]
+   ],
+   "must_include": [
+    "M3"
+   ]
+  },
+  {
+   "id": "e55",
+   "type": "factual",
+   "question": "Why can the sodium-ion cells be transported more safely?",
+   "answer": "They can be shipped at 0 V.",
+   "facts": [
+    [
+     {
+      "file": "helios_aurora_s1.html",
+      "text": "Can be shipped at 0 V for safer transport"
+     }
+    ]
+   ],
+   "must_include": [
+    [
+     "0 V",
+     "0V",
+     "zero volt"
+    ]
+   ]
+  },
+  {
+   "id": "e11",
+   "type": "table",
+   "question": "What is the planned budget of the pilot line workstream?",
+   "answer": "EUR 320,000.",
+   "facts": [
+    [
+     {
+      "file": "aurora_budget_2026.xlsx",
+      "text": "| Pilot line | Samuel Okafor | 320000 | 64000 | 20.0% |"
+     }
+    ]
+   ],
+   "must_include": [
+    [
+     "320,000",
+     "320000"
+    ]
+   ]
+  },
+  {
+   "id": "e12",
+   "type": "table",
+   "question": "How much has the whole project spent to date?",
+   "answer": "EUR 371,200 of EUR 890,000 (41.7%).",
+   "facts": [
+    [
+     {
+      "file": "aurora_budget_2026.xlsx",
+      "text": "| Total |  | 890000 | 371200 | 41.7% |"
+     }
+    ]
+   ],
+   "must_include": [
+    [
+     "371,200",
+     "371200",
+     "41.7"
+    ]
+   ]
+  },
+  {
+   "id": "e13",
+   "type": "table",
+   "question": "What is the lead time for pouch film from Laminex?",
+   "answer": "8 weeks.",
+   "facts": [
+    [
+     {
+      "file": "aurora_budget_2026.xlsx",
+      "text": "| Pouch film | Laminex | 8 | TRUE |"
+     }
+    ]
+   ],
+   "must_include": [
+    [
+     "8 weeks",
+     "eight weeks",
+     "8-week",
+     "8 week"
+    ]
+   ]
+  },
+  {
+   "id": "e14",
+   "type": "table",
+   "question": "What share of the cell testing budget has been spent?",
+   "answer": "59.0% (EUR 88,500 of 150,000).",
+   "facts": [
+    [
+     {
+      "file": "aurora_budget_2026.xlsx",
+      "text": "| Cell testing | Aiko Tanaka | 150000 | 88500 | 59.0% |"
+     }
+    ]
+   ],
+   "must_include": [
+    "59"
+   ]
+  },
+  {
+   "id": "e15",
+   "type": "table",
+   "question": "Which cell was cycled at 25 °C with the E-5 + FEC electrolyte?",
+   "answer": "AUR-C101.",
+   "facts": [
+    [
+     {
+      "file": "cell_test_results.csv",
+      "text": "| AUR-C101 | E-5 + FEC | 25 | 1000 | 91.4 | passed | Aiko Tanaka |"
+     },
+     {
+      "file": "aurora_research_notes.md",
+      "text": "| AUR-C101 | E-5 + FEC | 25 | 1000 | 91.4 |"
+     }
+    ]
+   ],
+   "must_include": [
+    "AUR-C101"
+   ]
+  },
+  {
+   "id": "e16",
+   "type": "table",
+   "question": "What is the test status of cell AUR-C104?",
+   "answer": "In progress (800 cycles, 83.1% retention).",
+   "facts": [
+    [
+     {
+      "file": "cell_test_results.csv",
+      "text": "| AUR-C104 | E-5 + FEC | 45 | 800 | 83.1 | in_progress | Aiko Tanaka |"
+     }
+    ]
+   ],
+   "must_include": [
+    [
+     "in progress",
+     "in_progress",
+     "ongoing"
+    ]
+   ]
+  },
+  {
+   "id": "e17",
+   "type": "table",
+   "question": "What capacity retention has AUR-C108 reached?",
+   "answer": "95.1% after 600 cycles at 25 °C.",
+   "facts": [
+    [
+     {
+      "file": "cell_test_results.csv",
+      "text": "| AUR-C108 | E-7 | 25 | 600 | 95.1 | in_progress | Jonas Weber |"
+     }
+    ]
+   ],
+   "must_include": [
+    "95.1"
+   ]
+  },
+  {
+   "id": "e18",
+   "type": "table",
+   "question": "What was AUR-C105's capacity retention after 200 cycles at 45 °C?",
+   "answer": "97.8%.",
+   "facts": [
+    [
+     {
+      "file": "aurora_q1_review.pptx",
+      "text": "| 200 | 97.8 | 98 |"
+     }
+    ]
+   ],
+   "must_include": [
+    "97.8"
+   ]
+  },
+  {
+   "id": "e19",
+   "type": "table",
+   "question": "What is the operating temperature range of the Aurora S1?",
+   "answer": "-20 to 45 °C (discharge).",
+   "facts": [
+    [
+     {
+      "file": "helios_aurora_s1.html",
+      "text": "| Operating temperature | -20 to 45 °C | discharge |"
+     }
+    ]
+   ],
+   "must_include": [
+    "20",
+    "45"
+   ]
+  },
+  {
+   "id": "e20",
+   "type": "table",
+   "question": "What volume fraction of the E-7 electrolyte is EC?",
+   "answer": "30 vol%.",
+   "facts": [
+    [
+     {
+      "file": "e7_technical_note.pdf",
+      "text": "| EC | Solvent | 30 vol% |"
+     }
+    ]
+   ],
+   "must_include": [
+    "30"
+   ]
+  },
+  {
+   "id": "e21",
+   "type": "image",
+   "question": "What does the picture on the Pouch Cell Prototype slide show?",
+   "answer": "The Aurora S1-P3 pouch cell prototype on the test bench.",
+   "facts": [
+    [
+     {
+      "file": "aurora_q1_review.pptx",
+      "text": "Aurora S1-P3 pouch cell prototype on the test bench"
+     }
+    ]
+   ],
+   "must_include": [
+    "S1-P3"
+   ]
+  },
+  {
+   "id": "e22",
+   "type": "image",
+   "question": "Who signed the scanned lab notebook page?",
+   "answer": "A. Tanaka (Aiko Tanaka).",
+   "facts": [
+    [
+     {
+      "file": "aurora_lab_notebook_scan.pdf",
+      "text": "Signed: A. Tanaka"
+     }
+    ]
+   ],
+   "must_include": [
+    "Tanaka"
+   ]
+  },
+  {
+   "id": "e23",
+   "type": "image",
+   "question": "What did the scanned lab notebook observe about gas in the E-7 cells?",
+   "answer": "No gas pocket was visible on either cell.",
+   "facts": [
+    [
+     {
+      "file": "aurora_lab_notebook_scan.pdf",
+      "text": "Observation: no gas pocket visible on either cell."
+     }
+    ]
+   ],
+   "must_include": [
+    [
+     "no gas pocket",
+     "no visible gas",
+     "no gas"
+    ]
+   ]
+  },
+  {
+   "id": "e24",
+   "type": "image",
+   "question": "What swelling limit is written on the E-7 qualification plan whiteboard?",
+   "answer": "5%.",
+   "facts": [
+    [
+     {
+      "file": "whiteboard_2026-03-20.jpg",
+      "text": "1. Swelling limit: 5 %"
+     }
+    ]
+   ],
+   "must_include": [
+    [
+     "5%",
+     "5 %"
+    ]
+   ]
+  },
+  {
+   "id": "e25",
+   "type": "image",
+   "question": "Who is named as the owner on the E-7 qualification plan whiteboard?",
+   "answer": "Marco.",
+   "facts": [
+    [
+     {
+      "file": "whiteboard_2026-03-20.jpg",
+      "text": "Owner: Marco"
+     }
+    ]
+   ],
+   "must_include": [
+    "Marco"
+   ]
+  },
+  {
+   "id": "e26",
+   "type": "image",
+   "question": "What capacity retention does the bar chart show for cell C107?",
+   "answer": "94.8%.",
+   "facts": [
+    [
+     {
+      "file": "aurora_safety_review.pdf",
+      "text": "C107 (94.8)"
+     },
+     {
+      "file": "aurora_status_report_2026-03.docx",
+      "text": "C107 (94.8)"
+     }
+    ]
+   ],
+   "must_include": [
+    "94.8"
+   ],
+   "evidence_origin": "generated"
+  },
+  {
+   "id": "e27",
+   "type": "comparative",
+   "question": "Which E-7 cell retained more capacity after 600 cycles at 45 °C, AUR-C105 or AUR-C106?",
+   "answer": "AUR-C106: 90.2% versus 89.6% for AUR-C105.",
+   "facts": [
+    [
+     {
+      "file": "cell_test_results.csv",
+      "text": "| AUR-C106 | E-7 | 45 | 600 | 90.2 | in_progress | Aiko Tanaka |"
+     },
+     {
+      "file": "aurora_lab_notebook_scan.pdf",
+      "text": "AUR-C106 (E-7, 45 C): 600 cycles, retention 90.2 %, swelling 2.4 %"
+     }
+    ],
+    [
+     {
+      "file": "cell_test_results.csv",
+      "text": "| AUR-C105 | E-7 | 45 | 600 | 89.6 | in_progress | Aiko Tanaka |"
+     },
+     {
+      "file": "aurora_lab_notebook_scan.pdf",
+      "text": "AUR-C105 (E-7, 45 C): 600 cycles, retention 89.6 %, swelling 2.1 %"
+     }
+    ]
+   ],
+   "must_include": [
+    "AUR-C106"
+   ]
+  },
+  {
+   "id": "e28",
+   "type": "comparative",
+   "question": "Which workstream has spent the largest share of its budget?",
+   "answer": "Cathode, at 67.5% (EUR 121,500 of 180,000).",
+   "facts": [
+    [
+     {
+      "file": "aurora_budget_2026.xlsx",
+      "text": "| Cathode | Dr. Priya Raman | 180000 | 121500 | 67.5% |"
+     }
+    ],
+    [
+     {
+      "file": "aurora_budget_2026.xlsx",
+      "text": "| Cell testing | Aiko Tanaka | 150000 | 88500 | 59.0% |"
+     }
+    ]
+   ],
+   "must_include": [
+    "cathode"
+   ]
+  },
+  {
+   "id": "e29",
+   "type": "comparative",
+   "question": "Which electrolyte swelled less at 45 °C, E-5 + FEC or E-7?",
+   "answer": "E-7 (2.1% and 2.4%) versus 3.2% for E-5 + FEC.",
+   "facts": [
+    [
+     {
+      "file": "aurora_safety_review.pdf",
+      "text": "| AUR-C104 | E-5 + FEC | 45 | 800 | 3.2 |"
+     }
+    ],
+    [
+     {
+      "file": "aurora_safety_review.pdf",
+      "text": "| AUR-C105 | E-7 | 45 | 600 | 2.1 |"
+     },
+     {
+      "file": "aurora_lab_notebook_scan.pdf",
+      "text": "AUR-C105 (E-7, 45 C): 600 cycles, retention 89.6 %, swelling 2.1 %"
+     }
+    ]
+   ],
+   "must_include": [
+    "E-7"
+   ]
+  },
+  {
+   "id": "e30",
+   "type": "comparative",
+   "question": "Does Kokos Carbon Ltd deliver hard carbon faster than Carbonix Materials?",
+   "answer": "Yes: 6 weeks versus 10 weeks (and only Kokos is qualified).",
+   "facts": [
+    [
+     {
+      "file": "aurora_budget_2026.xlsx",
+      "text": "| Hard carbon | Kokos Carbon Ltd | 6 | TRUE |"
+     }
+    ],
+    [
+     {
+      "file": "aurora_budget_2026.xlsx",
+      "text": "| Hard carbon | Carbonix Materials | 10 | FALSE |"
+     }
+    ]
+   ],
+   "must_include": [
+    "6",
+    "10"
+   ]
+  },
+  {
+   "id": "e31",
+   "type": "comparative",
+   "question": "Which cell has the higher room-temperature retention after 1000 cycles, AUR-C101 or AUR-C102?",
+   "answer": "AUR-C101: 91.4% versus 88.0%.",
+   "facts": [
+    [
+     {
+      "file": "cell_test_results.csv",
+      "text": "| AUR-C101 | E-5 + FEC | 25 | 1000 | 91.4 | passed | Aiko Tanaka |"
+     },
+     {
+      "file": "aurora_research_notes.md",
+      "text": "| AUR-C101 | E-5 + FEC | 25 | 1000 | 91.4 |"
+     }
+    ],
+    [
+     {
+      "file": "cell_test_results.csv",
+      "text": "| AUR-C102 | E-5 | 25 | 1000 | 88.0 | passed | Aiko Tanaka |"
+     },
+     {
+      "file": "aurora_research_notes.md",
+      "text": "| AUR-C102 | E-5 | 25 | 1000 | 88.0 |"
+     }
+    ]
+   ],
+   "must_include": [
+    "AUR-C101"
+   ]
+  },
+  {
+   "id": "e32",
+   "type": "comparative",
+   "question": "How does the Q1 review's status for milestone M3 compare with the budget sheet?",
+   "answer": "The Q1 review says on track; the budget sheet lists it as not done (FALSE), due 2026-09-30.",
+   "facts": [
+    [
+     {
+      "file": "aurora_q1_review.pptx",
+      "text": "| M3 | Pilot line 100-cell batch | 2026-09-30 | On track |"
+     }
+    ],
+    [
+     {
+      "file": "aurora_budget_2026.xlsx",
+      "text": "| M3 | Pilot line 100-cell batch | 2026-09-30 | FALSE |"
+     }
+    ]
+   ],
+   "must_include": [
+    "on track"
+   ]
+  },
+  {
+   "id": "e33",
+   "type": "comparative",
+   "question": "Does AUR-C104 meet the project's minimum retention threshold?",
+   "answer": "Yes: 83.1% against a minimum of 80.0%.",
+   "facts": [
+    [
+     {
+      "file": "cell_test_results.csv",
+      "text": "| AUR-C104 | E-5 + FEC | 45 | 800 | 83.1 | in_progress | Aiko Tanaka |"
+     },
+     {
+      "file": "meeting_notes_2026-03-12.txt",
+      "text": "A fallback is E-5 + FEC, which is at 83.1% after 800"
+     }
+    ],
+    [
+     {
+      "file": "aurora_config.json",
+      "text": "min_retention_pct: 80.0"
+     }
+    ]
+   ],
+   "must_include": [
+    "83.1",
+    "80"
+   ]
+  },
+  {
+   "id": "e34",
+   "type": "comparative",
+   "question": "Is the swelling of the E-7 cells within the project's maximum swelling threshold?",
+   "answer": "Yes: 2.1% and 2.4% against a 5.0% maximum.",
+   "facts": [
+    [
+     {
+      "file": "aurora_safety_review.pdf",
+      "text": "| AUR-C105 | E-7 | 45 | 600 | 2.1 |"
+     },
+     {
+      "file": "e7_technical_note.pdf",
+      "text": "with 2.1% and 2.4% swelling"
+     }
+    ],
+    [
+     {
+      "file": "aurora_config.json",
+      "text": "max_swelling_pct: 5.0"
+     }
+    ]
+   ],
+   "must_include": [
+    [
+     "2.1",
+     "2.4"
+    ],
+    [
+     "5%",
+     "5.0",
+     "5 %"
+    ]
+   ]
+  },
+  {
+   "id": "e35",
+   "type": "keyword",
+   "question": "Which cycling protocol is used in the test configuration?",
+   "answer": "CC-CV.",
+   "facts": [
+    [
+     {
+      "file": "aurora_research_notes.md",
+      "text": "protocol: CC-CV"
+     }
+    ]
+   ],
+   "must_include": [
+    "CC-CV"
+   ]
+  },
+  {
+   "id": "e36",
+   "type": "keyword",
+   "question": "What charge rate does the test configuration use?",
+   "answer": "0.5C (discharge at 1C).",
+   "facts": [
+    [
+     {
+      "file": "aurora_research_notes.md",
+      "text": "charge_rate: 0.5C"
+     }
+    ]
+   ],
+   "must_include": [
+    [
+     "0.5C",
+     "0.5 C",
+     "C/2"
+    ]
+   ]
+  },
+  {
+   "id": "e37",
+   "type": "keyword",
+   "question": "How often are checkpoints taken during cycling?",
+   "answer": "Every 100 cycles.",
+   "facts": [
+    [
+     {
+      "file": "aurora_research_notes.md",
+      "text": "checkpoint_every: 100"
+     },
+     {
+      "file": "whiteboard_2026-03-20.jpg",
+      "text": "2. Checkpoint every 100 cycles"
+     }
+    ]
+   ],
+   "must_include": [
+    "100"
+   ]
+  },
+  {
+   "id": "e38",
+   "type": "keyword",
+   "question": "What is the cathode loading of the Aurora cell?",
+   "answer": "2.1 mAh/cm².",
+   "facts": [
+    [
+     {
+      "file": "aurora_research_notes.md",
+      "text": "Cathode: Prussian white, 2.1 mAh/cm² loading"
+     }
+    ]
+   ],
+   "must_include": [
+    "2.1"
+   ]
+  },
+  {
+   "id": "e39",
+   "type": "keyword",
+   "question": "How much NaDFOB does the E-7 electrolyte contain?",
+   "answer": "1 wt%.",
+   "facts": [
+    [
+     {
+      "file": "e7_technical_note.pdf",
+      "text": "| NaDFOB | SEI additive | 1 wt% |"
+     },
+     {
+      "file": "aurora_research_notes.md",
+      "text": "with 1% sodium difluoro(oxalato)borate"
+     }
+    ]
+   ],
+   "must_include": [
+    [
+     "1 wt%",
+     "1%",
+     "1 wt"
+    ]
+   ]
+  },
+  {
+   "id": "e40",
+   "type": "keyword",
+   "question": "What is risk R3 and how is it mitigated?",
+   "answer": "A single hard-carbon supplier; mitigated by qualifying Carbonix Materials as a second supplier.",
+   "facts": [
+    [
+     {
+      "file": "aurora_status_report_2026-03.docx",
+      "text": "| R3 | Single hard-carbon supplier | Dr. Priya Raman | Medium | Qualify Carbonix Materials as second supplier |"
+     }
+    ]
+   ],
+   "must_include": [
+    "Carbonix"
+   ]
+  },
+  {
+   "id": "e41",
+   "type": "cross_document",
+   "question": "What retention did AUR-C105 reach after 600 cycles at 45 °C, according to the test results and the lab notebook?",
+   "answer": "89.6% in both.",
+   "facts": [
+    [
+     {
+      "file": "cell_test_results.csv",
+      "text": "| AUR-C105 | E-7 | 45 | 600 | 89.6 | in_progress | Aiko Tanaka |"
+     }
+    ],
+    [
+     {
+      "file": "aurora_lab_notebook_scan.pdf",
+      "text": "AUR-C105 (E-7, 45 C): 600 cycles, retention 89.6 %, swelling 2.1 %"
+     }
+    ]
+   ],
+   "must_include": [
+    "89.6"
+   ]
+  },
+  {
+   "id": "e42",
+   "type": "cross_document",
+   "question": "What capacity does the Aurora S1 have, and does the prototype slide of the Q1 review agree?",
+   "answer": "50 Ah; yes, the prototype slide also states 50 Ah.",
+   "facts": [
+    [
+     {
+      "file": "helios_aurora_s1.html",
+      "text": "| Capacity | 50 Ah | 0.5C discharge |"
+     },
+     {
+      "file": "helios_aurora_s1.html",
+      "text": "The Aurora S1 is a 50 Ah pouch cell"
+     }
+    ],
+    [
+     {
+      "file": "aurora_q1_review.pptx",
+      "text": "Capacity: 50 Ah"
+     }
+    ]
+   ],
+   "must_include": [
+    "50"
+   ]
+  },
+  {
+   "id": "e43",
+   "type": "cross_document",
+   "question": "When was the extra E-7 funding approved and how much was it, according to the status report and the Q1 review speaker notes?",
+   "answer": "On 2026-03-19, EUR 85,000 (both documents).",
+   "facts": [
+    [
+     {
+      "file": "aurora_status_report_2026-03.docx",
+      "text": "On 2026-03-19 the steering committee approved an additional EUR 85,000 for the E-7 qualification"
+     }
+    ],
+    [
+     {
+      "file": "aurora_q1_review.pptx",
+      "text": "approved an extra EUR 85,000 for the E-7 qualification on 2026-03-19"
+     }
+    ]
+   ],
+   "must_include": [
+    "2026-03-19",
+    [
+     "85,000",
+     "85000"
+    ]
+   ]
+  },
+  {
+   "id": "e44",
+   "type": "cross_document",
+   "question": "Which gases were detected after the AUR-C103 failure according to the safety review and the Q1 review backup slide?",
+   "answer": "CO2 and ethylene (C2H4) in both.",
+   "facts": [
+    [
+     {
+      "file": "aurora_safety_review.pdf",
+      "text": "GC-MS of the pouch gas found CO2 and ethylene (C2H4)"
+     }
+    ],
+    [
+     {
+      "file": "aurora_q1_review.pptx",
+      "text": "CO₂ and C₂H₄ detected after failure, consistent with EC decomposition"
+     }
+    ]
+   ],
+   "must_include": [
+    [
+     "CO2",
+     "CO₂",
+     "carbon dioxide"
+    ]
+   ]
+  },
+  {
+   "id": "e46",
+   "type": "cross_document",
+   "question": "Who owns the electrolyte budget, and what is that person's role?",
+   "answer": "Marco Lindqvist, the electrolyte chemist.",
+   "facts": [
+    [
+     {
+      "file": "aurora_budget_2026.xlsx",
+      "text": "| Electrolyte | Marco Lindqvist | 240000 | 97200 | 40.5% |"
+     }
+    ],
+    [
+     {
+      "file": "aurora_config.json",
+      "text": "name: Marco Lindqvist role: Electrolyte chemist"
+     }
+    ]
+   ],
+   "must_include": [
+    "Marco Lindqvist",
+    "chemist"
+   ]
+  },
+  {
+   "id": "e47",
+   "type": "cross_document",
+   "question": "What is the project's maximum test temperature, and at what temperature did AUR-C103 fail?",
+   "answer": "45 °C for both.",
+   "facts": [
+    [
+     {
+      "file": "aurora_config.json",
+      "text": "max_test_temperature_c: 45"
+     }
+    ],
+    [
+     {
+      "file": "aurora_safety_review.pdf",
+      "text": "failed at cycle 412 during 45 °C cycling"
+     },
+     {
+      "file": "aurora_research_notes.md",
+      "text": "failed at cycle 412 because of gas evolution at 45 °C"
+     }
+    ]
+   ],
+   "must_include": [
+    "45"
+   ]
+  },
+  {
+   "id": "e48",
+   "type": "cross_document",
+   "question": "What cycle count does the project target, and how many cycles have the E-7 cells at 45 °C completed?",
+   "answer": "The target is 3000 cycles; the E-7 cells have completed 600.",
+   "facts": [
+    [
+     {
+      "file": "aurora_config.json",
+      "text": "target_cycles: 3000"
+     },
+     {
+      "file": "aurora_research_notes.md",
+      "text": "80% capacity retention after 3000 cycles"
+     }
+    ],
+    [
+     {
+      "file": "cell_test_results.csv",
+      "text": "| AUR-C105 | E-7 | 45 | 600 | 89.6 | in_progress | Aiko Tanaka |"
+     },
+     {
+      "file": "e7_technical_note.pdf",
+      "text": "the first 600 cycles at 45 °C"
+     }
+    ]
+   ],
+   "must_include": [
+    "3000",
+    "600"
+   ]
+  },
+  {
+   "id": "e49",
+   "type": "multi_hop",
+   "question": "What is the planned budget of the workstream owned by the project lead?",
+   "answer": "Dr. Priya Raman leads the project; her cathode workstream is planned at EUR 180,000.",
+   "facts": [
+    [
+     {
+      "file": "aurora_config.json",
+      "text": "lead: Dr. Priya Raman"
+     },
+     {
+      "file": "aurora_config.json",
+      "text": "name: Dr. Priya Raman role: Project lead"
+     }
+    ],
+    [
+     {
+      "file": "aurora_budget_2026.xlsx",
+      "text": "| Cathode | Dr. Priya Raman | 180000 | 121500 | 67.5% |"
+     }
+    ]
+   ],
+   "must_include": [
+    [
+     "180,000",
+     "180000"
+    ]
+   ]
+  },
+  {
+   "id": "e50",
+   "type": "multi_hop",
+   "question": "Who tests the cell that failed at 45 °C?",
+   "answer": "Aiko Tanaka (AUR-C103).",
+   "facts": [
+    [
+     {
+      "file": "aurora_safety_review.pdf",
+      "text": "failed at cycle 412 during 45 °C cycling"
+     },
+     {
+      "file": "aurora_research_notes.md",
+      "text": "Cell AUR-C103 failed at cycle 412"
+     }
+    ],
+    [
+     {
+      "file": "cell_test_results.csv",
+      "text": "| AUR-C103 | E-5 | 45 | 412 | 72.5 | failed | Aiko Tanaka |"
+     }
+    ]
+   ],
+   "must_include": [
+    "Aiko Tanaka"
+   ]
+  },
+  {
+   "id": "e51",
+   "type": "multi_hop",
+   "question": "What is the lead time of the supplier that the mitigation of risk R3 wants to qualify?",
+   "answer": "Carbonix Materials: 10 weeks (not yet qualified).",
+   "facts": [
+    [
+     {
+      "file": "aurora_status_report_2026-03.docx",
+      "text": "| R3 | Single hard-carbon supplier | Dr. Priya Raman | Medium | Qualify Carbonix Materials as second supplier |"
+     }
+    ],
+    [
+     {
+      "file": "aurora_budget_2026.xlsx",
+      "text": "| Hard carbon | Carbonix Materials | 10 | FALSE |"
+     }
+    ]
+   ],
+   "must_include": [
+    "10"
+   ]
+  },
+  {
+   "id": "e52",
+   "type": "multi_hop",
+   "question": "Which workstreams does the owner of risk R1 work on?",
+   "answer": "Marco Lindqvist: the electrolyte and the E-7 qualification.",
+   "facts": [
+    [
+     {
+      "file": "aurora_status_report_2026-03.docx",
+      "text": "| R1 | E-7 swelling exceeds the 5% limit | Marco Lindqvist | Medium | Fall back to E-5 + FEC |"
+     }
+    ],
+    [
+     {
+      "file": "aurora_config.json",
+      "text": "workstreams: electrolyte, E-7 qualification"
+     }
+    ]
+   ],
+   "must_include": [
+    "E-7 qualification"
+   ]
+  },
+  {
+   "id": "e53",
+   "type": "multi_hop",
+   "question": "What retention has the fallback electrolyte named for risk R1 reached at 45 °C?",
+   "answer": "E-5 + FEC: 83.1% after 800 cycles (AUR-C104).",
+   "facts": [
+    [
+     {
+      "file": "aurora_status_report_2026-03.docx",
+      "text": "| R1 | E-7 swelling exceeds the 5% limit | Marco Lindqvist | Medium | Fall back to E-5 + FEC |"
+     }
+    ],
+    [
+     {
+      "file": "cell_test_results.csv",
+      "text": "| AUR-C104 | E-5 + FEC | 45 | 800 | 83.1 | in_progress | Aiko Tanaka |"
+     },
+     {
+      "file": "meeting_notes_2026-03-12.txt",
+      "text": "A fallback is E-5 + FEC, which is at 83.1% after 800"
+     }
+    ]
+   ],
+   "must_include": [
+    "83.1"
+   ]
+  },
+  {
+   "id": "e56",
+   "type": "unanswerable",
+   "question": "What is the warranty period of the Aurora S1?",
+   "answer": null,
+   "facts": [],
+   "must_include": []
+  },
+  {
+   "id": "e57",
+   "type": "unanswerable",
+   "question": "What is the internal resistance of the Aurora S1 cell?",
+   "answer": null,
+   "facts": [],
+   "must_include": []
+  },
+  {
+   "id": "e58",
+   "type": "unanswerable",
+   "question": "How much does Kokos Carbon Ltd charge per kilogram of hard carbon?",
+   "answer": null,
+   "facts": [],
+   "must_include": []
+  },
+  {
+   "id": "e59",
+   "type": "unanswerable",
+   "question": "What capacity retention did AUR-C107 reach at 45 °C?",
+   "answer": null,
+   "facts": [],
+   "must_include": []
+  },
+  {
+   "id": "e60",
+   "type": "unanswerable",
+   "question": "Who replaced Lena Brandt as safety officer?",
+   "answer": null,
+   "facts": [],
+   "must_include": []
+  },
+  {
+   "id": "e61",
+   "type": "unanswerable",
+   "question": "What capacity retention did AUR-C105 have after 1500 cycles?",
+   "answer": null,
+   "facts": [],
+   "must_include": []
+  },
+  {
+   "id": "e62",
+   "type": "unanswerable",
+   "question": "Which company manufactured the GC-MS instrument used for the gas analysis?",
+   "answer": null,
+   "facts": [],
+   "must_include": []
+  }
+ ],
+ "errata": [
+  {
+   "date": "2026-11-06",
+   "questions": [
+    "e27",
+    "e28",
+    "e29",
+    "e31"
+   ],
+   "change": "must_include of four 'which X?' comparative questions now names the entity the question asks for; the supporting numbers were listed instead (before: {\"e27\": [\"90.2\", \"89.6\"], \"e28\": [\"cathode\", \"67.5\"], \"e29\": [\"E-7\", \"3.2\"], \"e31\": [\"91.4\", \"88\"]}). Found reading the first E1-E4 answers (e27: 'AUR-C106 retained more capacity' was scored wrong). Evidence quotes unchanged; every experiment re-scored the same way."
+  }
+ ]
+}

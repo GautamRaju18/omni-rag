@@ -40,6 +40,7 @@ from pydantic import BaseModel, Field
 
 from omnirag.llm.chat import LLMError
 from omnirag.retrieval.agent import AgentPlanner
+from omnirag.retrieval.context import Compress, ContextAssembler, ContextOptions, Expand
 from omnirag.retrieval.fusion import diversify, rrf
 from omnirag.retrieval.models import RetrievalFilters, RetrievalResult, RetrievedChunk
 from omnirag.retrieval.reranker import CrossEncoderReranker, passage_text, sigmoid
@@ -65,13 +66,17 @@ class Strategy(BaseModel):
     agent: Literal["off", "auto", "always"] = "auto"  # auto: only for multi_hop routes
     agent_steps: int = Field(default=2, ge=0, le=3)
     max_per_document: int | None = Field(default=None, ge=1, le=20)
+    # Phase 9c: the context handed to generation (ADR-0018)
+    context_budget: int = Field(default=1024, ge=64, le=8192)  # bge-m3 tokens
+    expand: Expand = "none"
+    compress: Compress = "none"
 
 
 def recursion_limit(s: Strategy) -> int:
     """route + transform, 2 nodes per agent step, 4 per attempt (retrieve, rerank, check,
-    correct), plus slack. Adding a node to a loop means changing this."""
+    correct), assemble, plus slack. Adding a node to a loop means changing this."""
     steps = s.agent_steps if s.agent != "off" else 0
-    return 4 * (s.max_retries + 1) + 2 * steps + 5
+    return 4 * (s.max_retries + 1) + 2 * steps + 6
 
 
 class State(TypedDict, total=False):
@@ -94,6 +99,7 @@ class State(TypedDict, total=False):
     attempts: int  # corrective retries done
     checks: list[dict[str, Any]]
     verdict: str
+    context: dict[str, Any] | None  # the assembled context (Phase 9c)
     trace: list[dict[str, Any]]
 
 
@@ -118,6 +124,7 @@ class RetrievalWorkflow:
         router: RuleRouter | None = None,
         llm_router: LLMRouter | None = None,
         agent: AgentPlanner | None = None,
+        assembler: ContextAssembler | None = None,
     ) -> None:
         self.dense = dense
         self.bm25 = bm25
@@ -129,9 +136,11 @@ class RetrievalWorkflow:
         self.llm_router = llm_router or LLMRouter(transformer.llm)
         self.self_query = self_query
         self.agent = agent or AgentPlanner(transformer.llm)
+        self.assembler = assembler
         self._pool = ThreadPoolExecutor(max_workers=8, thread_name_prefix="workflow")
         graph_ = StateGraph(State)
-        for name in ("route", "transform", "retrieve", "plan", "rerank", "check", "correct"):
+        for name in ("route", "transform", "retrieve", "plan", "rerank", "check", "correct",
+                     "assemble"):  # fmt: skip
             graph_.add_node(name, getattr(self, f"_{name}"))
         graph_.add_edge(START, "route")
         graph_.add_edge("route", "transform")
@@ -139,8 +148,9 @@ class RetrievalWorkflow:
         graph_.add_conditional_edges("retrieve", self._after_retrieve, ["plan", "rerank", "check"])
         graph_.add_conditional_edges("plan", self._after_plan, ["retrieve", "rerank", "check"])
         graph_.add_edge("rerank", "check")
-        graph_.add_conditional_edges("check", self._after_check, ["correct", END])
+        graph_.add_conditional_edges("check", self._after_check, ["correct", "assemble"])
         graph_.add_edge("correct", "retrieve")
+        graph_.add_edge("assemble", END)
         self.graph_app = graph_.compile()
 
     def _top(self, state: State) -> list[RetrievedChunk]:
@@ -289,6 +299,28 @@ class RetrievalWorkflow:
         return {"queries": queries, "attempts": state.get("attempts", 0) + 1,
                 "trace": _step(state, "correct", started, query=query, error=error)}  # fmt: skip
 
+    def _assemble(self, state: State) -> dict[str, Any]:
+        """The context for generation: budgeted, optionally expanded / compressed (9c)."""
+        started = time.perf_counter()
+        s = state["strategy"]
+        if self.assembler is None:
+            return {"context": None, "trace": _step(state, "assemble", started, skipped=True)}
+        options = ContextOptions(budget_tokens=s.context_budget, expand=s.expand,
+                                 compress=s.compress, max_candidates=s.depth)  # fmt: skip
+        # The diversified ranking first (the order the check judged), then the other candidates.
+        top = self._top(state)
+        seen = {t.chunk_id for t in top}
+        ranked = [
+            h.model_copy(update={"rank": i})
+            for i, h in enumerate([*top, *(h for h in state["hits"] if h.chunk_id not in seen)], 1)
+        ]
+        ctx = self.assembler.assemble(state["question"], ranked, options)
+        out = {**ctx.model_dump(mode="json"), "rendered": ctx.render()}
+        return {"context": out,
+                "trace": _step(state, "assemble", started, blocks=len(ctx.blocks),
+                               tokens=ctx.tokens, budget=ctx.budget_tokens,
+                               expand=s.expand, compress=s.compress)}  # fmt: skip
+
     # ---------------------------------------------------------------- routing
     def _after_retrieve(self, state: State) -> str:
         if not state.get("agent_done", True) and \
@@ -303,18 +335,18 @@ class RetrievalWorkflow:
 
     def _after_check(self, state: State) -> str:
         if state["verdict"] == "sufficient":
-            return END
+            return "assemble"
         if state.get("attempts", 0) >= state["strategy"].max_retries:
-            return END
+            return "assemble"
         # The agent already searched with what the passages say; the corrective rewrite (which
         # doesn't read them) only dilutes RRF. Measured 2026-11-06: after the agent found r02's
         # supplier row, a corrective retry pushed it back out of the top 5 (ADR-0017).
         if state.get("use_agent"):
-            return END
+            return "assemble"
         # The identifier check found an identifier that no passage mentions: rewording
         # the query won't make it exist, so stop instead of spending retries.
         if state["checks"][-1]["method"] == "identifiers" and state["hits"]:
-            return END
+            return "assemble"
         return "correct"
 
     # ---------------------------------------------------------------- run
@@ -344,9 +376,11 @@ class RetrievalWorkflow:
                      "agent": {"used": out["use_agent"], "steps": out["steps"],
                                "graph_queries": out["graph_queries"]},
                      "checks": out["checks"], "strategy": strategy.model_dump(),
+                     "context": out.get("context"),
                      "trace": out["trace"], "recursion_limit": limit,
                      # what each search found before fusion (top 10 per list)
                      "lists": {key: {"latency_ms": r.latency_ms,
+                                     "embed_ms": r.details.get("embed_ms"),
                                      "hits": [[h.chunk_id, h.rank, round(h.score, 4),
                                                h.source_file] for h in r.hits[:10]]}
                                for key, r in out["lists"].items()}},
@@ -359,6 +393,7 @@ class RetrievalWorkflow:
 def build_workflow(settings: Any, service: Any) -> RetrievalWorkflow:
     """Workflow over the service's dense, BM25 and graph retrievers and its reranker."""
     from omnirag.llm.chat import OllamaChat
+    from omnirag.retrieval.compression import Compressor
     from omnirag.retrieval.self_query import catalog_from
 
     llm = OllamaChat(settings.ollama_base_url, settings.generation_model,
@@ -371,9 +406,29 @@ def build_workflow(settings: Any, service: Any) -> RetrievalWorkflow:
         self_query=settings.workflow_self_query, agent=settings.workflow_agent,
         agent_steps=settings.workflow_agent_steps,
         max_per_document=settings.workflow_max_per_document,
+        context_budget=settings.context_budget_tokens, expand=settings.context_expand,
+        compress=settings.context_compress,
     )  # fmt: skip
+    assembler = ContextAssembler(_LazyCount(settings), service.store,
+                                 Compressor(embedder=service.retrievers["dense"].embedder,
+                                            llm=llm))  # fmt: skip
     return RetrievalWorkflow(
         service.retrievers["dense"], service.retrievers["bm25"], QueryTransformer(llm),
         service.reranker, default, graph=service.retrievers.get("graph"),
-        self_query=SelfQuery(llm, catalog_from(service.store)),
+        self_query=SelfQuery(llm, catalog_from(service.store)), assembler=assembler,
     )  # fmt: skip
+
+
+class _LazyCount:
+    """bge-m3 token counter, loaded on the first assembled context (not at API start-up)."""
+
+    def __init__(self, settings: Any) -> None:
+        self.settings = settings
+        self._count: Any = None
+
+    def __call__(self, text: str) -> int:
+        if self._count is None:
+            from omnirag.chunking import load_tokenizer
+
+            self._count = load_tokenizer(self.settings).count
+        return self._count(text)

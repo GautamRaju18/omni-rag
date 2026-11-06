@@ -3,18 +3,25 @@
 * ``GET /ingestion/jobs``           recent jobs (filter by status, paginated)
 * ``GET /ingestion/jobs/{job_id}``  one job: poll this after an upload
 * ``GET /ingestion/status``         worker and queue state
+* ``POST /ingestion/start``         (re)ingest a stored document: ``{"document_id": ...}``
+* ``GET /ingestion/{job_id}/status``  the brief's path for one job (same as ``/jobs/{id}``)
+
+New files start ingesting when uploaded (``POST /documents/upload``); ``start`` is for files
+already in the store (after a loader upgrade, or a failed job).
 """
 
 from __future__ import annotations
 
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Path, Query
+from fastapi import APIRouter, Path, Query, Response
+from pydantic import BaseModel, Field
 
-from omnirag.api.dependencies import JobsDep
+from omnirag.api.dependencies import JobsDep, SettingsDep, StoreDep
+from omnirag.api.routers.documents import reingest_document
 from omnirag.core.errors import NotFoundError
 from omnirag.ingestion.jobs import IngestionJob, JobStatus
-from omnirag.schemas.documents import JobPage
+from omnirag.schemas.documents import JobPage, UploadResponse
 
 router = APIRouter(prefix="/ingestion", tags=["ingestion"])
 
@@ -43,3 +50,19 @@ async def get_job(job_id: JobId, jobs: JobsDep) -> IngestionJob:
 @router.get("/status", summary="Worker and queue state")
 async def ingestion_status(jobs: JobsDep) -> dict[str, Any]:
     return jobs.stats()
+
+
+class StartRequest(BaseModel):
+    document_id: str = Field(pattern=r"^doc_[0-9a-f]{16}$")
+
+
+@router.post("/start", status_code=202, response_model=UploadResponse,
+             summary="(Re)ingest a stored document in the background")  # fmt: skip
+async def start_ingestion(request: StartRequest, response: Response, settings: SettingsDep,
+                          store: StoreDep, jobs: JobsDep) -> UploadResponse:  # fmt: skip
+    return await reingest_document(request.document_id, response, settings, store, jobs)
+
+
+@router.get("/{job_id}/status", response_model=IngestionJob, summary="One ingestion job")
+async def job_status(job_id: JobId, jobs: JobsDep) -> IngestionJob:
+    return await get_job(job_id, jobs)

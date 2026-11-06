@@ -183,6 +183,28 @@ class Settings(BaseSettings):
     workflow_agent_steps: int = Field(default=2, ge=0, le=3)
     workflow_max_per_document: int | None = Field(default=None, ge=1, le=20)
 
+    # --- context assembly (Phase 9c, ADR-0018): what /retrieval/advanced hands to generation
+    context_budget_tokens: int = Field(default=1024, ge=64, le=8192)  # bge-m3 tokens
+    context_expand: Literal["none", "neighbors", "section"] = "none"
+    context_compress: Literal["none", "lexical", "embedding", "llm"] = "none"
+
+    # --- generation (Phases 10-11, ADR-0019): grounded answers over the assembled context
+    generation_num_predict: int = Field(default=1024, ge=64, le=4096)
+    generation_timeout_s: float = Field(default=180.0, gt=0)
+    # Refuse without a model call when the context check says "insufficient" (Phase 12)
+    generation_respect_check: bool = True
+    # Chat history + query traces (SQLite); default: <data_dir>/omnirag.db
+    chat_db_path: Path | None = None
+
+    # --- LangSmith (Phase 12): external hosted service, so off by default and redacting.
+    # Tracing also needs LANGSMITH_API_KEY in the environment (read by the langsmith SDK).
+    langsmith_tracing: bool = False
+    langsmith_project: str = "omnirag"
+    langsmith_redact: bool = True  # hide inputs/outputs (document text) in traces
+
+    # --- evaluation runs started from the API (Phase 12): <data_dir>/evaluations/
+    benchmarks_dir: Path | None = None  # measured reports shown by /analytics (docs/benchmarks)
+
     # --- dashboard (Streamlit, pulled forward from Phase 14): talks to the API only
     frontend_api_url: str = "http://localhost:8000"
     frontend_timeout_s: float = Field(default=180.0, gt=0)  # agent + CPU rerank can take ~30 s
@@ -191,6 +213,18 @@ class Settings(BaseSettings):
     # and everything else to PyMuPDF (~40x faster); "pymupdf" / "docling" force one engine.
     # Scanned pages always use PyMuPDF + Tesseract.
     pdf_engine: Literal["auto", "pymupdf", "docling"] = "auto"
+
+    @property
+    def benchmarks_path(self) -> Path | None:
+        """Measured reports (``docs/benchmarks``): the configured dir, else the repo's."""
+        if self.benchmarks_dir:
+            return self.benchmarks_dir
+        repo = Path(__file__).parents[3] / "docs" / "benchmarks"
+        return repo if repo.is_dir() else None
+
+    @property
+    def chat_db(self) -> Path:
+        return self.chat_db_path or self.data_dir / "omnirag.db"
 
     @property
     def max_upload_bytes(self) -> int:

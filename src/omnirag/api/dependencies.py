@@ -12,6 +12,8 @@ from typing import Annotated
 from fastapi import Depends, Request
 
 from omnirag.core.config import Settings
+from omnirag.evaluation.runs import EvaluationRuns
+from omnirag.generation.chat import ChatService
 from omnirag.ingestion.jobs import JobManager
 from omnirag.ingestion.store import DocumentStore
 from omnirag.knowledge_base.neo4j_client import Neo4jClient
@@ -48,6 +50,14 @@ def get_workflow(request: Request) -> RetrievalWorkflow:
     return request.app.state.workflow
 
 
+def get_chat(request: Request) -> ChatService:
+    return request.app.state.chat
+
+
+def get_evaluations(request: Request) -> EvaluationRuns:
+    return request.app.state.evaluations
+
+
 SettingsDep = Annotated[Settings, Depends(get_app_settings)]
 Neo4jDep = Annotated[Neo4jClient, Depends(get_neo4j)]
 OllamaDep = Annotated[OllamaClient, Depends(get_ollama)]
@@ -55,3 +65,5 @@ StoreDep = Annotated[DocumentStore, Depends(get_store)]
 JobsDep = Annotated[JobManager, Depends(get_jobs)]
 RetrievalDep = Annotated[RetrievalService, Depends(get_retrieval)]
 WorkflowDep = Annotated[RetrievalWorkflow, Depends(get_workflow)]
+ChatDep = Annotated[ChatService, Depends(get_chat)]
+EvaluationsDep = Annotated[EvaluationRuns, Depends(get_evaluations)]

@@ -58,7 +58,8 @@ def cmd_advanced(args: argparse.Namespace) -> int:
         "transform": args.transform, "grade": not args.no_grade,
         "max_retries": args.retries, "rerank": args.rerank, "route": args.route,
         "self_query": args.self_query, "agent": args.agent, "agent_steps": args.agent_steps,
-        "max_per_document": args.max_per_document})  # fmt: skip
+        "max_per_document": args.max_per_document, "context_budget": args.budget,
+        "expand": args.expand, "compress": args.compress})  # fmt: skip
     try:
         result = workflow.retrieve(args.query, args.k, strategy=Strategy(**strategy.model_dump()))
     finally:
@@ -90,6 +91,15 @@ def cmd_advanced(args: argparse.Namespace) -> int:
         text = hit.content if args.full else hit.content[:200].replace("\n", " ")
         print(f"\n#{hit.rank}  {hit.source_file}  {' > '.join(hit.section_path)}\n    {text}")
     print(f"\n{len(result.hits)} hits in {result.latency_ms} ms")
+    ctx = d.get("context")
+    if ctx:
+        print(
+            f"\ncontext for generation: {len(ctx['blocks'])} blocks, {ctx['tokens']}/"
+            f"{ctx['budget_tokens']} tokens (expand {ctx['options']['expand']}, compress "
+            f"{ctx['options']['compress']}), {len(ctx['skipped'])} chunks didn't fit"
+        )
+        if args.show_context:
+            print("\n" + ctx["rendered"])
     return 0
 
 
@@ -145,6 +155,12 @@ def main(argv: list[str] | None = None) -> int:
     )
     p.add_argument("--agent-steps", type=int, default=get_settings().workflow_agent_steps)
     p.add_argument("--max-per-document", type=int, default=get_settings().workflow_max_per_document)
+    p.add_argument("--budget", type=int, default=get_settings().context_budget_tokens)
+    p.add_argument("--expand", default=get_settings().context_expand,
+                   choices=["none", "neighbors", "section"])  # fmt: skip
+    p.add_argument("--compress", default=get_settings().context_compress,
+                   choices=["none", "lexical", "embedding", "llm"])  # fmt: skip
+    p.add_argument("--show-context", action="store_true", help="print the assembled context")
     p.add_argument("--full", action="store_true")
     p.set_defaults(fn=cmd_advanced)
     args = parser.parse_args(argv)

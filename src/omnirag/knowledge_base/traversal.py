@@ -205,3 +205,99 @@ def fulltext_search(
         "ORDER BY score DESC LIMIT $k",
         query=query, fetch=k * 10, config=config_id, latest=latest_only, k=k,
     )  # fmt: skip
+
+
+def neighborhood(store: GraphStore, *, entity: str | None = None,
+                 document_id: str | None = None, limit: int = 60) -> dict[str, Any]:  # fmt: skip
+    """Nodes and edges for the graph explorer (Phase 14), latest versions only.
+
+    * ``entity``: the entity, its RELATED_TO neighbours, the chunks that mention it and their
+      documents;
+    * ``document_id``: the document, its chunks (with sections) and the entities they mention;
+    * neither: documents linked to their most-mentioned entities (mention counts on the edges).
+    """
+    from omnirag.knowledge_base.entities import entity_key
+
+    nodes: dict[str, dict[str, Any]] = {}
+    edges: list[dict[str, Any]] = []
+
+    def node(nid: str, label: str, kind: str, **props: Any) -> str:
+        nodes.setdefault(nid, {"id": nid, "label": label, "kind": kind, **props})
+        return nid
+
+    if entity:
+        rows = store.query(
+            """
+            MATCH (e:Entity) WHERE e.key = $key OR $name IN e.aliases
+            WITH e ORDER BY e.key = $key DESC, e.mention_count DESC LIMIT 1
+            OPTIONAL MATCH (e)-[r:RELATED_TO]-(o:Entity) WHERE r.is_latest
+            WITH e, collect(DISTINCT {other: o.name, otype: o.type, type: r.type,
+                 out: startNode(r) = e, support: r.support})[..$limit] AS rels
+            OPTIONAL MATCH (d:Document)-[:HAS_CHUNK]->(c:Chunk)-[:MENTIONS]->(e)
+            WHERE c.is_latest
+            RETURN e.name AS name, e.type AS type, rels,
+                   collect(DISTINCT {chunk: c.chunk_id, file: d.source_file,
+                                     document_id: d.document_id})[..$limit] AS mentions
+            """,
+            key=entity_key(entity), name=entity, limit=limit,
+        )  # fmt: skip
+        if rows:
+            r = rows[0]
+            center = node(f"e:{r['name']}", r["name"], "entity", type=r["type"], center=True)
+            for rel in r["rels"]:
+                if not rel["other"]:
+                    continue
+                other = node(f"e:{rel['other']}", rel["other"], "entity", type=rel["otype"])
+                src, dst = (center, other) if rel["out"] else (other, center)
+                edges.append({"source": src, "target": dst, "type": rel["type"],
+                              "support": rel["support"]})  # fmt: skip
+            for m in r["mentions"]:
+                if not m["chunk"]:
+                    continue
+                c = node(f"c:{m['chunk']}", m["chunk"].rsplit("-", 1)[-1], "chunk",
+                         chunk_id=m["chunk"])  # fmt: skip
+                d = node(f"d:{m['document_id']}", m["file"], "document",
+                         document_id=m["document_id"])  # fmt: skip
+                edges += [
+                    {"source": c, "target": center, "type": "MENTIONS"},
+                    {"source": d, "target": c, "type": "HAS_CHUNK"},
+                ]
+    elif document_id:
+        rows = store.query(
+            """
+            MATCH (d:Document {document_id: $id})-[:HAS_CHUNK]->(c:Chunk)
+            OPTIONAL MATCH (c)-[:MENTIONS]->(e:Entity)
+            WITH d, c, collect(DISTINCT {name: e.name, type: e.type}) AS ents
+            ORDER BY c.chunk_index
+            RETURN d.source_file AS file, c.chunk_id AS chunk, c.section_path AS section,
+                   c.config_id AS config, ents LIMIT $limit
+            """,
+            id=document_id, limit=limit,
+        )  # fmt: skip
+        for r in rows:
+            d = node(f"d:{document_id}", r["file"], "document", document_id=document_id,
+                     center=True)  # fmt: skip
+            label = " > ".join(r["section"] or []) or r["chunk"].rsplit("-", 1)[-1]
+            c = node(f"c:{r['chunk']}", label[:40], "chunk", chunk_id=r["chunk"],
+                     config=r["config"])  # fmt: skip
+            edges.append({"source": d, "target": c, "type": "HAS_CHUNK"})
+            for e in r["ents"]:
+                if e["name"]:
+                    en = node(f"e:{e['name']}", e["name"], "entity", type=e["type"])
+                    edges.append({"source": c, "target": en, "type": "MENTIONS"})
+    else:
+        rows = store.query(
+            """
+            MATCH (d:Document)-[:HAS_CHUNK]->(c:Chunk)-[:MENTIONS]->(e:Entity)
+            WHERE d.is_latest
+            WITH d, e, count(DISTINCT c) AS n ORDER BY n DESC, e.name
+            RETURN d.document_id AS document_id, d.source_file AS file, e.name AS entity,
+                   e.type AS type, n LIMIT $limit
+            """,
+            limit=limit,
+        )  # fmt: skip
+        for r in rows:
+            d = node(f"d:{r['document_id']}", r["file"], "document", document_id=r["document_id"])
+            e = node(f"e:{r['entity']}", r["entity"], "entity", type=r["type"])
+            edges.append({"source": d, "target": e, "type": "MENTIONS", "count": r["n"]})
+    return {"nodes": list(nodes.values()), "edges": edges}

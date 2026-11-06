@@ -82,14 +82,45 @@ Local-first multimodal GraphRAG platform, built phase by phase (see `docs/PROGRE
 - Agent queries / graph entities may only use identifiers found in the question or the passages shown (`agent.ungrounded`, `norm`); refused steps end the agent's turn and stay in the trace.
 - No corrective retry once the agent has run (`_after_check`): a later, worse query dilutes RRF (measured: lost r02). Defaults `route=rules`, `agent=auto` live in both `Strategy` and `Settings`; keep them in sync.
 - BM25 requires only the *user's* identifiers (`required=identifiers(question)` for every LLM-written query); identifiers a model wrote are boosts.
-- `recursion_limit = 4*(max_retries+1) + 2*agent_steps + 5` (`retrieval_graph.recursion_limit`); the worst-case test must keep passing.
+- `recursion_limit = 4*(max_retries+1) + 2*agent_steps + 6` (`retrieval_graph.recursion_limit`, +1 for `assemble` in 9c); the worst-case test must keep passing.
 - Rule router beats the LLM router on all three label sets (`evaluation.routing_eval`); re-measure both before switching. `data/eval/routing_holdout.json` was labelled before the rules: don't tune rules on it.
+
+## Context assembly invariants (Phase 9c, ADR-0018)
+- `assemble` is the workflow's last node (check → assemble → END): it builds the generator's context from the ranked hits; Phase 10 must consume `details.context`, not re-join chunks.
+- Budgets are bge-m3 tokens (`chunking/tokenizer`) and include each block's header line; qwen3 counts ~4% more overall (up to 1.57× on one chunk, measured): leave headroom in Phase 10's prompt.
+- Whole blocks in rank order; a block that doesn't fit is skipped (listed in `skipped`), never cut mid-text.
+- Compression is extractive only: kept units are verbatim document text (sentences, table rows; a row brings its header); gaps are `" … "`. Never let a model rewrite or summarise evidence.
+- `split_units` joins hard-wrapped lines back into sentences and keeps list numbers with their text (measured: line splitting cut evidence quotes). Change it only with `test_wrapped_sentences_and_list_numbers_stay_whole` passing and the context benchmark re-run.
+- LLM compression returns unit *numbers*; replies are cached per (question, unit texts); `LLMError` falls back to lexical and says so in `compression.fallback`.
+- Expansion queries are parameterized and stay inside the hit's `config_id`; expanded chunks keep `hit_chunk_ids` vs `chunk_ids` so provenance shows what retrieval found vs what expansion added.
+- Defaults (`Strategy` and `Settings`, keep in sync): 1024 tokens, expand none, compress none. Re-measure with `evaluation.context_benchmark` on both sets before changing them; report per-question wins/losses.
+
+## Generation + citation invariants (Phases 10-11, ADR-0019)
+- The generator reads `details.context` (Phase 9c blocks), one structured call (`ANSWER_SCHEMA`): claims with sources, a verbatim quote, direct/inferred. Bump `PROMPT_VERSION` on any prompt/schema change; eval reports record it.
+- Code decides citations (`generation/citations.py`): quotes are searched in every block (verified / relocated / elided-on-one-line), every claim number must occur in its cited blocks, unsupported claims are removed from `text` but kept in `claims`. Never accept a citation because the model wrote it; never loosen `match` to raise faithfulness.
+- Refuse without a model call on empty context or check verdict `insufficient` (`respect_check`). Model errors become `refused_by="error"` (turn still stored); retrieval errors are 503.
+- Quotes found only in generated image-description lines make a claim `inferred` (`generated_evidence`); OCR/alt text is original.
+- Chat turns (full trace) live in SQLite `<data_dir>/omnirag.db` (`ChatStore`, connection per call, WAL). One API process only.
+
+## Evaluation + observability invariants (Phases 12-13, ADR-0020)
+- Dataset `data/eval/omnirag_eval_v1.json` (110 questions, 8 types, 10 unanswerable). Every quote is verified (unit test for non-layout files, integration test for all); `must_include` terms must match the reference answer (asserted). Never weaken a quote or a term to make a run look better.
+- `rag_eval` experiments E1-E7 share the same context (1,024 tokens, 20 candidates) and generator; only retrieval differs. Records stream to `<out>.partial.jsonl` and resume from it: delete it when the prompt, judge or dataset changes.
+- Deterministic metrics first (terms, quote-verified faithfulness, citation accuracy, refusals); the LLM judge (`judge.py`, same local model, `JUDGE_VERSION`) is reported with its agreement with the deterministic check. Report per-question results and failure root causes, not only means.
+- Failure root cause = the first pipeline stage that lost a fact (`evaluation/failures.py` order); later stages aren't blamed again.
+- Laptop GPU throttles (measured 88 °C, 307 MHz): every report records `gpu` start/end per experiment; quote latency with it. In WSL use the Windows `nvidia-smi.exe` (the Linux one segfaults from Python).
+- LangSmith is opt-in and redacting: datasets carry questions/reference answers only, experiments carry scores, answers are `[redacted]` unless `include_answers`. Tracing needs `OMNIRAG_LANGSMITH_TRACING=true` and `LANGSMITH_API_KEY`, and hides inputs/outputs by default.
+- `POST /evaluate` runs one evaluation at a time in the API process (409 otherwise); runs live in `<data_dir>/evaluations/`.
+
+## Deployment invariants (Phase 15, ADR-0021)
+- One image (`Dockerfile`, uv 0.11.32 + python 3.11.15-slim-bookworm, locked deps, CPU torch, Tesseract) for API and dashboard; compose profile `app`. Ollama stays on the host (`host.docker.internal:11434`); secrets only via `env_file: .env`.
+- Data is the host's `~/omnirag-data` bind-mounted at `/data` (uid 1000). Memory limits: neo4j 2g, api 3g, dashboard 768m (WSL cap 8 GB).
 
 ## Dashboard (Streamlit, pulled forward from Phase 14)
 - `src/omnirag/frontend/`: `app.py` entry, `pages.py` (Streamlit), `views.py` (pure, unit-tested), `api_client.py`. The dashboard talks to the HTTP API only: no Neo4j/Ollama clients, no secrets.
 - Run: API (`uvicorn`) then `uv run streamlit run src/omnirag/frontend/app.py` (port 8501). Telemetry off in `.streamlit/config.toml`; keep it off.
 - Streamlit caches imported modules: restart the server after editing `pages.py`/`views.py`. Graphviz DOT: never name a node `graph`/`subgraph`/`digraph`/`strict` (blank diagram; asserted by a test).
 - Benchmarks page reads `docs/benchmarks/*.json`; never compute or invent numbers in the UI.
+- Phase 14 screens live in `frontend/screens.py` (Ask, Documents, Graph explorer, Evaluation, Performance); `pages.main()` registers them. Pure helpers in `views.py` (unit-tested); graph DOT node IDs are generated (`n0`…), labels escaped. Status colors always come with an icon + word.
 
 ## Conventions
 - Code lives in `src/omnirag/<module>/` (ADR-0001). Create a module's package only in its phase.

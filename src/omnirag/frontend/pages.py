@@ -11,6 +11,9 @@ Pages:
   the path the run took, a timeline, what each node did, every ranked list and how RRF
   combined them into the final context.
 * **Benchmarks**: the measured results in ``docs/benchmarks`` (read, never recomputed).
+* Phase 14 screens (``screens.py``): **Ask** (chat with verified citations, streaming),
+  **Documents** (library, upload, ingestion status, preview), **Graph explorer**,
+  **Evaluation** (E1-E7 reports, failure root causes, per question) and **Performance**.
 
 The dashboard only talks to the HTTP API (``frontend/api_client.py``); it holds no
 database connection and no secrets.
@@ -121,10 +124,12 @@ embed [label="Embeddings\\nbge-m3 (Ollama)"];
 neo4j [label="Neo4j\\nchunks · vectors · full-text\\nentities · relations"];
 retr [label="Retrieval\\ndense · BM25 · graph\\nRRF · rerank"];
 wf [label="Workflow (LangGraph)\\nroute · transform · agent\\ncheck · retry"];
-gen [label="Generation\\n(Phase 10)" style="rounded,dashed" fontcolor="#7a7974" color="#a3a29c"];
+ctx [label="Context\\n1,024-token budget\\nnumbered sources"];
+gen [label="Answer\\nqwen3:4b-instruct\\nclaims + quotes"];
+cite [label="Validation\\nquotes checked\\ncitations verified"];
 files -> ingest -> chunk -> embed -> neo4j;
 question [label="Question" shape=box style="rounded" fontcolor="#7a7974" color="#a3a29c"];
-question -> retr; neo4j -> retr [constraint=false]; retr -> wf -> gen;
+question -> retr; neo4j -> retr [constraint=false]; retr -> wf -> ctx -> gen -> cite;
 {rank=same; files; question;} }"""  # two rows: indexing, question time. "graph" is a DOT keyword
 
 
@@ -245,12 +250,15 @@ def retrieval_lab() -> None:
 PRESETS: dict[str, dict[str, Any]] = {
     # the measured defaults (ADR-0017): the agent only runs for multi-hop questions
     "Default": {"route": "rules", "self_query": "off", "agent": "auto", "transform": "none",
-                "grade": True, "max_retries": 1, "rerank": False, "cap": 0},
+                "grade": True, "max_retries": 1, "rerank": False, "cap": 0,
+                "budget": 1024, "expand": "none", "compress": "none"},
     "No LLM calls": {"route": "off", "self_query": "off", "agent": "off", "transform": "none",
-                     "grade": False, "max_retries": 0, "rerank": False, "cap": 0},
+                     "grade": False, "max_retries": 0, "rerank": False, "cap": 0,
+                     "budget": 1024, "expand": "none", "compress": "none"},
     "Everything on": {"route": "rules", "self_query": "soft", "agent": "always",
                       "transform": "multi_query", "grade": True, "max_retries": 1,
-                      "rerank": True, "cap": 2},
+                      "rerank": True, "cap": 2, "budget": 1024, "expand": "neighbors",
+                      "compress": "llm"},
 }  # fmt: skip
 
 
@@ -267,7 +275,7 @@ def strategy_input() -> tuple[dict[str, Any], int]:
     p[0].markdown("**Presets**")
     for col, name in zip(p[1:], PRESETS, strict=False):
         col.button(name, on_click=_apply, args=(name,), width="stretch", key=f"preset_{name}")
-    a, b, c = st.columns(3)
+    a, b, c, d = st.columns(4)
     with a:
         st.markdown("**1 · Before retrieval**")
         st.segmented_control(
@@ -299,11 +307,24 @@ def strategy_input() -> tuple[dict[str, Any], int]:
         st.slider("Corrective retries (max)", 0, 3, key="wf_max_retries")
         st.slider("Max chunks per document (0 = no cap)", 0, 5, key="wf_cap")
         k = st.slider("k (passages returned)", 1, 15, 5, key="wf_k")
+    with d:
+        st.markdown("**4 · Context for the generator**")
+        st.select_slider("Token budget (bge-m3)", [128, 256, 512, 1024, 2048, 4096],
+                         key="wf_budget")  # fmt: skip
+        st.segmented_control("Expand", ["none", "neighbors", "section"], key="wf_expand",
+                             required=True,
+                             help="Add the chunks before/after each hit, or its whole section. "
+                                  "Touching chunks merge into one block.")  # fmt: skip
+        st.segmented_control("Compress", ["none", "lexical", "embedding", "llm"],
+                             key="wf_compress", required=True,
+                             help="Keep only the sentences / table rows that matter, word for "
+                                  "word (never rewritten).")  # fmt: skip
     s = st.session_state
     strategy = {"route": s.wf_route, "self_query": s.wf_self_query, "agent": s.wf_agent,
                 "agent_steps": s.wf_steps, "transform": s.wf_transform, "grade": s.wf_grade,
                 "max_retries": s.wf_max_retries, "rerank": s.wf_rerank,
-                "max_per_document": s.wf_cap or None}  # fmt: skip
+                "max_per_document": s.wf_cap or None, "context_budget": s.wf_budget,
+                "expand": s.wf_expand, "compress": s.wf_compress}  # fmt: skip
     return strategy, k
 
 
@@ -382,6 +403,13 @@ def node_detail(t: dict[str, Any], d: dict[str, Any], counters: dict[str, int],
         st.markdown(f"**New query:** `{t.get('query')}`")
     elif n == "rerank":
         st.markdown(f"{t.get('pairs')} pairs scored by the cross-encoder.")
+    elif n == "assemble" and d.get("context"):
+        ctx = d["context"]
+        st.markdown(f"**{len(ctx['blocks'])} blocks, {ctx['tokens']} of {ctx['budget_tokens']} "
+                    f"tokens** from {ctx['candidates']} candidates; "
+                    f"{len(ctx.get('skipped', []))} retrieved chunks didn't fit.")  # fmt: skip
+        if ctx.get("compression"):
+            st.caption(f"Compression: {ctx['compression']}")
 
 
 def workflow_inspector() -> None:
@@ -457,7 +485,21 @@ def workflow_inspector() -> None:
     st.dataframe(pd.DataFrame(views.contribution_rows(r["hits"],
                                                       d["strategy"].get("rrf_k", 60))),
                  hide_index=True)  # fmt: skip
-    st.subheader(f"Final context ({len(r['hits'])} passages)")
+    ctx = d.get("context")
+    if ctx:
+        st.subheader("Context for the generator")
+        st.caption("What Phase 10 will put in the prompt: numbered sources, the document's own "
+                   "words. Expansion adds neighbouring chunks; compression keeps sentences and "
+                   "table rows (' … ' marks what was cut).")  # fmt: skip
+        c1, c2, c3 = st.columns(3)
+        c1.metric("Tokens used", f"{ctx['tokens']} / {ctx['budget_tokens']}", border=True)
+        c2.metric("Blocks", len(ctx["blocks"]), border=True)
+        c3.metric("Assembly", f"{ctx['ms']:,.0f} ms", border=True)
+        st.progress(min(1.0, ctx["tokens"] / ctx["budget_tokens"]))
+        st.dataframe(pd.DataFrame(views.context_rows(ctx)), hide_index=True)
+        with st.expander("The context as the generator will see it", expanded=True):
+            st.code(ctx["rendered"], language=None, wrap_lines=True)
+    st.subheader(f"Top {len(r['hits'])} passages (retrieval result)")
     for h in r["hits"]:
         show_hit(h)
     with st.expander("Raw response (JSON)"):
@@ -512,11 +554,27 @@ def benchmarks() -> None:
 
 
 def main() -> None:
+    from omnirag.frontend import screens
+
     st.set_page_config(page_title="OmniRAG", page_icon="🔎", layout="wide")
-    page = st.navigation([
-        st.Page(overview, title="Overview", icon="🏠", default=True),
-        st.Page(retrieval_lab, title="Retrieval lab", icon="🧪", url_path="lab"),
-        st.Page(workflow_inspector, title="Workflow inspector", icon="🧭", url_path="workflow"),
-        st.Page(benchmarks, title="Benchmarks", icon="📊", url_path="benchmarks"),
-    ])  # fmt: skip
+    library = st.Page(screens.library_page, title="Documents", icon="📁", url_path="documents")
+    screens.PAGES["library"] = library
+    page = st.navigation({
+        "Use": [
+            st.Page(screens.chat_page, title="Ask", icon="💬", url_path="chat"),
+            library,
+            st.Page(screens.graph_page, title="Graph explorer", icon="🕸️", url_path="graph"),
+        ],
+        "Inspect": [
+            st.Page(overview, title="Overview", icon="🏠", default=True),
+            st.Page(retrieval_lab, title="Retrieval lab", icon="🧪", url_path="lab"),
+            st.Page(workflow_inspector, title="Workflow inspector", icon="🧭", url_path="workflow"),
+        ],
+        "Measure": [
+            st.Page(screens.evaluation_page, title="Evaluation", icon="✅", url_path="evaluation"),
+            st.Page(screens.performance_page, title="Performance", icon="⏱️",
+                    url_path="performance"),
+            st.Page(benchmarks, title="Benchmarks", icon="📊", url_path="benchmarks"),
+        ],
+    })  # fmt: skip
     page.run()

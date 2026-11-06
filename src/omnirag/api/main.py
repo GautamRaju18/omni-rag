@@ -15,15 +15,27 @@ from fastapi import FastAPI
 
 from omnirag import __version__
 from omnirag.api.middleware import request_context_middleware
-from omnirag.api.routers import documents, graph, health, ingestion, retrieval
+from omnirag.api.routers import (
+    analytics,
+    chat,
+    documents,
+    evaluation,
+    graph,
+    health,
+    ingestion,
+    retrieval,
+)
 from omnirag.core.config import Settings, get_settings
 from omnirag.core.errors import register_exception_handlers
 from omnirag.core.logging import configure_logging
+from omnirag.evaluation.runs import EvaluationRuns
+from omnirag.generation.chat import build_chat
 from omnirag.ingestion import build_pipeline
 from omnirag.ingestion.jobs import JobManager
 from omnirag.ingestion.store import DocumentStore
 from omnirag.knowledge_base.neo4j_client import Neo4jClient
 from omnirag.llm.ollama_client import OllamaClient
+from omnirag.observability.tracing import configure_tracing
 from omnirag.retrieval import build_retrieval
 from omnirag.workflows.retrieval_graph import build_workflow
 
@@ -61,6 +73,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     # Retrievers share one sync driver; nothing connects until the first query.
     app.state.retrieval = build_retrieval(settings)
     app.state.workflow = build_workflow(settings, app.state.retrieval)
+    app.state.chat = build_chat(settings, app.state.workflow)
+    app.state.evaluations = EvaluationRuns(settings)
     await app.state.jobs.start()
     log.info("startup", env=settings.env, neo4j=settings.neo4j_uri, ollama=settings.ollama_base_url)
     try:
@@ -80,6 +94,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     """Build a configured app. Tests pass their own ``Settings``."""
     settings = settings or get_settings()
     configure_logging(settings.log_level, settings.log_json)
+    configure_tracing(settings)  # LangSmith: only with OMNIRAG_LANGSMITH_TRACING + an API key
 
     app = FastAPI(
         title=settings.app_name,
@@ -97,6 +112,9 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(ingestion.router, prefix=settings.api_prefix)
     app.include_router(retrieval.router, prefix=settings.api_prefix)
     app.include_router(graph.router, prefix=settings.api_prefix)
+    app.include_router(chat.router, prefix=settings.api_prefix)
+    app.include_router(evaluation.router, prefix=settings.api_prefix)
+    app.include_router(analytics.router, prefix=settings.api_prefix)
     # Unversioned liveness alias for container/orchestrator probes; hidden from OpenAPI.
     app.add_api_route("/health", health.health, methods=["GET"], include_in_schema=False)
     return app

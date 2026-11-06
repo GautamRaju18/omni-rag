@@ -56,4 +56,9 @@ def test_answerable_question_is_graded_by_the_model(workflow) -> None:
     assert d["checks"][0]["method"] == "llm"
     assert d["verdict"] == "sufficient" and d["attempts"] == 0
     assert any("failed at cycle 412" in h.content for h in result.hits)
-    assert [t["node"] for t in d["trace"]] == ["route", "transform", "retrieve", "check"]
+    assert [t["node"] for t in d["trace"]] == ["route", "transform", "retrieve", "check",
+                                               "assemble"]  # fmt: skip
+    ctx = d["context"]
+    assert ctx["tokens"] <= ctx["budget_tokens"] and ctx["blocks"]
+    assert any("failed at cycle 412" in b["text"] for b in ctx["blocks"])  # evidence kept
+    assert ctx["rendered"].startswith("[1] ")

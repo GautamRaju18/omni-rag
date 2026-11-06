@@ -73,7 +73,8 @@ def test_sufficient_first_try_stops() -> None:
     assert [h.chunk_id for h in result.hits] == ["b", "a"]  # RRF: b is in both lists
     assert result.retriever == "advanced" and result.details["attempts"] == 0
     assert [t["node"] for t in result.details["trace"]] == ["route", "transform", "retrieve",
-                                                            "check"]  # fmt: skip
+                                                            "check", "assemble"]  # fmt: skip
+    assert result.details["context"] is None  # no assembler configured: skipped, not failed
     assert result.details["verdict"] == "sufficient"
 
 
@@ -94,7 +95,7 @@ def test_corrective_retry_adds_evidence_and_is_bounded() -> None:
     assert dense.calls.count("Who owns E-7?") == 1  # earlier lists are reused, not re-run
     nodes = [t["node"] for t in d["trace"]]
     assert nodes.count("check") == 3 and nodes.count("correct") == 2
-    assert d["recursion_limit"] == 4 * 3 + 2 * 2 + 5  # 2 agent steps could run (auto)
+    assert d["recursion_limit"] == 4 * 3 + 2 * 2 + 6  # 2 agent steps could run (auto)
     assert "Missing: the owner" in [u for n, u in llm.calls if n == "correct"][0]
 
 
@@ -125,7 +126,8 @@ def test_transforms_and_rerank_nodes() -> None:
     assert "hypothetical passage text" in dense.calls  # dense only, never BM25
     assert result.hits[0].chunk_id == "c"  # the reranker's choice
     assert [t["node"] for t in result.details["trace"]] == ["route", "transform", "retrieve",
-                                                            "rerank", "check"]  # fmt: skip
+                                                            "rerank", "check",
+                                                            "assemble"]  # fmt: skip
 
 
 # ---------------------------------------------------------------- chat client

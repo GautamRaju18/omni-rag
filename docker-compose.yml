@@ -1,5 +1,7 @@
-# Neo4j (Phase 1) plus a throwaway test instance (Phase 5). The API and UI join in Phase 15.
-# Memory is budgeted for a 16 GB laptop: the whole WSL VM is capped at 8 GB.
+# Neo4j (Phase 1), a throwaway test instance (Phase 5), and the API + dashboard (Phase 15,
+# profile "app": docker compose --profile app up -d --build). Ollama stays on the host: it owns
+# the GPU. Memory is budgeted for a 16 GB laptop: the whole WSL VM is capped at 8 GB
+# (neo4j 2g + api 3g + dashboard 768m).
 name: omnirag
 
 services:
@@ -50,6 +52,61 @@ services:
       timeout: 10s
       retries: 24
       start_period: 20s
+
+  # The API: one process (the ingestion job manager and evaluation runs are in-process).
+  # Data (originals, elements, chunks, embedding cache, chat history, tokenizer) is the host's
+  # OMNIRAG_HOST_DATA_DIR (default ~/omnirag-data), so the container sees what the CLI built.
+  api:
+    build: .
+    image: omnirag:0.1.0
+    container_name: omnirag-api
+    profiles: ["app"]
+    restart: unless-stopped
+    depends_on:
+      neo4j:
+        condition: service_healthy
+    env_file: .env # OMNIRAG_NEO4J_PASSWORD; never baked into the image
+    environment:
+      OMNIRAG_NEO4J_URI: bolt://neo4j:7687
+      OMNIRAG_OLLAMA_BASE_URL: http://host.docker.internal:11434
+      OMNIRAG_DATA_DIR: /data
+      OMNIRAG_LOG_JSON: "true"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ${OMNIRAG_HOST_DATA_DIR:-${HOME}/omnirag-data}:/data
+      # measured reports (rag_eval output) shown by /evaluate and /analytics, without a rebuild
+      - ./docs/benchmarks:/app/docs/benchmarks:ro
+    ports:
+      - "8000:8000"
+    mem_limit: 3g # reranker (torch CPU) + Docling when used
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/openapi.json", "-o", "/dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 18
+      start_period: 20s
+
+  dashboard:
+    image: omnirag:0.1.0
+    container_name: omnirag-dashboard
+    profiles: ["app"]
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      OMNIRAG_FRONTEND_API_URL: http://api:8000
+    command: ["streamlit", "run", "src/omnirag/frontend/app.py", "--server.address=0.0.0.0",
+              "--server.port=8501", "--server.headless=true"]
+    ports:
+      - "8501:8501"
+    mem_limit: 768m
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8501/_stcore/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
 
 volumes:
   neo4j_data:

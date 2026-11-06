@@ -98,6 +98,13 @@ def _record_or_404(store: StoreDep, document_id: str) -> DocumentRecord:
     summary="Upload a file for background ingestion",
     responses={200: {"description": "Same bytes already ingested (duplicate)"}},
 )
+@router.post(
+    "/upload",
+    status_code=status.HTTP_202_ACCEPTED,
+    response_model=UploadResponse,
+    summary="Upload a file for background ingestion (the brief's path; same as POST /documents)",
+    responses={200: {"description": "Same bytes already ingested (duplicate)"}},
+)
 async def upload_document(
     request: Request,
     response: Response,

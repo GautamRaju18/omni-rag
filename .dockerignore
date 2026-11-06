@@ -1,0 +1,14 @@
+.git
+.venv
+**/__pycache__
+.pytest_cache
+.ruff_cache
+.claude
+.env
+data/*
+!data/eval
+docs/*
+!docs/benchmarks
+docs/benchmarks/*.partial.jsonl
+tests
+scripts

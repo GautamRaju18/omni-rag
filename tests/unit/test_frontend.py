@@ -9,8 +9,11 @@ import pytest
 from streamlit.testing.v1 import AppTest
 from workflow_fakes import FakeLLM, Retriever
 
+from omnirag.chunking.tokenizer import WhitespaceTokenizer
 from omnirag.frontend import views
 from omnirag.frontend.api_client import ApiClient, ApiError
+from omnirag.retrieval.compression import Compressor
+from omnirag.retrieval.context import ContextAssembler
 from omnirag.retrieval.transforms import QueryTransformer
 from omnirag.workflows.retrieval_graph import RetrievalWorkflow, Strategy
 
@@ -27,8 +30,15 @@ def _agent_run() -> dict:
         {Q: ["salt"], "NaPF6 supplier": ["row"]},
         texts={"salt": "E-5: 1.0 M NaPF₆ in EC:DEC", "row": "NaPF6 | Nordic Salts"},
     )
-    wf = RetrievalWorkflow(dense, Retriever({Q: ["salt"]}), QueryTransformer(llm))
-    result = wf.retrieve(Q, strategy=Strategy(route="rules", agent="auto", max_retries=0))
+    assembler = ContextAssembler(WhitespaceTokenizer().count, compressor=Compressor())
+    wf = RetrievalWorkflow(dense, Retriever({Q: ["salt"]}), QueryTransformer(llm),
+                           assembler=assembler)  # fmt: skip
+    result = wf.retrieve(
+        Q,
+        strategy=Strategy(
+            route="rules", agent="auto", max_retries=0, compress="lexical", context_budget=128
+        ),
+    )
     wf.close()
     return result.model_dump(mode="json")
 
@@ -47,7 +57,7 @@ def test_timeline_and_list_views() -> None:
     d = _agent_run()["details"]
     rows = views.timeline_rows(d["trace"])
     assert [r["node"] for r in rows] == ["route", "transform", "retrieve", "plan", "retrieve",
-                                         "plan", "check"]  # fmt: skip
+                                         "plan", "check", "assemble"]  # fmt: skip
     assert all(a["end_ms"] == b["start_ms"] for a, b in zip(rows, rows[1:], strict=False))
     assert "intent multi_hop via rules" in rows[0]["what happened"]
     assert rows[3]["what happened"] == "search NaPF6 supplier"
@@ -57,6 +67,9 @@ def test_timeline_and_list_views() -> None:
     assert views.parse_list_key("bm25:image:Q?") == {"retriever": "bm25", "variant": "image",
                                                      "query": "Q?"}  # fmt: skip
     assert views.parse_list_key("dense:hyde")["variant"] == "hyde"
+    ctx_rows = views.context_rows(d["context"])
+    assert ctx_rows and all(r["units kept"] != "all" for r in ctx_rows)  # compressed
+    assert rows[-1]["what happened"].startswith(f"{len(ctx_rows)} blocks")
     assert views.parse_list_key("graph:E-7") == {"retriever": "graph", "variant": "entity",
                                                  "query": "E-7"}  # fmt: skip
 
@@ -82,7 +95,7 @@ def test_compare_overlap_and_benchmarks() -> None:
     data = views.load_json(ROOT / "docs" / "benchmarks" / "workflow-2026-11-05.json")
     base = next(r for r in views.benchmark_rows(data) if r["config"] == "base")
     assert base["mrr"] == 0.928  # read from the measured file, not recomputed
-    assert len(views.example_questions(ROOT / "data" / "eval")) == 48
+    assert len(views.example_questions(ROOT / "data" / "eval")) == 110
 
 
 def test_api_client_reports_the_error_envelope() -> None:
@@ -145,8 +158,11 @@ def test_workflow_inspector_runs_and_explains_every_node(fake_api) -> None:
     strategy = fake_api[-1][1]
     assert (strategy["route"], strategy["agent"], strategy["max_retries"]) == ("rules", "auto", 1)
     steps = [e.label for e in at.expander if e.label[:2] in {f"{i}." for i in range(1, 10)}]
-    assert len(steps) == 7 and "search NaPF6 supplier" in steps[3]
+    assert len(steps) == 8 and "search NaPF6 supplier" in steps[3]  # ... + assemble
     assert any(m.label == "Verdict" and m.value == "sufficient" for m in at.metric)
+    assert "Context for the generator" in [s.value for s in at.subheader]
+    assert any(m.label == "Tokens used" for m in at.metric)
+    assert strategy["context_budget"] == 1024 and strategy["compress"] == "none"
 
 
 def test_retrieval_lab_runs_each_mode(fake_api) -> None:
