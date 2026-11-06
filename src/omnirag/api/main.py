@@ -25,6 +25,7 @@ from omnirag.ingestion.store import DocumentStore
 from omnirag.knowledge_base.neo4j_client import Neo4jClient
 from omnirag.llm.ollama_client import OllamaClient
 from omnirag.retrieval import build_retrieval
+from omnirag.workflows.retrieval_graph import build_workflow
 
 log = structlog.get_logger(module=__name__)
 
@@ -59,6 +60,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     )
     # Retrievers share one sync driver; nothing connects until the first query.
     app.state.retrieval = build_retrieval(settings)
+    app.state.workflow = build_workflow(settings, app.state.retrieval)
     await app.state.jobs.start()
     log.info("startup", env=settings.env, neo4j=settings.neo4j_uri, ollama=settings.ollama_base_url)
     try:
@@ -67,6 +69,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         await app.state.jobs.stop(settings.ingestion_shutdown_grace_s)
         if (graph := app.state.jobs.pipeline.graph) is not None:
             graph.close()
+        app.state.workflow.close()
         app.state.retrieval.close()
         await app.state.ollama.aclose()
         await app.state.neo4j.close()

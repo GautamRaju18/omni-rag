@@ -68,6 +68,14 @@ Local-first multimodal GraphRAG platform, built phase by phase (see `docs/PROGRE
 - Default mode stays `dense+bm25` (CPU rerank 9.5-17 s); `dense+bm25+rerank` is the quality mode. bge-reranker-base was measured worse than no reranker.
 - The seed set has one quote per fact (q22's target is only `target_cycles: 3000`); alternative evidence would be a deliberate dataset v2 re-baseline of all phases.
 
+## Workflow invariants (Phase 9a, ADR-0016)
+- Loops are bounded twice: `Strategy.max_retries` (0-3, API-validated) counted in state, and LangGraph `recursion_limit = 4*(max_retries+1)+4`. Adding a node to the loop means updating that formula.
+- LLM-written queries never drop or invent identifiers (`transforms._keeps_identifiers`); prompts contain no example identifiers (the model copies them).
+- HyDE text is a dense search key only: never evidence, never shown, never put in a generation prompt.
+- Transforms and the corrective step degrade to the original question on `LLMError` (recorded in `trace`); they never fail the request.
+- The context check (identifier coverage, then the LLM grader) is the "insufficient evidence" signal for generation; the reranker score is not.
+- Measure transform changes on both eval sets with `evaluation.workflow_benchmark`; report per-question wins/losses (q22 is a known ground-truth gap).
+
 ## Conventions
 - Code lives in `src/omnirag/<module>/` (ADR-0001). Create a module's package only in its phase.
 - Config only through `omnirag.core.config.Settings` (`OMNIRAG_*`). No hardcoded secrets.

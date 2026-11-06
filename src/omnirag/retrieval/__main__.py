@@ -48,6 +48,33 @@ def cmd_search(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_advanced(args: argparse.Namespace) -> int:
+    from omnirag.workflows.retrieval_graph import Strategy, build_workflow
+
+    settings = get_settings()
+    service = build_retrieval(settings)
+    workflow = build_workflow(settings, service)
+    strategy = workflow.default.model_copy(update={
+        "transform": args.transform, "grade": not args.no_grade,
+        "max_retries": args.retries, "rerank": args.rerank})  # fmt: skip
+    try:
+        result = workflow.retrieve(args.query, args.k, strategy=Strategy(**strategy.model_dump()))
+    finally:
+        workflow.close()
+        service.close()
+    d = result.details
+    print(f"verdict={d['verdict']} attempts={d['attempts']} queries={d['queries']}")
+    for check in d["checks"]:
+        print(f"  check #{check['attempt']}: {check['verdict']} via {check['method']}"
+              + (f" (missing: {check['missing']})" if check["missing"] else ""))  # fmt: skip
+    print("  trace: " + " -> ".join(f"{t['node']} {t['ms']:.0f}ms" for t in d["trace"]))
+    for hit in result.hits:
+        text = hit.content if args.full else hit.content[:200].replace("\n", " ")
+        print(f"\n#{hit.rank}  {hit.source_file}  {' > '.join(hit.section_path)}\n    {text}")
+    print(f"\n{len(result.hits)} hits in {result.latency_ms} ms")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     configure_logging("WARNING", json_logs=False)
     parser = argparse.ArgumentParser(prog="python -m omnirag.retrieval")
@@ -76,6 +103,19 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--identifiers", choices=["terms", "boost", "require"], default=None)
     p.add_argument("--full", action="store_true", help="print whole chunks")
     p.set_defaults(fn=cmd_search)
+    p = sub.add_parser("advanced", help="LangGraph workflow: transforms, check, retries")
+    p.add_argument("query")
+    p.add_argument("--k", type=int, default=get_settings().retrieval_k)
+    p.add_argument(
+        "--transform",
+        default=get_settings().workflow_transform,
+        choices=["none", "rewrite", "multi_query", "hyde", "multi_query+hyde"],
+    )
+    p.add_argument("--no-grade", action="store_true")
+    p.add_argument("--retries", type=int, default=get_settings().workflow_max_retries)
+    p.add_argument("--rerank", action="store_true")
+    p.add_argument("--full", action="store_true")
+    p.set_defaults(fn=cmd_advanced)
     args = parser.parse_args(argv)
     return args.fn(args)
 

@@ -1,0 +1,611 @@
+{
+  "created": "2026-11-05T18:02:06.948855+00:00",
+  "dataset": "relational_seed.json",
+  "k": 5,
+  "model": "qwen3:4b-instruct",
+  "results": {
+    "base": {
+      "hit": 1.0,
+      "recall": 0.875,
+      "precision": 0.375,
+      "mrr": 0.838,
+      "ndcg": 0.754,
+      "context_precision": 0.433,
+      "recall_by_type": {
+        "relational": 0.875
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 1.0,
+        "r07": 1.0,
+        "r08": 1.0
+      },
+      "latency_ms": {
+        "p50": 20.4,
+        "p95": 31.6
+      },
+      "llm_calls_per_question": 0.0,
+      "attempts": {
+        "0": 8
+      },
+      "verdicts": {
+        "sufficient": 8
+      },
+      "verdict_by_question": {
+        "r01": "sufficient",
+        "r02": "sufficient",
+        "r03": "sufficient",
+        "r04": "sufficient",
+        "r05": "sufficient",
+        "r06": "sufficient",
+        "r07": "sufficient",
+        "r08": "sufficient"
+      },
+      "queries_by_question": {
+        "r01": [
+          "Which cells are being tested with the electrolyte whose qualification Marco Lindqvist owns?"
+        ],
+        "r02": [
+          "Who supplies the salt that the E-5 electrolyte is made with?"
+        ],
+        "r03": [
+          "What swelling limit must the electrolyte that replaced E-5 stay below for milestone M2?"
+        ],
+        "r04": [
+          "What is the planned budget of the workstream owned by the person responsible for risk R2?"
+        ],
+        "r05": [
+          "Which supplier is being qualified as a second source for the anode material of the Aurora cell?"
+        ],
+        "r06": [
+          "Who reviewed the E-5 safety review, and what did that person approve on 2026-03-25?"
+        ],
+        "r07": [
+          "How much of the budget of the workstream owned by the electrolyte chemist has been spent?"
+        ],
+        "r08": [
+          "Which person tests the cells that use the E-7 electrolyte at room temperature?"
+        ]
+      },
+      "vs_base": {
+        "wins": [],
+        "losses": []
+      }
+    },
+    "rewrite": {
+      "hit": 1.0,
+      "recall": 0.875,
+      "precision": 0.375,
+      "mrr": 0.838,
+      "ndcg": 0.754,
+      "context_precision": 0.409,
+      "recall_by_type": {
+        "relational": 0.875
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 1.0,
+        "r07": 1.0,
+        "r08": 1.0
+      },
+      "latency_ms": {
+        "p50": 598.6,
+        "p95": 639.4
+      },
+      "llm_calls_per_question": 1.0,
+      "attempts": {
+        "0": 8
+      },
+      "verdicts": {
+        "sufficient": 8
+      },
+      "verdict_by_question": {
+        "r01": "sufficient",
+        "r02": "sufficient",
+        "r03": "sufficient",
+        "r04": "sufficient",
+        "r05": "sufficient",
+        "r06": "sufficient",
+        "r07": "sufficient",
+        "r08": "sufficient"
+      },
+      "queries_by_question": {
+        "r01": [
+          "Which cells are being tested with the electrolyte whose qualification Marco Lindqvist owns?",
+          "cells being tested with electrolyte qualification owned by Marco Lindqvist"
+        ],
+        "r02": [
+          "Who supplies the salt that the E-5 electrolyte is made with?",
+          "who supplies the salt that the e-5 electrolyte is made with"
+        ],
+        "r03": [
+          "What swelling limit must the electrolyte that replaced E-5 stay below for milestone M2?",
+          "what swelling limit must the electrolyte that replaced E-5 stay below for milestone M2"
+        ],
+        "r04": [
+          "What is the planned budget of the workstream owned by the person responsible for risk R2?",
+          "planned budget of workstream owned by person responsible for risk R2"
+        ],
+        "r05": [
+          "Which supplier is being qualified as a second source for the anode material of the Aurora cell?",
+          "second source supplier anode material Aurora cell"
+        ],
+        "r06": [
+          "Who reviewed the E-5 safety review, and what did that person approve on 2026-03-25?",
+          "E-5 safety review review approval 2026-03-25"
+        ],
+        "r07": [
+          "How much of the budget of the workstream owned by the electrolyte chemist has been spent?",
+          "budget spent workstream owned by electrolyte chemist"
+        ],
+        "r08": [
+          "Which person tests the cells that use the E-7 electrolyte at room temperature?",
+          "who tests the cells that use the E-7 electrolyte at room temperature"
+        ]
+      },
+      "vs_base": {
+        "wins": [],
+        "losses": []
+      }
+    },
+    "multi_query": {
+      "hit": 1.0,
+      "recall": 0.875,
+      "precision": 0.375,
+      "mrr": 0.775,
+      "ndcg": 0.732,
+      "context_precision": 0.422,
+      "recall_by_type": {
+        "relational": 0.875
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 1.0,
+        "r07": 1.0,
+        "r08": 1.0
+      },
+      "latency_ms": {
+        "p50": 2007.3,
+        "p95": 2199.4
+      },
+      "llm_calls_per_question": 1.0,
+      "attempts": {
+        "0": 8
+      },
+      "verdicts": {
+        "sufficient": 8
+      },
+      "verdict_by_question": {
+        "r01": "sufficient",
+        "r02": "sufficient",
+        "r03": "sufficient",
+        "r04": "sufficient",
+        "r05": "sufficient",
+        "r06": "sufficient",
+        "r07": "sufficient",
+        "r08": "sufficient"
+      },
+      "queries_by_question": {
+        "r01": [
+          "Which cells are being tested with the electrolyte whose qualification Marco Lindqvist owns?",
+          "Find the electrolyte that is qualified by Marco Lindqvist",
+          "List the cells that are currently being tested with the electrolyte qualified by Marco Lindqvist",
+          "Identify which cells are under test using the electrolyte owned by Marco Lindqvist"
+        ],
+        "r02": [
+          "Who supplies the salt that the E-5 electrolyte is made with?",
+          "What is the supplier of the salt used in the E-5 electrolyte formulation?",
+          "Who provides the salt component for the E-5 electrolyte solution?",
+          "What company supplies the salt ingredient in the E-5 electrolyte product?"
+        ],
+        "r03": [
+          "What swelling limit must the electrolyte that replaced E-5 stay below for milestone M2?",
+          "What is the swelling limit for the electrolyte that replaced E-5 in the project documentation for milestone M2?",
+          "In the context of milestone M2, what maximum swelling limit must be adhered to for the electrolyte substituting E-5?",
+          "What swelling limit is specified for the electrolyte used to replace E-5 during milestone M2?"
+        ],
+        "r04": [
+          "What is the planned budget of the workstream owned by the person responsible for risk R2?",
+          "What is the planned budget of the workstream associated with the risk identifier R2?",
+          "Find the budget for the workstream managed by the individual responsible for risk R2.",
+          "What is the planned budget of the workstream under the ownership of the person accountable for risk R2?"
+        ],
+        "r05": [
+          "Which supplier is being qualified as a second source for the anode material of the Aurora cell?",
+          "Which supplier is being qualified as a second source for the anode material in the Aurora cell project?",
+          "What is the name of the supplier currently undergoing qualification as a secondary source for anode material in the Aurora cell?",
+          "Which company is being evaluated as a second source supplier for anode material used in the Aurora cell?"
+        ],
+        "r06": [
+          "Who reviewed the E-5 safety review, and what did that person approve on 2026-03-25?",
+          "Who reviewed the E-5 safety review?",
+          "What did the person who reviewed the E-5 safety review approve on 2026-03-25?",
+          "What approval was given for the E-5 safety review on 2026-03-25 by the reviewer?"
+        ],
+        "r07": [
+          "How much of the budget of the workstream owned by the electrolyte chemist has been spent?",
+          "What is the total budget allocated to the workstream owned by the electrolyte chemist?",
+          "What is the total amount spent on the workstream owned by the electrolyte chemist?",
+          "What is the difference between the budget and the amount spent for the workstream owned by the electrolyte chemist?"
+        ],
+        "r08": [
+          "Which person tests the cells that use the E-7 electrolyte at room temperature?",
+          "Who is responsible for testing cells that use the E-7 electrolyte at room temperature in the project documentation?",
+          "In the experimental protocol, which individual conducts the tests on cells with E-7 electrolyte under room temperature conditions?",
+          "Which person performs the testing of cells utilizing E-7 electrolyte at room temperature according to the lab procedures?"
+        ]
+      },
+      "vs_base": {
+        "wins": [],
+        "losses": []
+      }
+    },
+    "hyde": {
+      "hit": 1.0,
+      "recall": 0.875,
+      "precision": 0.375,
+      "mrr": 0.713,
+      "ndcg": 0.685,
+      "context_precision": 0.437,
+      "recall_by_type": {
+        "relational": 0.875
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 1.0,
+        "r07": 1.0,
+        "r08": 1.0
+      },
+      "latency_ms": {
+        "p50": 2357.0,
+        "p95": 2780.9
+      },
+      "llm_calls_per_question": 1.0,
+      "attempts": {
+        "0": 8
+      },
+      "verdicts": {
+        "sufficient": 8
+      },
+      "verdict_by_question": {
+        "r01": "sufficient",
+        "r02": "sufficient",
+        "r03": "sufficient",
+        "r04": "sufficient",
+        "r05": "sufficient",
+        "r06": "sufficient",
+        "r07": "sufficient",
+        "r08": "sufficient"
+      },
+      "queries_by_question": {
+        "r01": [
+          "Which cells are being tested with the electrolyte whose qualification Marco Lindqvist owns?"
+        ],
+        "r02": [
+          "Who supplies the salt that the E-5 electrolyte is made with?"
+        ],
+        "r03": [
+          "What swelling limit must the electrolyte that replaced E-5 stay below for milestone M2?"
+        ],
+        "r04": [
+          "What is the planned budget of the workstream owned by the person responsible for risk R2?"
+        ],
+        "r05": [
+          "Which supplier is being qualified as a second source for the anode material of the Aurora cell?"
+        ],
+        "r06": [
+          "Who reviewed the E-5 safety review, and what did that person approve on 2026-03-25?"
+        ],
+        "r07": [
+          "How much of the budget of the workstream owned by the electrolyte chemist has been spent?"
+        ],
+        "r08": [
+          "Which person tests the cells that use the E-7 electrolyte at room temperature?"
+        ]
+      },
+      "vs_base": {
+        "wins": [],
+        "losses": []
+      }
+    },
+    "multi_query+hyde": {
+      "hit": 1.0,
+      "recall": 0.875,
+      "precision": 0.375,
+      "mrr": 0.775,
+      "ndcg": 0.732,
+      "context_precision": 0.439,
+      "recall_by_type": {
+        "relational": 0.875
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 1.0,
+        "r07": 1.0,
+        "r08": 1.0
+      },
+      "latency_ms": {
+        "p50": 4460.8,
+        "p95": 5103.3
+      },
+      "llm_calls_per_question": 2.0,
+      "attempts": {
+        "0": 8
+      },
+      "verdicts": {
+        "sufficient": 8
+      },
+      "verdict_by_question": {
+        "r01": "sufficient",
+        "r02": "sufficient",
+        "r03": "sufficient",
+        "r04": "sufficient",
+        "r05": "sufficient",
+        "r06": "sufficient",
+        "r07": "sufficient",
+        "r08": "sufficient"
+      },
+      "queries_by_question": {
+        "r01": [
+          "Which cells are being tested with the electrolyte whose qualification Marco Lindqvist owns?",
+          "Find the electrolyte that is qualified by Marco Lindqvist",
+          "List the cells that are currently being tested with the electrolyte qualified by Marco Lindqvist",
+          "Identify which cells are under test using the electrolyte owned by Marco Lindqvist"
+        ],
+        "r02": [
+          "Who supplies the salt that the E-5 electrolyte is made with?",
+          "What is the supplier of the salt used in the E-5 electrolyte formulation?",
+          "Who provides the salt component for the E-5 electrolyte solution?",
+          "What company supplies the salt ingredient in the E-5 electrolyte product?"
+        ],
+        "r03": [
+          "What swelling limit must the electrolyte that replaced E-5 stay below for milestone M2?",
+          "What is the swelling limit for the electrolyte that replaced E-5 in the project documentation for milestone M2?",
+          "In the context of milestone M2, what maximum swelling limit must be adhered to by the electrolyte that replaced E-5?",
+          "What swelling limit is specified for the electrolyte substitution of E-5 during milestone M2?"
+        ],
+        "r04": [
+          "What is the planned budget of the workstream owned by the person responsible for risk R2?",
+          "What is the planned budget of the workstream associated with the risk identifier R2?",
+          "Find the budget for the workstream managed by the individual responsible for risk R2.",
+          "What is the planned budget of the workstream under the ownership of the person accountable for risk R2?"
+        ],
+        "r05": [
+          "Which supplier is being qualified as a second source for the anode material of the Aurora cell?",
+          "Which supplier is being qualified as a second source for the anode material in the Aurora cell project?",
+          "What is the name of the supplier currently undergoing qualification as a secondary source for anode material in the Aurora cell?",
+          "Which company is being evaluated as a second source supplier for anode material used in the Aurora cell?"
+        ],
+        "r06": [
+          "Who reviewed the E-5 safety review, and what did that person approve on 2026-03-25?",
+          "Who reviewed the E-5 safety review?",
+          "What did the person who reviewed the E-5 safety review approve on 2026-03-25?",
+          "What approval was given for the E-5 safety review on 2026-03-25 by the reviewer?"
+        ],
+        "r07": [
+          "How much of the budget of the workstream owned by the electrolyte chemist has been spent?",
+          "What is the total budget allocated to the workstream owned by the electrolyte chemist?",
+          "What is the total amount spent on the workstream owned by the electrolyte chemist?",
+          "What is the difference between the budget and the amount spent for the workstream owned by the electrolyte chemist?"
+        ],
+        "r08": [
+          "Which person tests the cells that use the E-7 electrolyte at room temperature?",
+          "Who is responsible for testing cells that use the E-7 electrolyte at room temperature in the project documentation?",
+          "In the experimental protocol, which individual conducts the tests on cells with E-7 electrolyte under room temperature conditions?",
+          "Which person performs the testing of cells utilizing E-7 electrolyte at room temperature according to the lab procedures?"
+        ]
+      },
+      "vs_base": {
+        "wins": [],
+        "losses": []
+      }
+    },
+    "corrective": {
+      "hit": 1.0,
+      "recall": 0.875,
+      "precision": 0.375,
+      "mrr": 0.838,
+      "ndcg": 0.754,
+      "context_precision": 0.433,
+      "recall_by_type": {
+        "relational": 0.875
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 1.0,
+        "r07": 1.0,
+        "r08": 1.0
+      },
+      "latency_ms": {
+        "p50": 2010.3,
+        "p95": 3700.4
+      },
+      "llm_calls_per_question": 2.0,
+      "attempts": {
+        "0": 4,
+        "1": 4
+      },
+      "verdicts": {
+        "sufficient": 4,
+        "insufficient": 2,
+        "partial": 2
+      },
+      "verdict_by_question": {
+        "r01": "sufficient",
+        "r02": "insufficient",
+        "r03": "sufficient",
+        "r04": "sufficient",
+        "r05": "insufficient",
+        "r06": "partial",
+        "r07": "partial",
+        "r08": "sufficient"
+      },
+      "queries_by_question": {
+        "r01": [
+          "Which cells are being tested with the electrolyte whose qualification Marco Lindqvist owns?"
+        ],
+        "r02": [
+          "Who supplies the salt that the E-5 electrolyte is made with?"
+        ],
+        "r03": [
+          "What swelling limit must the electrolyte that replaced E-5 stay below for milestone M2?"
+        ],
+        "r04": [
+          "What is the planned budget of the workstream owned by the person responsible for risk R2?"
+        ],
+        "r05": [
+          "Which supplier is being qualified as a second source for the anode material of the Aurora cell?"
+        ],
+        "r06": [
+          "Who reviewed the E-5 safety review, and what did that person approve on 2026-03-25?"
+        ],
+        "r07": [
+          "How much of the budget of the workstream owned by the electrolyte chemist has been spent?"
+        ],
+        "r08": [
+          "Which person tests the cells that use the E-7 electrolyte at room temperature?"
+        ]
+      },
+      "vs_base": {
+        "wins": [],
+        "losses": []
+      }
+    },
+    "multi_query+corrective": {
+      "hit": 1.0,
+      "recall": 0.875,
+      "precision": 0.375,
+      "mrr": 0.775,
+      "ndcg": 0.732,
+      "context_precision": 0.422,
+      "recall_by_type": {
+        "relational": 0.875
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 1.0,
+        "r07": 1.0,
+        "r08": 1.0
+      },
+      "latency_ms": {
+        "p50": 5059.4,
+        "p95": 5459.7
+      },
+      "llm_calls_per_question": 3.25,
+      "attempts": {
+        "0": 3,
+        "1": 5
+      },
+      "verdicts": {
+        "sufficient": 3,
+        "insufficient": 2,
+        "partial": 3
+      },
+      "verdict_by_question": {
+        "r01": "sufficient",
+        "r02": "insufficient",
+        "r03": "partial",
+        "r04": "sufficient",
+        "r05": "insufficient",
+        "r06": "partial",
+        "r07": "partial",
+        "r08": "sufficient"
+      },
+      "queries_by_question": {
+        "r01": [
+          "Which cells are being tested with the electrolyte whose qualification Marco Lindqvist owns?",
+          "Find the electrolyte that is qualified by Marco Lindqvist",
+          "List the cells that are currently being tested with the electrolyte qualified by Marco Lindqvist",
+          "Identify which cells are under test using the electrolyte owned by Marco Lindqvist"
+        ],
+        "r02": [
+          "Who supplies the salt that the E-5 electrolyte is made with?",
+          "What is the supplier of the salt used in the E-5 electrolyte formulation?",
+          "Who provides the salt component for the E-5 electrolyte solution?",
+          "What company supplies the salt ingredient in the E-5 electrolyte product?"
+        ],
+        "r03": [
+          "What swelling limit must the electrolyte that replaced E-5 stay below for milestone M2?",
+          "What is the swelling limit for the electrolyte that replaced E-5 in the project documentation for milestone M2?",
+          "In the context of milestone M2, what maximum swelling limit must be adhered to by the electrolyte that replaced E-5?",
+          "What swelling limit is specified for the electrolyte substitution of E-5 during milestone M2?"
+        ],
+        "r04": [
+          "What is the planned budget of the workstream owned by the person responsible for risk R2?",
+          "What is the planned budget of the workstream associated with the risk identifier R2?",
+          "Find the budget for the workstream managed by the individual responsible for risk R2.",
+          "What is the planned budget of the workstream under the ownership of the person accountable for risk R2?"
+        ],
+        "r05": [
+          "Which supplier is being qualified as a second source for the anode material of the Aurora cell?",
+          "Which supplier is being qualified as a second source for the anode material in the Aurora cell project?",
+          "What is the name of the supplier currently undergoing qualification as a secondary source for anode material in the Aurora cell?",
+          "Which company is being evaluated as a second source supplier for anode material used in the Aurora cell?"
+        ],
+        "r06": [
+          "Who reviewed the E-5 safety review, and what did that person approve on 2026-03-25?",
+          "Who reviewed the E-5 safety review?",
+          "What did the person who reviewed the E-5 safety review approve on 2026-03-25?",
+          "What approval was given for the E-5 safety review on 2026-03-25 by the reviewer?"
+        ],
+        "r07": [
+          "How much of the budget of the workstream owned by the electrolyte chemist has been spent?",
+          "What is the total budget allocated to the workstream owned by the electrolyte chemist?",
+          "What is the total amount spent on the workstream owned by the electrolyte chemist?",
+          "What is the difference between the budget and the amount spent for the workstream owned by the electrolyte chemist?"
+        ],
+        "r08": [
+          "Which person tests the cells that use the E-7 electrolyte at room temperature?",
+          "Who is responsible for testing cells that use the E-7 electrolyte at room temperature in the project documentation?",
+          "In the experimental protocol, which individual conducts the tests on cells with E-7 electrolyte under room temperature conditions?",
+          "Which person performs the testing of cells utilizing E-7 electrolyte at room temperature according to the lab procedures?"
+        ]
+      },
+      "vs_base": {
+        "wins": [],
+        "losses": []
+      }
+    },
+    "grader": {
+      "confusion": {
+        "partial->insufficient": 2,
+        "sufficient->partial": 2,
+        "sufficient->sufficient": 4
+      },
+      "binary_accuracy": 0.75,
+      "unanswerable": {},
+      "disagreements": [
+        "r06",
+        "r07"
+      ]
+    }
+  }
+}

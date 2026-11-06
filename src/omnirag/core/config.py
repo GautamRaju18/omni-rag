@@ -167,6 +167,16 @@ class Settings(BaseSettings):
     rerank_batch_size: int = Field(default=4, ge=1, le=256)
     rerank_threads: int = Field(default=8, ge=1, le=64)
 
+    # --- corrective retrieval workflow (Phase 9a, ADR-0016): defaults for /retrieval/advanced
+    workflow_transform: Literal["none", "rewrite", "multi_query", "hyde", "multi_query+hyde"] = (
+        "none"
+    )
+    workflow_multi_query_n: int = Field(default=3, ge=1, le=6)
+    workflow_grade: bool = True  # LLM context grader after the identifier check
+    workflow_max_retries: int = Field(default=1, ge=0, le=3)
+    workflow_rerank: bool = False  # CPU reranking costs 10-17 s (ADR-0015)
+    workflow_llm_timeout_s: float = Field(default=60.0, gt=0)
+
     # --- PDF engine (ADR-0005): "auto" routes multi-column documents to Docling's layout model
     # and everything else to PyMuPDF (~40x faster); "pymupdf" / "docling" force one engine.
     # Scanned pages always use PyMuPDF + Tesseract.

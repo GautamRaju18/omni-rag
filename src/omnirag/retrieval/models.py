@@ -19,6 +19,7 @@ RetrieverName = Literal["dense", "bm25", "graph"]
 RetrievalMode = Literal[
     "dense", "bm25", "graph", "dense+bm25", "dense+bm25+graph",
     "dense+bm25+rerank", "dense+bm25+graph+rerank",
+    "advanced",  # the Phase 9 LangGraph workflow (transforms + context check + retries)
 ]  # fmt: skip
 
 

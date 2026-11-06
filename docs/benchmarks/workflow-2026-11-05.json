@@ -1,0 +1,2073 @@
+{
+  "created": "2026-11-05T18:16:11.477039+00:00",
+  "dataset": "chunking_seed.json",
+  "k": 5,
+  "model": "qwen3:4b-instruct",
+  "results": {
+    "base": {
+      "hit": 1.0,
+      "recall": 0.986,
+      "precision": 0.297,
+      "mrr": 0.928,
+      "ndcg": 0.889,
+      "context_precision": 0.333,
+      "recall_by_type": {
+        "comparative": 0.5,
+        "factual": 1.0,
+        "image": 1.0,
+        "keyword": 1.0,
+        "multi_hop": 1.0,
+        "table": 1.0
+      },
+      "per_question_recall": {
+        "q01": 1.0,
+        "q02": 1.0,
+        "q03": 1.0,
+        "q04": 1.0,
+        "q05": 1.0,
+        "q06": 1.0,
+        "q07": 1.0,
+        "q08": 1.0,
+        "q09": 1.0,
+        "q10": 1.0,
+        "q11": 1.0,
+        "q12": 1.0,
+        "q13": 1.0,
+        "q14": 1.0,
+        "q15": 1.0,
+        "q16": 1.0,
+        "q17": 1.0,
+        "q18": 1.0,
+        "q19": 1.0,
+        "q20": 1.0,
+        "q21": 1.0,
+        "q22": 0.5,
+        "q23": 1.0,
+        "q24": 1.0,
+        "q25": 1.0,
+        "q26": 1.0,
+        "q27": 1.0,
+        "q28": 1.0,
+        "q29": 1.0,
+        "q30": 1.0,
+        "q31": 1.0,
+        "q32": 1.0,
+        "q33": 1.0,
+        "q34": 1.0,
+        "q35": 1.0,
+        "q36": 1.0,
+        "q37": 1.0
+      },
+      "latency_ms": {
+        "p50": 18.9,
+        "p95": 24.7
+      },
+      "llm_calls_per_question": 0.0,
+      "attempts": {
+        "0": 40
+      },
+      "verdicts": {
+        "sufficient": 39,
+        "insufficient": 1
+      },
+      "verdict_by_question": {
+        "q01": "sufficient",
+        "q02": "sufficient",
+        "q03": "sufficient",
+        "q04": "sufficient",
+        "q05": "sufficient",
+        "q06": "sufficient",
+        "q07": "sufficient",
+        "q08": "sufficient",
+        "q09": "sufficient",
+        "q10": "sufficient",
+        "q11": "sufficient",
+        "q12": "sufficient",
+        "q13": "sufficient",
+        "q14": "sufficient",
+        "q15": "sufficient",
+        "q16": "sufficient",
+        "q17": "sufficient",
+        "q18": "sufficient",
+        "q19": "sufficient",
+        "q20": "sufficient",
+        "q21": "sufficient",
+        "q22": "sufficient",
+        "q23": "sufficient",
+        "q24": "sufficient",
+        "q25": "sufficient",
+        "q26": "sufficient",
+        "q27": "sufficient",
+        "q28": "sufficient",
+        "q29": "sufficient",
+        "q30": "sufficient",
+        "q31": "sufficient",
+        "q32": "sufficient",
+        "q33": "sufficient",
+        "q34": "sufficient",
+        "q35": "sufficient",
+        "q36": "sufficient",
+        "q37": "sufficient",
+        "q38": "sufficient",
+        "q39": "sufficient",
+        "q40": "insufficient"
+      },
+      "queries_by_question": {
+        "q01": [
+          "Who is the project lead of Project Aurora?"
+        ],
+        "q02": [
+          "What cathode material does the Aurora cell use?"
+        ],
+        "q03": [
+          "Why was Prussian white chosen over layered oxides?"
+        ],
+        "q04": [
+          "What capacity retention did cell AUR-C103 reach, and after how many cycles?"
+        ],
+        "q05": [
+          "Why did cell AUR-C103 fail?"
+        ],
+        "q06": [
+          "How much did the pouch of AUR-C103 swell?"
+        ],
+        "q07": [
+          "Which electrolyte replaced the one used in the cell that failed at 45 °C, and who owns its qualification?"
+        ],
+        "q08": [
+          "What is the planned budget of the electrolyte workstream?"
+        ],
+        "q09": [
+          "When did the steering committee approve extra funding for the E-7 qualification, and how much?"
+        ],
+        "q10": [
+          "What share of the cathode budget has been spent?"
+        ],
+        "q11": [
+          "Which hard-carbon supplier is not yet qualified?"
+        ],
+        "q12": [
+          "What is the lead time for NaPF6 salt from Nordic Salts AB?"
+        ],
+        "q13": [
+          "When is milestone M3 due?"
+        ],
+        "q14": [
+          "What is the status of milestone M2?"
+        ],
+        "q15": [
+          "What capacity retention did AUR-C106 have after 300 cycles at 45 °C?"
+        ],
+        "q16": [
+          "What swelling did the lab notebook record for AUR-C106?"
+        ],
+        "q17": [
+          "When is the next checkpoint noted in the scanned lab notebook?"
+        ],
+        "q18": [
+          "What pilot batch size is written on the E-7 qualification plan whiteboard?"
+        ],
+        "q19": [
+          "Which cell has the lowest bar in the capacity retention bar chart?"
+        ],
+        "q20": [
+          "What does the photo on the Aurora S1 product page show?"
+        ],
+        "q21": [
+          "What is the nominal voltage of the Aurora S1 cell?"
+        ],
+        "q22": [
+          "Does the Aurora S1's rated cycle life match the project's cycle target?"
+        ],
+        "q23": [
+          "What is the role of NaDFOB in the E-7 electrolyte?"
+        ],
+        "q24": [
+          "Which solvents replace DEC in the E-7 blend?"
+        ],
+        "q25": [
+          "What volume fraction of DMC does E-7 contain?"
+        ],
+        "q26": [
+          "Who prepared the safety review of the E-5 failure?"
+        ],
+        "q27": [
+          "Which gases were found in the failed pouch?"
+        ],
+        "q28": [
+          "What does the safety review recommend for pilot-line pouches?"
+        ],
+        "q29": [
+          "Which cells meet the 5% swelling limit?"
+        ],
+        "q30": [
+          "What separator does the Aurora cell use?"
+        ],
+        "q31": [
+          "What is the N/P ratio of the anode?"
+        ],
+        "q32": [
+          "What voltage window is used in the cycling protocol?"
+        ],
+        "q33": [
+          "Who tested cell AUR-C107?"
+        ],
+        "q34": [
+          "What is the fallback if E-7 swelling exceeds the limit, and how is that fallback performing?"
+        ],
+        "q35": [
+          "When is the next technical review meeting?"
+        ],
+        "q36": [
+          "Who owns risk R2 in the risk register?"
+        ],
+        "q37": [
+          "What is the energy density of the Aurora S1?"
+        ],
+        "q38": [
+          "What is the price per kWh of the Aurora S1 cell?"
+        ],
+        "q39": [
+          "Who is the CEO of Helios Energy Lab?"
+        ],
+        "q40": [
+          "What capacity retention did cell AUR-C109 reach?"
+        ]
+      },
+      "vs_base": {
+        "wins": [],
+        "losses": []
+      }
+    },
+    "rewrite": {
+      "hit": 1.0,
+      "recall": 0.986,
+      "precision": 0.292,
+      "mrr": 0.914,
+      "ndcg": 0.878,
+      "context_precision": 0.329,
+      "recall_by_type": {
+        "comparative": 0.5,
+        "factual": 1.0,
+        "image": 1.0,
+        "keyword": 1.0,
+        "multi_hop": 1.0,
+        "table": 1.0
+      },
+      "per_question_recall": {
+        "q01": 1.0,
+        "q02": 1.0,
+        "q03": 1.0,
+        "q04": 1.0,
+        "q05": 1.0,
+        "q06": 1.0,
+        "q07": 1.0,
+        "q08": 1.0,
+        "q09": 1.0,
+        "q10": 1.0,
+        "q11": 1.0,
+        "q12": 1.0,
+        "q13": 1.0,
+        "q14": 1.0,
+        "q15": 1.0,
+        "q16": 1.0,
+        "q17": 1.0,
+        "q18": 1.0,
+        "q19": 1.0,
+        "q20": 1.0,
+        "q21": 1.0,
+        "q22": 0.5,
+        "q23": 1.0,
+        "q24": 1.0,
+        "q25": 1.0,
+        "q26": 1.0,
+        "q27": 1.0,
+        "q28": 1.0,
+        "q29": 1.0,
+        "q30": 1.0,
+        "q31": 1.0,
+        "q32": 1.0,
+        "q33": 1.0,
+        "q34": 1.0,
+        "q35": 1.0,
+        "q36": 1.0,
+        "q37": 1.0
+      },
+      "latency_ms": {
+        "p50": 493.3,
+        "p95": 763.9
+      },
+      "llm_calls_per_question": 1.02,
+      "attempts": {
+        "0": 40
+      },
+      "verdicts": {
+        "sufficient": 39,
+        "insufficient": 1
+      },
+      "verdict_by_question": {
+        "q01": "sufficient",
+        "q02": "sufficient",
+        "q03": "sufficient",
+        "q04": "sufficient",
+        "q05": "sufficient",
+        "q06": "sufficient",
+        "q07": "sufficient",
+        "q08": "sufficient",
+        "q09": "sufficient",
+        "q10": "sufficient",
+        "q11": "sufficient",
+        "q12": "sufficient",
+        "q13": "sufficient",
+        "q14": "sufficient",
+        "q15": "sufficient",
+        "q16": "sufficient",
+        "q17": "sufficient",
+        "q18": "sufficient",
+        "q19": "sufficient",
+        "q20": "sufficient",
+        "q21": "sufficient",
+        "q22": "sufficient",
+        "q23": "sufficient",
+        "q24": "sufficient",
+        "q25": "sufficient",
+        "q26": "sufficient",
+        "q27": "sufficient",
+        "q28": "sufficient",
+        "q29": "sufficient",
+        "q30": "sufficient",
+        "q31": "sufficient",
+        "q32": "sufficient",
+        "q33": "sufficient",
+        "q34": "sufficient",
+        "q35": "sufficient",
+        "q36": "sufficient",
+        "q37": "sufficient",
+        "q38": "sufficient",
+        "q39": "sufficient",
+        "q40": "insufficient"
+      },
+      "queries_by_question": {
+        "q01": [
+          "Who is the project lead of Project Aurora?",
+          "project lead of Project Aurora"
+        ],
+        "q02": [
+          "What cathode material does the Aurora cell use?",
+          "Aurora cell cathode material"
+        ],
+        "q03": [
+          "Why was Prussian white chosen over layered oxides?"
+        ],
+        "q04": [
+          "What capacity retention did cell AUR-C103 reach, and after how many cycles?",
+          "capacity retention of cell AUR-C103 after how many cycles"
+        ],
+        "q05": [
+          "Why did cell AUR-C103 fail?",
+          "failure reason cell AUR-C103"
+        ],
+        "q06": [
+          "How much did the pouch of AUR-C103 swell?",
+          "AUR-C103 pouch swelling amount"
+        ],
+        "q07": [
+          "Which electrolyte replaced the one used in the cell that failed at 45 °C, and who owns its qualification?",
+          "electrolyte replacement in cell failure at 45 °C and ownership of qualification"
+        ],
+        "q08": [
+          "What is the planned budget of the electrolyte workstream?",
+          "planned budget of electrolyte workstream"
+        ],
+        "q09": [
+          "When did the steering committee approve extra funding for the E-7 qualification, and how much?",
+          "steering committee approval extra funding E-7 qualification amount date"
+        ],
+        "q10": [
+          "What share of the cathode budget has been spent?",
+          "what share of the cathode budget has been spent"
+        ],
+        "q11": [
+          "Which hard-carbon supplier is not yet qualified?",
+          "hard-carbon supplier not yet qualified"
+        ],
+        "q12": [
+          "What is the lead time for NaPF6 salt from Nordic Salts AB?",
+          "lead time for NaPF6 salt from Nordic Salts AB"
+        ],
+        "q13": [
+          "When is milestone M3 due?",
+          "milestone M3 due date"
+        ],
+        "q14": [
+          "What is the status of milestone M2?",
+          "status of milestone M2"
+        ],
+        "q15": [
+          "What capacity retention did AUR-C106 have after 300 cycles at 45 °C?",
+          "AUR-C106 capacity retention after 300 cycles at 45 °C"
+        ],
+        "q16": [
+          "What swelling did the lab notebook record for AUR-C106?",
+          "swelling AUR-C106 lab notebook record"
+        ],
+        "q17": [
+          "When is the next checkpoint noted in the scanned lab notebook?",
+          "next checkpoint scanned lab notebook"
+        ],
+        "q18": [
+          "What pilot batch size is written on the E-7 qualification plan whiteboard?",
+          "E-7 qualification plan whiteboard pilot batch size"
+        ],
+        "q19": [
+          "Which cell has the lowest bar in the capacity retention bar chart?",
+          "capacity retention bar chart lowest bar cell"
+        ],
+        "q20": [
+          "What does the photo on the Aurora S1 product page show?",
+          "what does the photo on the aurora s1 product page show"
+        ],
+        "q21": [
+          "What is the nominal voltage of the Aurora S1 cell?",
+          "Aurora S1 cell nominal voltage"
+        ],
+        "q22": [
+          "Does the Aurora S1's rated cycle life match the project's cycle target?"
+        ],
+        "q23": [
+          "What is the role of NaDFOB in the E-7 electrolyte?",
+          "role of NaDFOB in E-7 electrolyte"
+        ],
+        "q24": [
+          "Which solvents replace DEC in the E-7 blend?",
+          "solvents that replace DEC in E-7 blend"
+        ],
+        "q25": [
+          "What volume fraction of DMC does E-7 contain?",
+          "volume fraction of DMC in E-7"
+        ],
+        "q26": [
+          "Who prepared the safety review of the E-5 failure?",
+          "safety review of E-5 failure prepared by"
+        ],
+        "q27": [
+          "Which gases were found in the failed pouch?"
+        ],
+        "q28": [
+          "What does the safety review recommend for pilot-line pouches?",
+          "safety review recommendation for pilot-line pouches"
+        ],
+        "q29": [
+          "Which cells meet the 5% swelling limit?",
+          "cells meeting 5% swelling limit"
+        ],
+        "q30": [
+          "What separator does the Aurora cell use?",
+          "Aurora cell separator"
+        ],
+        "q31": [
+          "What is the N/P ratio of the anode?",
+          "N/P ratio of anode"
+        ],
+        "q32": [
+          "What voltage window is used in the cycling protocol?",
+          "voltage window cycling protocol"
+        ],
+        "q33": [
+          "Who tested cell AUR-C107?",
+          "AUR-C107 cell test"
+        ],
+        "q34": [
+          "What is the fallback if E-7 swelling exceeds the limit, and how is that fallback performing?",
+          "fallback when E-7 swelling exceeds limit and performance of that fallback"
+        ],
+        "q35": [
+          "When is the next technical review meeting?",
+          "next technical review meeting date"
+        ],
+        "q36": [
+          "Who owns risk R2 in the risk register?",
+          "ownership of risk R2 in risk register"
+        ],
+        "q37": [
+          "What is the energy density of the Aurora S1?",
+          "energy density of Aurora S1"
+        ],
+        "q38": [
+          "What is the price per kWh of the Aurora S1 cell?",
+          "Aurora S1 cell price per kWh"
+        ],
+        "q39": [
+          "Who is the CEO of Helios Energy Lab?",
+          "CEO of Helios Energy Lab"
+        ],
+        "q40": [
+          "What capacity retention did cell AUR-C109 reach?",
+          "capacity retention cell AUR-C109"
+        ]
+      },
+      "vs_base": {
+        "wins": [],
+        "losses": []
+      }
+    },
+    "multi_query": {
+      "hit": 1.0,
+      "recall": 0.986,
+      "precision": 0.297,
+      "mrr": 0.892,
+      "ndcg": 0.881,
+      "context_precision": 0.33,
+      "recall_by_type": {
+        "comparative": 0.5,
+        "factual": 1.0,
+        "image": 1.0,
+        "keyword": 1.0,
+        "multi_hop": 1.0,
+        "table": 1.0
+      },
+      "per_question_recall": {
+        "q01": 1.0,
+        "q02": 1.0,
+        "q03": 1.0,
+        "q04": 1.0,
+        "q05": 1.0,
+        "q06": 1.0,
+        "q07": 1.0,
+        "q08": 1.0,
+        "q09": 1.0,
+        "q10": 1.0,
+        "q11": 1.0,
+        "q12": 1.0,
+        "q13": 1.0,
+        "q14": 1.0,
+        "q15": 1.0,
+        "q16": 1.0,
+        "q17": 1.0,
+        "q18": 1.0,
+        "q19": 1.0,
+        "q20": 1.0,
+        "q21": 1.0,
+        "q22": 0.5,
+        "q23": 1.0,
+        "q24": 1.0,
+        "q25": 1.0,
+        "q26": 1.0,
+        "q27": 1.0,
+        "q28": 1.0,
+        "q29": 1.0,
+        "q30": 1.0,
+        "q31": 1.0,
+        "q32": 1.0,
+        "q33": 1.0,
+        "q34": 1.0,
+        "q35": 1.0,
+        "q36": 1.0,
+        "q37": 1.0
+      },
+      "latency_ms": {
+        "p50": 2326.4,
+        "p95": 2921.1
+      },
+      "llm_calls_per_question": 1.0,
+      "attempts": {
+        "0": 40
+      },
+      "verdicts": {
+        "sufficient": 39,
+        "insufficient": 1
+      },
+      "verdict_by_question": {
+        "q01": "sufficient",
+        "q02": "sufficient",
+        "q03": "sufficient",
+        "q04": "sufficient",
+        "q05": "sufficient",
+        "q06": "sufficient",
+        "q07": "sufficient",
+        "q08": "sufficient",
+        "q09": "sufficient",
+        "q10": "sufficient",
+        "q11": "sufficient",
+        "q12": "sufficient",
+        "q13": "sufficient",
+        "q14": "sufficient",
+        "q15": "sufficient",
+        "q16": "sufficient",
+        "q17": "sufficient",
+        "q18": "sufficient",
+        "q19": "sufficient",
+        "q20": "sufficient",
+        "q21": "sufficient",
+        "q22": "sufficient",
+        "q23": "sufficient",
+        "q24": "sufficient",
+        "q25": "sufficient",
+        "q26": "sufficient",
+        "q27": "sufficient",
+        "q28": "sufficient",
+        "q29": "sufficient",
+        "q30": "sufficient",
+        "q31": "sufficient",
+        "q32": "sufficient",
+        "q33": "sufficient",
+        "q34": "sufficient",
+        "q35": "sufficient",
+        "q36": "sufficient",
+        "q37": "sufficient",
+        "q38": "sufficient",
+        "q39": "sufficient",
+        "q40": "insufficient"
+      },
+      "queries_by_question": {
+        "q01": [
+          "Who is the project lead of Project Aurora?",
+          "Find the project lead of Project Aurora in the project management database.",
+          "What is the name of the individual responsible for Project Aurora?",
+          "Who holds the leadership role for the project titled Project Aurora?"
+        ],
+        "q02": [
+          "What cathode material does the Aurora cell use?",
+          "What cathode material is used in the Aurora cell?",
+          "Aurora cell cathode composition",
+          "Aurora cell specifications cathode material"
+        ],
+        "q03": [
+          "Why was Prussian white chosen over layered oxides?",
+          "What are the key properties of Prussian white that make it suitable for use in pigments?",
+          "What are the advantages of layered oxides over Prussian white in pigment applications?",
+          "Why was Prussian white selected over layered oxides in historical or industrial pigment development?"
+        ],
+        "q04": [
+          "What capacity retention did cell AUR-C103 reach, and after how many cycles?",
+          "What is the capacity retention percentage of cell AUR-C103 after a specific number of charge-discharge cycles?",
+          "How much capacity retention does cell AUR-C103 show after 100 cycles?",
+          "What is the capacity retention of cell AUR-C103 at 500 cycles and what is the cycle count?"
+        ],
+        "q05": [
+          "Why did cell AUR-C103 fail?",
+          "What were the root causes of the failure of cell AUR-C103 in the experimental phase?",
+          "Identify any design flaws or manufacturing defects in cell AUR-C103 that led to its failure.",
+          "What diagnostic reports or post-failure analysis indicate the reason for the failure of cell AUR-C103?"
+        ],
+        "q06": [
+          "How much did the pouch of AUR-C103 swell?",
+          "What is the swelling percentage of the AUR-C103 pouch in the official test report?",
+          "How much did the AUR-C103 pouch expand during the swelling test?",
+          "What is the measured volume increase of the AUR-C103 pouch in the laboratory evaluation?"
+        ],
+        "q07": [
+          "Which electrolyte replaced the one used in the cell that failed at 45 °C, and who owns its qualification?",
+          "What electrolyte replaced the one used in the cell that failed at 45 °C?",
+          "Who owns the qualification of the electrolyte that replaced the one used in the cell that failed at 45 °C?",
+          "Which electrolyte was used in the cell that failed at 45 °C and what is the ownership of the qualification for the replacement electrolyte?"
+        ],
+        "q08": [
+          "What is the planned budget of the electrolyte workstream?",
+          "What is the planned budget for the electrolyte workstream in the project documentation?",
+          "Find the budget allocation specifically assigned to the electrolyte workstream in the financial plan.",
+          "What is the total planned budget for the electrolyte workstream as outlined in the project scope document?"
+        ],
+        "q09": [
+          "When did the steering committee approve extra funding for the E-7 qualification, and how much?",
+          "When did the steering committee approve extra funding for the E-7 qualification?",
+          "How much extra funding was approved by the steering committee for the E-7 qualification?",
+          "What was the approval date and amount of extra funding for the E-7 qualification by the steering committee?"
+        ],
+        "q10": [
+          "What share of the cathode budget has been spent?",
+          "What is the total allocated amount for the cathode budget in the project documentation?",
+          "What is the current spent amount on the cathode budget as recorded in the financial reports?",
+          "Calculate the percentage of the cathode budget that has been spent based on the total allocated and current spent amounts."
+        ],
+        "q11": [
+          "Which hard-carbon supplier is not yet qualified?",
+          "Which hard-carbon supplier is currently not listed as qualified in the supplier qualification database?",
+          "List all hard-carbon suppliers that have not been approved or certified for qualification status.",
+          "Identify hard-carbon suppliers that lack a qualification status entry in the official supplier qualification records."
+        ],
+        "q12": [
+          "What is the lead time for NaPF6 salt from Nordic Salts AB?",
+          "What is the lead time for NaPF6 salt from Nordic Salts AB in their product specifications or catalog?",
+          "Does Nordic Salts AB provide a lead time for NaPF6 salt in their official website or sales documentation?",
+          "What is the delivery time or lead time for NaPF6 salt when ordered from Nordic Salts AB?"
+        ],
+        "q13": [
+          "When is milestone M3 due?",
+          "What is the due date for milestone M3 in the project timeline?",
+          "When does milestone M3 have a deadline in the project schedule?",
+          "What is the scheduled date for milestone M3?"
+        ],
+        "q14": [
+          "What is the status of milestone M2?",
+          "What is the current status of project milestone M2?",
+          "Retrieve the status of milestone named M2 in the project timeline.",
+          "What is the status of milestone M2 as of the latest update?"
+        ],
+        "q15": [
+          "What capacity retention did AUR-C106 have after 300 cycles at 45 °C?",
+          "What is the capacity retention of AUR-C106 after 300 cycles at 45 °C?",
+          "AUR-C106 capacity retention data after 300 cycles at 45 °C",
+          "Capacity retention of AUR-C106 at 45 °C over 300 cycles"
+        ],
+        "q16": [
+          "What swelling did the lab notebook record for AUR-C106?",
+          "What swelling measurement was recorded in the lab notebook for sample AUR-C106?",
+          "What is the recorded swelling value for AUR-C106 in the lab notebook?",
+          "What swelling reading is listed in the lab notebook for AUR-C106?"
+        ],
+        "q17": [
+          "When is the next checkpoint noted in the scanned lab notebook?",
+          "What is the date and time of the next checkpoint recorded in the lab notebook titled 'Scanned Lab Notebook'?",
+          "When was the most recent checkpoint entry made in the document named 'Scanned Lab Notebook'?",
+          "What is the timestamp of the next scheduled checkpoint in the lab notebook labeled 'Scanned Lab Notebook'?"
+        ],
+        "q18": [
+          "What pilot batch size is written on the E-7 qualification plan whiteboard?",
+          "What is the pilot batch size specified in the E-7 qualification plan whiteboard?",
+          "Search for the E-7 qualification plan whiteboard and extract the pilot batch size value",
+          "Find the pilot batch size listed on the whiteboard associated with the E-7 qualification plan"
+        ],
+        "q19": [
+          "Which cell has the lowest bar in the capacity retention bar chart?",
+          "What is the name of the cell with the lowest value in the capacity retention bar chart?",
+          "Which cell shows the minimum capacity retention percentage in the bar chart?",
+          "What is the identifier of the cell with the smallest bar in the capacity retention bar chart?"
+        ],
+        "q20": [
+          "What does the photo on the Aurora S1 product page show?",
+          "What is depicted in the photo on the Aurora S1 product page?",
+          "Describe the content of the image shown on the Aurora S1 product page.",
+          "What objects or features are visible in the photo of the Aurora S1 product page?"
+        ],
+        "q21": [
+          "What is the nominal voltage of the Aurora S1 cell?",
+          "What is the nominal voltage of the Aurora S1 battery cell?",
+          "Aurora S1 cell specifications nominal voltage",
+          "Aurora S1 lithium-ion cell nominal voltage"
+        ],
+        "q22": [
+          "Does the Aurora S1's rated cycle life match the project's cycle target?"
+        ],
+        "q23": [
+          "What is the role of NaDFOB in the E-7 electrolyte?",
+          "What is the function of NaDFOB in the E-7 electrolyte composition?",
+          "Describe the role of NaDFOB in the E-7 electrolyte system used in battery technology.",
+          "How does NaDFOB contribute to the performance of the E-7 electrolyte in lithium-ion batteries?"
+        ],
+        "q24": [
+          "Which solvents replace DEC in the E-7 blend?",
+          "What solvents are used to replace DEC in the E-7 blend according to chemical formulation documents?",
+          "In the E-7 blend, which solvents have been substituted for DEC in official specifications?",
+          "List the solvents that replace DEC in the E-7 blend as specified in technical project reports?"
+        ],
+        "q25": [
+          "What volume fraction of DMC does E-7 contain?",
+          "What is the volume fraction of DMC in E-7 according to material specifications?",
+          "E-7 composition: what percentage of DMC by volume?",
+          "In the technical document for E-7, what is the volume fraction of DMC?"
+        ],
+        "q26": [
+          "Who prepared the safety review of the E-5 failure?",
+          "Who prepared the safety review of the E-5 failure in the NASA report on rocket engine failures?",
+          "What is the author or preparer of the safety review document for the E-5 failure event?",
+          "Who conducted the safety review for the E-5 failure as mentioned in the technical assessment of rocket engine incidents?"
+        ],
+        "q27": [
+          "Which gases were found in the failed pouch?",
+          "What gases were detected in the failed pouch during the post-mortem analysis?",
+          "List the gas composition identified in the ruptured pouch sample from the failure investigation?",
+          "Which gases were present in the failed pouch as reported in the technical report on pouch integrity failure?"
+        ],
+        "q28": [
+          "What does the safety review recommend for pilot-line pouches?",
+          "What does the safety review recommend for pilot-line pouches in terms of material composition?",
+          "What does the safety review recommend for pilot-line pouches regarding manufacturing process?",
+          "What does the safety review recommend for pilot-line pouches in terms of handling and storage procedures?"
+        ],
+        "q29": [
+          "Which cells meet the 5% swelling limit?",
+          "Find cells that have a swelling percentage equal to or below 5%",
+          "List all cells where the swelling limit is set at 5% or less",
+          "Identify cells with a maximum allowable swelling of 5% or less"
+        ],
+        "q30": [
+          "What separator does the Aurora cell use?",
+          "What separator is used in the Aurora cell?",
+          "What is the separator material in the Aurora cell?",
+          "What type of separator does the Aurora cell employ?"
+        ],
+        "q31": [
+          "What is the N/P ratio of the anode?",
+          "What is the N/P ratio of the anode in the project documentation?",
+          "Find the N/P ratio value assigned to the anode component in the technical specifications.",
+          "What does the N/P ratio indicate for the anode as described in the materials?"
+        ],
+        "q32": [
+          "What voltage window is used in the cycling protocol?",
+          "What is the voltage window specified in the cycling protocol for battery testing?",
+          "What voltage range is defined in the cycling protocol for electrochemical cell operation?",
+          "What voltage window is established in the cycling protocol for battery cycle life testing?"
+        ],
+        "q33": [
+          "Who tested cell AUR-C107?",
+          "Find the person or team responsible for testing cell AUR-C107",
+          "Who conducted the test for cell AUR-C107 in the project documentation",
+          "What individual or group tested cell AUR-C107 according to the experimental records"
+        ],
+        "q34": [
+          "What is the fallback if E-7 swelling exceeds the limit, and how is that fallback performing?",
+          "What is the defined fallback procedure when E-7 swelling exceeds the specified limit in the safety protocol documentation?",
+          "How is the performance of the fallback mechanism evaluated when E-7 swelling exceeds the limit according to operational reports?",
+          "What specific metrics or indicators are used to assess the effectiveness of the fallback in case of E-7 swelling exceeding the threshold?"
+        ],
+        "q35": [
+          "When is the next technical review meeting?",
+          "What is the scheduled date of the next technical review meeting in the project timeline?",
+          "When does the upcoming technical review meeting take place according to the project calendar?",
+          "Is there a listed date for the next technical review meeting in the project schedule document?"
+        ],
+        "q36": [
+          "Who owns risk R2 in the risk register?",
+          "Find the owner of risk item R2 in the official risk register document.",
+          "What is the assigned owner for risk identifier R2 in the risk register?",
+          "Who is responsible for risk R2 as listed in the risk register?"
+        ],
+        "q37": [
+          "What is the energy density of the Aurora S1?",
+          "What is the energy density of the Aurora S1 battery model?",
+          "Aurora S1 energy density specification in Wh/kg or mAh/g",
+          "Technical datasheet of Aurora S1 showing energy density value"
+        ],
+        "q38": [
+          "What is the price per kWh of the Aurora S1 cell?",
+          "What is the price per kWh of the Aurora S1 solar cell model?",
+          "Aurora S1 cell cost per kilowatt-hour official specification",
+          "Aurora S1 cell retail price per kWh"
+        ],
+        "q39": [
+          "Who is the CEO of Helios Energy Lab?",
+          "What is the current CEO of Helios Energy Lab?",
+          "Who holds the position of CEO at Helios Energy Lab?",
+          "What is the name of the CEO of Helios Energy Lab as of today?"
+        ],
+        "q40": [
+          "What capacity retention did cell AUR-C109 reach?",
+          "What is the capacity retention percentage of cell AUR-C109 in technical documentation?",
+          "What capacity retention value is reported for cell AUR-C109 in battery performance studies?",
+          "What is the capacity retention achieved by cell AUR-C109 after cycling in experimental data?"
+        ]
+      },
+      "vs_base": {
+        "wins": [],
+        "losses": []
+      }
+    },
+    "hyde": {
+      "hit": 1.0,
+      "recall": 1.0,
+      "precision": 0.297,
+      "mrr": 0.939,
+      "ndcg": 0.899,
+      "context_precision": 0.34,
+      "recall_by_type": {
+        "comparative": 1.0,
+        "factual": 1.0,
+        "image": 1.0,
+        "keyword": 1.0,
+        "multi_hop": 1.0,
+        "table": 1.0
+      },
+      "per_question_recall": {
+        "q01": 1.0,
+        "q02": 1.0,
+        "q03": 1.0,
+        "q04": 1.0,
+        "q05": 1.0,
+        "q06": 1.0,
+        "q07": 1.0,
+        "q08": 1.0,
+        "q09": 1.0,
+        "q10": 1.0,
+        "q11": 1.0,
+        "q12": 1.0,
+        "q13": 1.0,
+        "q14": 1.0,
+        "q15": 1.0,
+        "q16": 1.0,
+        "q17": 1.0,
+        "q18": 1.0,
+        "q19": 1.0,
+        "q20": 1.0,
+        "q21": 1.0,
+        "q22": 1.0,
+        "q23": 1.0,
+        "q24": 1.0,
+        "q25": 1.0,
+        "q26": 1.0,
+        "q27": 1.0,
+        "q28": 1.0,
+        "q29": 1.0,
+        "q30": 1.0,
+        "q31": 1.0,
+        "q32": 1.0,
+        "q33": 1.0,
+        "q34": 1.0,
+        "q35": 1.0,
+        "q36": 1.0,
+        "q37": 1.0
+      },
+      "latency_ms": {
+        "p50": 3604.3,
+        "p95": 4987.7
+      },
+      "llm_calls_per_question": 1.0,
+      "attempts": {
+        "0": 40
+      },
+      "verdicts": {
+        "sufficient": 39,
+        "insufficient": 1
+      },
+      "verdict_by_question": {
+        "q01": "sufficient",
+        "q02": "sufficient",
+        "q03": "sufficient",
+        "q04": "sufficient",
+        "q05": "sufficient",
+        "q06": "sufficient",
+        "q07": "sufficient",
+        "q08": "sufficient",
+        "q09": "sufficient",
+        "q10": "sufficient",
+        "q11": "sufficient",
+        "q12": "sufficient",
+        "q13": "sufficient",
+        "q14": "sufficient",
+        "q15": "sufficient",
+        "q16": "sufficient",
+        "q17": "sufficient",
+        "q18": "sufficient",
+        "q19": "sufficient",
+        "q20": "sufficient",
+        "q21": "sufficient",
+        "q22": "sufficient",
+        "q23": "sufficient",
+        "q24": "sufficient",
+        "q25": "sufficient",
+        "q26": "sufficient",
+        "q27": "sufficient",
+        "q28": "sufficient",
+        "q29": "sufficient",
+        "q30": "sufficient",
+        "q31": "sufficient",
+        "q32": "sufficient",
+        "q33": "sufficient",
+        "q34": "sufficient",
+        "q35": "sufficient",
+        "q36": "sufficient",
+        "q37": "sufficient",
+        "q38": "sufficient",
+        "q39": "sufficient",
+        "q40": "insufficient"
+      },
+      "queries_by_question": {
+        "q01": [
+          "Who is the project lead of Project Aurora?"
+        ],
+        "q02": [
+          "What cathode material does the Aurora cell use?"
+        ],
+        "q03": [
+          "Why was Prussian white chosen over layered oxides?"
+        ],
+        "q04": [
+          "What capacity retention did cell AUR-C103 reach, and after how many cycles?"
+        ],
+        "q05": [
+          "Why did cell AUR-C103 fail?"
+        ],
+        "q06": [
+          "How much did the pouch of AUR-C103 swell?"
+        ],
+        "q07": [
+          "Which electrolyte replaced the one used in the cell that failed at 45 °C, and who owns its qualification?"
+        ],
+        "q08": [
+          "What is the planned budget of the electrolyte workstream?"
+        ],
+        "q09": [
+          "When did the steering committee approve extra funding for the E-7 qualification, and how much?"
+        ],
+        "q10": [
+          "What share of the cathode budget has been spent?"
+        ],
+        "q11": [
+          "Which hard-carbon supplier is not yet qualified?"
+        ],
+        "q12": [
+          "What is the lead time for NaPF6 salt from Nordic Salts AB?"
+        ],
+        "q13": [
+          "When is milestone M3 due?"
+        ],
+        "q14": [
+          "What is the status of milestone M2?"
+        ],
+        "q15": [
+          "What capacity retention did AUR-C106 have after 300 cycles at 45 °C?"
+        ],
+        "q16": [
+          "What swelling did the lab notebook record for AUR-C106?"
+        ],
+        "q17": [
+          "When is the next checkpoint noted in the scanned lab notebook?"
+        ],
+        "q18": [
+          "What pilot batch size is written on the E-7 qualification plan whiteboard?"
+        ],
+        "q19": [
+          "Which cell has the lowest bar in the capacity retention bar chart?"
+        ],
+        "q20": [
+          "What does the photo on the Aurora S1 product page show?"
+        ],
+        "q21": [
+          "What is the nominal voltage of the Aurora S1 cell?"
+        ],
+        "q22": [
+          "Does the Aurora S1's rated cycle life match the project's cycle target?"
+        ],
+        "q23": [
+          "What is the role of NaDFOB in the E-7 electrolyte?"
+        ],
+        "q24": [
+          "Which solvents replace DEC in the E-7 blend?"
+        ],
+        "q25": [
+          "What volume fraction of DMC does E-7 contain?"
+        ],
+        "q26": [
+          "Who prepared the safety review of the E-5 failure?"
+        ],
+        "q27": [
+          "Which gases were found in the failed pouch?"
+        ],
+        "q28": [
+          "What does the safety review recommend for pilot-line pouches?"
+        ],
+        "q29": [
+          "Which cells meet the 5% swelling limit?"
+        ],
+        "q30": [
+          "What separator does the Aurora cell use?"
+        ],
+        "q31": [
+          "What is the N/P ratio of the anode?"
+        ],
+        "q32": [
+          "What voltage window is used in the cycling protocol?"
+        ],
+        "q33": [
+          "Who tested cell AUR-C107?"
+        ],
+        "q34": [
+          "What is the fallback if E-7 swelling exceeds the limit, and how is that fallback performing?"
+        ],
+        "q35": [
+          "When is the next technical review meeting?"
+        ],
+        "q36": [
+          "Who owns risk R2 in the risk register?"
+        ],
+        "q37": [
+          "What is the energy density of the Aurora S1?"
+        ],
+        "q38": [
+          "What is the price per kWh of the Aurora S1 cell?"
+        ],
+        "q39": [
+          "Who is the CEO of Helios Energy Lab?"
+        ],
+        "q40": [
+          "What capacity retention did cell AUR-C109 reach?"
+        ]
+      },
+      "vs_base": {
+        "wins": [
+          "q22"
+        ],
+        "losses": []
+      }
+    },
+    "multi_query+hyde": {
+      "hit": 1.0,
+      "recall": 1.0,
+      "precision": 0.297,
+      "mrr": 0.932,
+      "ndcg": 0.907,
+      "context_precision": 0.327,
+      "recall_by_type": {
+        "comparative": 1.0,
+        "factual": 1.0,
+        "image": 1.0,
+        "keyword": 1.0,
+        "multi_hop": 1.0,
+        "table": 1.0
+      },
+      "per_question_recall": {
+        "q01": 1.0,
+        "q02": 1.0,
+        "q03": 1.0,
+        "q04": 1.0,
+        "q05": 1.0,
+        "q06": 1.0,
+        "q07": 1.0,
+        "q08": 1.0,
+        "q09": 1.0,
+        "q10": 1.0,
+        "q11": 1.0,
+        "q12": 1.0,
+        "q13": 1.0,
+        "q14": 1.0,
+        "q15": 1.0,
+        "q16": 1.0,
+        "q17": 1.0,
+        "q18": 1.0,
+        "q19": 1.0,
+        "q20": 1.0,
+        "q21": 1.0,
+        "q22": 1.0,
+        "q23": 1.0,
+        "q24": 1.0,
+        "q25": 1.0,
+        "q26": 1.0,
+        "q27": 1.0,
+        "q28": 1.0,
+        "q29": 1.0,
+        "q30": 1.0,
+        "q31": 1.0,
+        "q32": 1.0,
+        "q33": 1.0,
+        "q34": 1.0,
+        "q35": 1.0,
+        "q36": 1.0,
+        "q37": 1.0
+      },
+      "latency_ms": {
+        "p50": 6462.4,
+        "p95": 8868.5
+      },
+      "llm_calls_per_question": 2.0,
+      "attempts": {
+        "0": 40
+      },
+      "verdicts": {
+        "sufficient": 39,
+        "insufficient": 1
+      },
+      "verdict_by_question": {
+        "q01": "sufficient",
+        "q02": "sufficient",
+        "q03": "sufficient",
+        "q04": "sufficient",
+        "q05": "sufficient",
+        "q06": "sufficient",
+        "q07": "sufficient",
+        "q08": "sufficient",
+        "q09": "sufficient",
+        "q10": "sufficient",
+        "q11": "sufficient",
+        "q12": "sufficient",
+        "q13": "sufficient",
+        "q14": "sufficient",
+        "q15": "sufficient",
+        "q16": "sufficient",
+        "q17": "sufficient",
+        "q18": "sufficient",
+        "q19": "sufficient",
+        "q20": "sufficient",
+        "q21": "sufficient",
+        "q22": "sufficient",
+        "q23": "sufficient",
+        "q24": "sufficient",
+        "q25": "sufficient",
+        "q26": "sufficient",
+        "q27": "sufficient",
+        "q28": "sufficient",
+        "q29": "sufficient",
+        "q30": "sufficient",
+        "q31": "sufficient",
+        "q32": "sufficient",
+        "q33": "sufficient",
+        "q34": "sufficient",
+        "q35": "sufficient",
+        "q36": "sufficient",
+        "q37": "sufficient",
+        "q38": "sufficient",
+        "q39": "sufficient",
+        "q40": "insufficient"
+      },
+      "queries_by_question": {
+        "q01": [
+          "Who is the project lead of Project Aurora?",
+          "Project Aurora project lead",
+          "Who is the lead for Project Aurora?",
+          "Project Aurora: identify the project lead"
+        ],
+        "q02": [
+          "What cathode material does the Aurora cell use?",
+          "What cathode material is used in the Aurora cell?",
+          "Aurora cell cathode composition",
+          "Aurora cell specifications cathode material"
+        ],
+        "q03": [
+          "Why was Prussian white chosen over layered oxides?",
+          "What are the key properties of Prussian white that make it suitable for use in pigments?",
+          "What are the advantages of layered oxides over Prussian white in pigment applications?",
+          "Why was Prussian white selected over layered oxides in historical or industrial pigment development?"
+        ],
+        "q04": [
+          "What capacity retention did cell AUR-C103 reach, and after how many cycles?",
+          "What is the capacity retention percentage of cell AUR-C103 after a specific number of charge-discharge cycles?",
+          "How much capacity retention does cell AUR-C103 show after 100 cycles?",
+          "What is the capacity retention of cell AUR-C103 at 500 cycles and what is the cycle count?"
+        ],
+        "q05": [
+          "Why did cell AUR-C103 fail?",
+          "What were the root causes of the failure of cell AUR-C103 in the experimental phase?",
+          "Identify any design flaws or manufacturing defects in cell AUR-C103 that led to its failure.",
+          "What diagnostic reports or post-failure analysis indicate the reason for the failure of cell AUR-C103?"
+        ],
+        "q06": [
+          "How much did the pouch of AUR-C103 swell?",
+          "What is the swelling percentage of the AUR-C103 pouch in the official test report?",
+          "How much did the AUR-C103 pouch expand during the swelling test?",
+          "What is the measured volume increase of the AUR-C103 pouch in the laboratory evaluation?"
+        ],
+        "q07": [
+          "Which electrolyte replaced the one used in the cell that failed at 45 °C, and who owns its qualification?",
+          "What electrolyte replaced the one used in the cell that failed at 45 °C?",
+          "Who owns the qualification of the electrolyte that replaced the one used in the cell that failed at 45 °C?",
+          "Which electrolyte was used in the cell that failed at 45 °C and what is the ownership of the qualification for the replacement electrolyte?"
+        ],
+        "q08": [
+          "What is the planned budget of the electrolyte workstream?",
+          "What is the planned budget for the electrolyte workstream in the project documentation?",
+          "Find the budget allocation specifically assigned to the electrolyte workstream in the financial plan.",
+          "What is the total planned budget for the electrolyte workstream as outlined in the project scope document?"
+        ],
+        "q09": [
+          "When did the steering committee approve extra funding for the E-7 qualification, and how much?",
+          "When did the steering committee approve extra funding for the E-7 qualification?",
+          "How much extra funding was approved by the steering committee for the E-7 qualification?",
+          "What was the approval date and amount of extra funding for the E-7 qualification by the steering committee?"
+        ],
+        "q10": [
+          "What share of the cathode budget has been spent?",
+          "What is the total allocated amount for the cathode budget in the project documentation?",
+          "What is the current spent amount on the cathode budget as recorded in the financial reports?",
+          "Calculate the percentage of the cathode budget that has been spent based on the total allocated and current spent amounts."
+        ],
+        "q11": [
+          "Which hard-carbon supplier is not yet qualified?",
+          "Which hard-carbon supplier is currently not listed as qualified in the supplier qualification database?",
+          "List all hard-carbon suppliers that have not been approved or certified for qualification status.",
+          "Identify hard-carbon suppliers that lack a qualification status entry in the official supplier qualification records."
+        ],
+        "q12": [
+          "What is the lead time for NaPF6 salt from Nordic Salts AB?",
+          "What is the lead time for NaPF6 salt from Nordic Salts AB in their product specifications or catalog?",
+          "Does Nordic Salts AB provide a lead time for NaPF6 salt in their official website or sales documentation?",
+          "What is the delivery time or lead time for NaPF6 salt when ordered from Nordic Salts AB?"
+        ],
+        "q13": [
+          "When is milestone M3 due?",
+          "What is the due date for milestone M3 in the project timeline?",
+          "When does milestone M3 have a deadline in the project schedule?",
+          "What is the scheduled date for milestone M3?"
+        ],
+        "q14": [
+          "What is the status of milestone M2?",
+          "What is the current status of project milestone M2?",
+          "Retrieve the status of milestone named M2 in the project timeline.",
+          "What is the status of milestone M2 as of the latest update?"
+        ],
+        "q15": [
+          "What capacity retention did AUR-C106 have after 300 cycles at 45 °C?",
+          "What is the capacity retention of AUR-C106 after 300 cycles at 45 °C?",
+          "AUR-C106 capacity retention data after 300 cycles at 45 °C",
+          "Capacity retention of AUR-C106 at 45 °C over 300 cycles"
+        ],
+        "q16": [
+          "What swelling did the lab notebook record for AUR-C106?",
+          "What swelling measurement was recorded in the lab notebook for sample AUR-C106?",
+          "What is the recorded swelling value for AUR-C106 in the lab notebook?",
+          "What swelling reading is listed in the lab notebook for AUR-C106?"
+        ],
+        "q17": [
+          "When is the next checkpoint noted in the scanned lab notebook?",
+          "What is the date and time of the next checkpoint recorded in the lab notebook titled 'Scanned Lab Notebook'?",
+          "When was the most recent checkpoint entry made in the document named 'Scanned Lab Notebook'?",
+          "What is the timestamp of the next scheduled checkpoint in the lab notebook labeled 'Scanned Lab Notebook'?"
+        ],
+        "q18": [
+          "What pilot batch size is written on the E-7 qualification plan whiteboard?",
+          "What is the pilot batch size specified in the E-7 qualification plan whiteboard?",
+          "Search for the E-7 qualification plan whiteboard and extract the pilot batch size value",
+          "Find the pilot batch size listed on the whiteboard associated with the E-7 qualification plan"
+        ],
+        "q19": [
+          "Which cell has the lowest bar in the capacity retention bar chart?",
+          "What is the name of the cell with the lowest value in the capacity retention bar chart?",
+          "Which cell shows the minimum capacity retention percentage in the bar chart?",
+          "What is the identifier of the cell with the smallest bar in the capacity retention bar chart?"
+        ],
+        "q20": [
+          "What does the photo on the Aurora S1 product page show?",
+          "What is depicted in the photo on the Aurora S1 product page?",
+          "Describe the content of the image shown on the Aurora S1 product page.",
+          "What objects or features are visible in the photo of the Aurora S1 product page?"
+        ],
+        "q21": [
+          "What is the nominal voltage of the Aurora S1 cell?",
+          "What is the nominal voltage of the Aurora S1 battery cell?",
+          "Aurora S1 cell specifications nominal voltage",
+          "Aurora S1 lithium-ion cell nominal voltage"
+        ],
+        "q22": [
+          "Does the Aurora S1's rated cycle life match the project's cycle target?"
+        ],
+        "q23": [
+          "What is the role of NaDFOB in the E-7 electrolyte?",
+          "What is the function of NaDFOB in the E-7 electrolyte composition?",
+          "Describe the role of NaDFOB in the E-7 electrolyte system used in battery technology.",
+          "How does NaDFOB contribute to the performance of the E-7 electrolyte in lithium-ion batteries?"
+        ],
+        "q24": [
+          "Which solvents replace DEC in the E-7 blend?",
+          "What solvents are used to replace DEC in the E-7 blend according to chemical formulation documents?",
+          "In the E-7 blend, which solvents have been substituted for DEC in official specifications?",
+          "List the solvents that replace DEC in the E-7 blend as specified in technical project reports?"
+        ],
+        "q25": [
+          "What volume fraction of DMC does E-7 contain?",
+          "What is the volume fraction of DMC in E-7 according to material specifications?",
+          "E-7 composition: what percentage of DMC by volume?",
+          "In the technical document for E-7, what is the volume fraction of DMC?"
+        ],
+        "q26": [
+          "Who prepared the safety review of the E-5 failure?",
+          "Who prepared the safety review of the E-5 failure in the NASA report on rocket engine failures?",
+          "What is the author or preparer of the safety review document for the E-5 failure event?",
+          "Who conducted the safety review for the E-5 failure as mentioned in the technical assessment of rocket engine incidents?"
+        ],
+        "q27": [
+          "Which gases were found in the failed pouch?",
+          "What gases were detected in the failed pouch during the post-mortem analysis?",
+          "List the gas composition identified in the ruptured pouch sample from the failure investigation?",
+          "Which gases were present in the failed pouch as reported in the technical report on pouch integrity failure?"
+        ],
+        "q28": [
+          "What does the safety review recommend for pilot-line pouches?",
+          "What does the safety review recommend for pilot-line pouches in terms of material composition?",
+          "What does the safety review recommend for pilot-line pouches regarding manufacturing process?",
+          "What does the safety review recommend for pilot-line pouches in terms of handling and storage procedures?"
+        ],
+        "q29": [
+          "Which cells meet the 5% swelling limit?",
+          "Find cells that have a swelling percentage equal to or below 5%",
+          "List all cells where the swelling limit is set at 5% or less",
+          "Identify cells with a maximum allowable swelling of 5% or less"
+        ],
+        "q30": [
+          "What separator does the Aurora cell use?",
+          "What separator is used in the Aurora cell?",
+          "What is the separator material in the Aurora cell?",
+          "What type of separator does the Aurora cell employ?"
+        ],
+        "q31": [
+          "What is the N/P ratio of the anode?",
+          "What is the N/P ratio of the anode in the project documentation?",
+          "Find the N/P ratio value assigned to the anode component in the technical specifications.",
+          "What does the N/P ratio indicate for the anode as described in the materials?"
+        ],
+        "q32": [
+          "What voltage window is used in the cycling protocol?",
+          "What is the voltage window specified in the cycling protocol for battery testing?",
+          "What voltage range is defined in the cycling protocol for electrochemical cell operation?",
+          "What voltage window is established in the cycling protocol for battery cycle life testing?"
+        ],
+        "q33": [
+          "Who tested cell AUR-C107?",
+          "Find the person or team responsible for testing cell AUR-C107",
+          "Who conducted the test for cell AUR-C107 in the project documentation",
+          "What individual or group tested cell AUR-C107 according to the experimental records"
+        ],
+        "q34": [
+          "What is the fallback if E-7 swelling exceeds the limit, and how is that fallback performing?",
+          "What is the defined fallback procedure when E-7 swelling exceeds the specified limit in the safety protocol documentation?",
+          "How is the performance of the fallback mechanism evaluated when E-7 swelling exceeds the limit according to operational reports?",
+          "What specific metrics or indicators are used to assess the effectiveness of the fallback in case of E-7 swelling exceeding the threshold?"
+        ],
+        "q35": [
+          "When is the next technical review meeting?",
+          "What is the scheduled date of the next technical review meeting in the project timeline?",
+          "When does the upcoming technical review meeting take place according to the project calendar?",
+          "Is there a listed date for the next technical review meeting in the project schedule document?"
+        ],
+        "q36": [
+          "Who owns risk R2 in the risk register?",
+          "Find the owner of risk item R2 in the official risk register document.",
+          "What is the assigned owner for risk identifier R2 in the risk register?",
+          "Who is responsible for risk R2 as listed in the risk register?"
+        ],
+        "q37": [
+          "What is the energy density of the Aurora S1?",
+          "What is the energy density of the Aurora S1 battery model?",
+          "Aurora S1 energy density specification in Wh/kg or mAh/g",
+          "Technical datasheet of Aurora S1 showing energy density value"
+        ],
+        "q38": [
+          "What is the price per kWh of the Aurora S1 cell?",
+          "What is the price per kWh of the Aurora S1 solar cell model?",
+          "Aurora S1 cell cost per kilowatt-hour official specification",
+          "Aurora S1 cell retail price per kWh"
+        ],
+        "q39": [
+          "Who is the CEO of Helios Energy Lab?",
+          "What is the current CEO of Helios Energy Lab?",
+          "Who holds the position of CEO at Helios Energy Lab?",
+          "What is the name of the CEO of Helios Energy Lab as of today?"
+        ],
+        "q40": [
+          "What capacity retention did cell AUR-C109 reach?",
+          "What is the capacity retention percentage of cell AUR-C109 in technical documentation?",
+          "What capacity retention value is reported for cell AUR-C109 in battery performance studies?",
+          "What is the capacity retention achieved by cell AUR-C109 after cycling in experimental data?"
+        ]
+      },
+      "vs_base": {
+        "wins": [
+          "q22"
+        ],
+        "losses": []
+      }
+    },
+    "corrective": {
+      "hit": 1.0,
+      "recall": 0.986,
+      "precision": 0.297,
+      "mrr": 0.928,
+      "ndcg": 0.889,
+      "context_precision": 0.333,
+      "recall_by_type": {
+        "comparative": 0.5,
+        "factual": 1.0,
+        "image": 1.0,
+        "keyword": 1.0,
+        "multi_hop": 1.0,
+        "table": 1.0
+      },
+      "per_question_recall": {
+        "q01": 1.0,
+        "q02": 1.0,
+        "q03": 1.0,
+        "q04": 1.0,
+        "q05": 1.0,
+        "q06": 1.0,
+        "q07": 1.0,
+        "q08": 1.0,
+        "q09": 1.0,
+        "q10": 1.0,
+        "q11": 1.0,
+        "q12": 1.0,
+        "q13": 1.0,
+        "q14": 1.0,
+        "q15": 1.0,
+        "q16": 1.0,
+        "q17": 1.0,
+        "q18": 1.0,
+        "q19": 1.0,
+        "q20": 1.0,
+        "q21": 1.0,
+        "q22": 0.5,
+        "q23": 1.0,
+        "q24": 1.0,
+        "q25": 1.0,
+        "q26": 1.0,
+        "q27": 1.0,
+        "q28": 1.0,
+        "q29": 1.0,
+        "q30": 1.0,
+        "q31": 1.0,
+        "q32": 1.0,
+        "q33": 1.0,
+        "q34": 1.0,
+        "q35": 1.0,
+        "q36": 1.0,
+        "q37": 1.0
+      },
+      "latency_ms": {
+        "p50": 1614.2,
+        "p95": 3015.9
+      },
+      "llm_calls_per_question": 1.23,
+      "attempts": {
+        "0": 35,
+        "1": 5
+      },
+      "verdicts": {
+        "sufficient": 34,
+        "partial": 4,
+        "insufficient": 2
+      },
+      "verdict_by_question": {
+        "q01": "sufficient",
+        "q02": "sufficient",
+        "q03": "sufficient",
+        "q04": "sufficient",
+        "q05": "sufficient",
+        "q06": "sufficient",
+        "q07": "sufficient",
+        "q08": "sufficient",
+        "q09": "sufficient",
+        "q10": "sufficient",
+        "q11": "partial",
+        "q12": "sufficient",
+        "q13": "sufficient",
+        "q14": "sufficient",
+        "q15": "sufficient",
+        "q16": "sufficient",
+        "q17": "sufficient",
+        "q18": "sufficient",
+        "q19": "sufficient",
+        "q20": "partial",
+        "q21": "sufficient",
+        "q22": "sufficient",
+        "q23": "sufficient",
+        "q24": "sufficient",
+        "q25": "sufficient",
+        "q26": "sufficient",
+        "q27": "sufficient",
+        "q28": "sufficient",
+        "q29": "sufficient",
+        "q30": "sufficient",
+        "q31": "sufficient",
+        "q32": "sufficient",
+        "q33": "sufficient",
+        "q34": "sufficient",
+        "q35": "sufficient",
+        "q36": "partial",
+        "q37": "sufficient",
+        "q38": "insufficient",
+        "q39": "partial",
+        "q40": "insufficient"
+      },
+      "queries_by_question": {
+        "q01": [
+          "Who is the project lead of Project Aurora?"
+        ],
+        "q02": [
+          "What cathode material does the Aurora cell use?"
+        ],
+        "q03": [
+          "Why was Prussian white chosen over layered oxides?"
+        ],
+        "q04": [
+          "What capacity retention did cell AUR-C103 reach, and after how many cycles?"
+        ],
+        "q05": [
+          "Why did cell AUR-C103 fail?"
+        ],
+        "q06": [
+          "How much did the pouch of AUR-C103 swell?"
+        ],
+        "q07": [
+          "Which electrolyte replaced the one used in the cell that failed at 45 °C, and who owns its qualification?"
+        ],
+        "q08": [
+          "What is the planned budget of the electrolyte workstream?"
+        ],
+        "q09": [
+          "When did the steering committee approve extra funding for the E-7 qualification, and how much?"
+        ],
+        "q10": [
+          "What share of the cathode budget has been spent?"
+        ],
+        "q11": [
+          "Which hard-carbon supplier is not yet qualified?",
+          "Which hard-carbon supplier is not yet qualified? unknown"
+        ],
+        "q12": [
+          "What is the lead time for NaPF6 salt from Nordic Salts AB?"
+        ],
+        "q13": [
+          "When is milestone M3 due?"
+        ],
+        "q14": [
+          "What is the status of milestone M2?"
+        ],
+        "q15": [
+          "What capacity retention did AUR-C106 have after 300 cycles at 45 °C?"
+        ],
+        "q16": [
+          "What swelling did the lab notebook record for AUR-C106?"
+        ],
+        "q17": [
+          "When is the next checkpoint noted in the scanned lab notebook?"
+        ],
+        "q18": [
+          "What pilot batch size is written on the E-7 qualification plan whiteboard?"
+        ],
+        "q19": [
+          "Which cell has the lowest bar in the capacity retention bar chart?"
+        ],
+        "q20": [
+          "What does the photo on the Aurora S1 product page show?"
+        ],
+        "q21": [
+          "What is the nominal voltage of the Aurora S1 cell?"
+        ],
+        "q22": [
+          "Does the Aurora S1's rated cycle life match the project's cycle target?"
+        ],
+        "q23": [
+          "What is the role of NaDFOB in the E-7 electrolyte?"
+        ],
+        "q24": [
+          "Which solvents replace DEC in the E-7 blend?"
+        ],
+        "q25": [
+          "What volume fraction of DMC does E-7 contain?"
+        ],
+        "q26": [
+          "Who prepared the safety review of the E-5 failure?"
+        ],
+        "q27": [
+          "Which gases were found in the failed pouch?"
+        ],
+        "q28": [
+          "What does the safety review recommend for pilot-line pouches?"
+        ],
+        "q29": [
+          "Which cells meet the 5% swelling limit?"
+        ],
+        "q30": [
+          "What separator does the Aurora cell use?"
+        ],
+        "q31": [
+          "What is the N/P ratio of the anode?"
+        ],
+        "q32": [
+          "What voltage window is used in the cycling protocol?"
+        ],
+        "q33": [
+          "Who tested cell AUR-C107?"
+        ],
+        "q34": [
+          "What is the fallback if E-7 swelling exceeds the limit, and how is that fallback performing?"
+        ],
+        "q35": [
+          "When is the next technical review meeting?"
+        ],
+        "q36": [
+          "Who owns risk R2 in the risk register?"
+        ],
+        "q37": [
+          "What is the energy density of the Aurora S1?"
+        ],
+        "q38": [
+          "What is the price per kWh of the Aurora S1 cell?"
+        ],
+        "q39": [
+          "Who is the CEO of Helios Energy Lab?"
+        ],
+        "q40": [
+          "What capacity retention did cell AUR-C109 reach?"
+        ]
+      },
+      "vs_base": {
+        "wins": [],
+        "losses": []
+      }
+    },
+    "multi_query+corrective": {
+      "hit": 1.0,
+      "recall": 0.986,
+      "precision": 0.297,
+      "mrr": 0.892,
+      "ndcg": 0.881,
+      "context_precision": 0.33,
+      "recall_by_type": {
+        "comparative": 0.5,
+        "factual": 1.0,
+        "image": 1.0,
+        "keyword": 1.0,
+        "multi_hop": 1.0,
+        "table": 1.0
+      },
+      "per_question_recall": {
+        "q01": 1.0,
+        "q02": 1.0,
+        "q03": 1.0,
+        "q04": 1.0,
+        "q05": 1.0,
+        "q06": 1.0,
+        "q07": 1.0,
+        "q08": 1.0,
+        "q09": 1.0,
+        "q10": 1.0,
+        "q11": 1.0,
+        "q12": 1.0,
+        "q13": 1.0,
+        "q14": 1.0,
+        "q15": 1.0,
+        "q16": 1.0,
+        "q17": 1.0,
+        "q18": 1.0,
+        "q19": 1.0,
+        "q20": 1.0,
+        "q21": 1.0,
+        "q22": 0.5,
+        "q23": 1.0,
+        "q24": 1.0,
+        "q25": 1.0,
+        "q26": 1.0,
+        "q27": 1.0,
+        "q28": 1.0,
+        "q29": 1.0,
+        "q30": 1.0,
+        "q31": 1.0,
+        "q32": 1.0,
+        "q33": 1.0,
+        "q34": 1.0,
+        "q35": 1.0,
+        "q36": 1.0,
+        "q37": 1.0
+      },
+      "latency_ms": {
+        "p50": 4037.0,
+        "p95": 5651.4
+      },
+      "llm_calls_per_question": 2.17,
+      "attempts": {
+        "0": 36,
+        "1": 4
+      },
+      "verdicts": {
+        "sufficient": 35,
+        "partial": 3,
+        "insufficient": 2
+      },
+      "verdict_by_question": {
+        "q01": "sufficient",
+        "q02": "sufficient",
+        "q03": "sufficient",
+        "q04": "sufficient",
+        "q05": "sufficient",
+        "q06": "sufficient",
+        "q07": "sufficient",
+        "q08": "sufficient",
+        "q09": "sufficient",
+        "q10": "sufficient",
+        "q11": "partial",
+        "q12": "sufficient",
+        "q13": "sufficient",
+        "q14": "sufficient",
+        "q15": "sufficient",
+        "q16": "sufficient",
+        "q17": "sufficient",
+        "q18": "sufficient",
+        "q19": "sufficient",
+        "q20": "partial",
+        "q21": "sufficient",
+        "q22": "sufficient",
+        "q23": "sufficient",
+        "q24": "sufficient",
+        "q25": "sufficient",
+        "q26": "sufficient",
+        "q27": "sufficient",
+        "q28": "sufficient",
+        "q29": "sufficient",
+        "q30": "sufficient",
+        "q31": "sufficient",
+        "q32": "sufficient",
+        "q33": "sufficient",
+        "q34": "sufficient",
+        "q35": "sufficient",
+        "q36": "sufficient",
+        "q37": "sufficient",
+        "q38": "insufficient",
+        "q39": "partial",
+        "q40": "insufficient"
+      },
+      "queries_by_question": {
+        "q01": [
+          "Who is the project lead of Project Aurora?",
+          "Project Aurora project lead",
+          "Who is the lead for Project Aurora?",
+          "Project Aurora: identify the project lead"
+        ],
+        "q02": [
+          "What cathode material does the Aurora cell use?",
+          "What cathode material is used in the Aurora cell?",
+          "Aurora cell cathode composition",
+          "Aurora cell specifications cathode material"
+        ],
+        "q03": [
+          "Why was Prussian white chosen over layered oxides?",
+          "What are the key properties of Prussian white that make it suitable for use in pigments?",
+          "What are the advantages of layered oxides over Prussian white in pigment applications?",
+          "Why was Prussian white selected over layered oxides in historical or industrial pigment development?"
+        ],
+        "q04": [
+          "What capacity retention did cell AUR-C103 reach, and after how many cycles?",
+          "What is the capacity retention percentage of cell AUR-C103 after a specific number of charge-discharge cycles?",
+          "How much capacity retention does cell AUR-C103 show after 100 cycles?",
+          "What is the capacity retention of cell AUR-C103 at 500 cycles and what is the cycle count?"
+        ],
+        "q05": [
+          "Why did cell AUR-C103 fail?",
+          "What were the root causes of the failure of cell AUR-C103 in the experimental phase?",
+          "Identify any design flaws or manufacturing defects in cell AUR-C103 that led to its failure.",
+          "What diagnostic reports or post-failure analysis indicate the reason for the failure of cell AUR-C103?"
+        ],
+        "q06": [
+          "How much did the pouch of AUR-C103 swell?",
+          "What is the swelling percentage of the AUR-C103 pouch in the official test report?",
+          "How much did the AUR-C103 pouch expand during the swelling test?",
+          "What is the measured volume increase of the AUR-C103 pouch in the laboratory evaluation?"
+        ],
+        "q07": [
+          "Which electrolyte replaced the one used in the cell that failed at 45 °C, and who owns its qualification?",
+          "What electrolyte replaced the one used in the cell that failed at 45 °C?",
+          "Who owns the qualification of the electrolyte that replaced the one used in the cell that failed at 45 °C?",
+          "Which electrolyte was used in the cell that failed at 45 °C and what is the ownership of the qualification for the replacement electrolyte?"
+        ],
+        "q08": [
+          "What is the planned budget of the electrolyte workstream?",
+          "What is the planned budget for the electrolyte workstream in the project documentation?",
+          "Find the budget allocation specifically assigned to the electrolyte workstream in the financial plan.",
+          "What is the total planned budget for the electrolyte workstream as outlined in the project scope document?"
+        ],
+        "q09": [
+          "When did the steering committee approve extra funding for the E-7 qualification, and how much?",
+          "When did the steering committee approve extra funding for the E-7 qualification?",
+          "How much extra funding was approved by the steering committee for the E-7 qualification?",
+          "What was the approval date and amount of extra funding for the E-7 qualification by the steering committee?"
+        ],
+        "q10": [
+          "What share of the cathode budget has been spent?",
+          "What is the total allocated amount for the cathode budget in the project documentation?",
+          "What is the current spent amount on the cathode budget as recorded in the financial reports?",
+          "Calculate the percentage of the cathode budget that has been spent based on the total allocated and current spent amounts."
+        ],
+        "q11": [
+          "Which hard-carbon supplier is not yet qualified?",
+          "Which hard-carbon supplier is currently not listed as qualified in the supplier qualification database?",
+          "List all hard-carbon suppliers that have not been approved or certified for qualification status.",
+          "Identify hard-carbon suppliers that lack a qualification status entry in the official supplier qualification records.",
+          "Which hard-carbon supplier is not yet qualified in the official supplier qualification records as of June 2024?"
+        ],
+        "q12": [
+          "What is the lead time for NaPF6 salt from Nordic Salts AB?",
+          "What is the lead time for NaPF6 salt from Nordic Salts AB in their product specifications or catalog?",
+          "Does Nordic Salts AB provide a lead time for NaPF6 salt in their official website or sales documentation?",
+          "What is the delivery time or lead time for NaPF6 salt when ordered from Nordic Salts AB?"
+        ],
+        "q13": [
+          "When is milestone M3 due?",
+          "What is the due date for milestone M3 in the project timeline?",
+          "When does milestone M3 have a deadline in the project schedule?",
+          "What is the scheduled date for milestone M3?"
+        ],
+        "q14": [
+          "What is the status of milestone M2?",
+          "What is the current status of project milestone M2?",
+          "Retrieve the status of milestone named M2 in the project timeline.",
+          "What is the status of milestone M2 as of the latest update?"
+        ],
+        "q15": [
+          "What capacity retention did AUR-C106 have after 300 cycles at 45 °C?",
+          "What is the capacity retention of AUR-C106 after 300 cycles at 45 °C?",
+          "AUR-C106 capacity retention data after 300 cycles at 45 °C",
+          "Capacity retention of AUR-C106 at 45 °C over 300 cycles"
+        ],
+        "q16": [
+          "What swelling did the lab notebook record for AUR-C106?",
+          "What swelling measurement was recorded in the lab notebook for sample AUR-C106?",
+          "What is the recorded swelling value for AUR-C106 in the lab notebook?",
+          "What swelling reading is listed in the lab notebook for AUR-C106?"
+        ],
+        "q17": [
+          "When is the next checkpoint noted in the scanned lab notebook?",
+          "What is the date and time of the next checkpoint recorded in the lab notebook titled 'Scanned Lab Notebook'?",
+          "When was the most recent checkpoint entry made in the document named 'Scanned Lab Notebook'?",
+          "What is the timestamp of the next scheduled checkpoint in the lab notebook labeled 'Scanned Lab Notebook'?"
+        ],
+        "q18": [
+          "What pilot batch size is written on the E-7 qualification plan whiteboard?",
+          "What is the pilot batch size specified in the E-7 qualification plan whiteboard?",
+          "Search for the E-7 qualification plan whiteboard and extract the pilot batch size value",
+          "Find the pilot batch size listed on the whiteboard associated with the E-7 qualification plan"
+        ],
+        "q19": [
+          "Which cell has the lowest bar in the capacity retention bar chart?",
+          "What is the name of the cell with the lowest value in the capacity retention bar chart?",
+          "Which cell shows the minimum capacity retention percentage in the bar chart?",
+          "What is the identifier of the cell with the smallest bar in the capacity retention bar chart?"
+        ],
+        "q20": [
+          "What does the photo on the Aurora S1 product page show?",
+          "What is depicted in the photo on the Aurora S1 product page?",
+          "Describe the content of the image shown on the Aurora S1 product page.",
+          "What objects or features are visible in the photo of the Aurora S1 product page?"
+        ],
+        "q21": [
+          "What is the nominal voltage of the Aurora S1 cell?",
+          "What is the nominal voltage of the Aurora S1 battery cell?",
+          "Aurora S1 cell specifications nominal voltage",
+          "Aurora S1 lithium-ion cell nominal voltage"
+        ],
+        "q22": [
+          "Does the Aurora S1's rated cycle life match the project's cycle target?"
+        ],
+        "q23": [
+          "What is the role of NaDFOB in the E-7 electrolyte?",
+          "What is the function of NaDFOB in the E-7 electrolyte composition?",
+          "Describe the role of NaDFOB in the E-7 electrolyte system used in battery technology.",
+          "How does NaDFOB contribute to the performance of the E-7 electrolyte in lithium-ion batteries?"
+        ],
+        "q24": [
+          "Which solvents replace DEC in the E-7 blend?",
+          "What solvents are used to replace DEC in the E-7 blend according to chemical formulation documents?",
+          "In the E-7 blend, which solvents have been substituted for DEC in official specifications?",
+          "List the solvents that replace DEC in the E-7 blend as specified in technical project reports?"
+        ],
+        "q25": [
+          "What volume fraction of DMC does E-7 contain?",
+          "What is the volume fraction of DMC in E-7 according to material specifications?",
+          "E-7 composition: what percentage of DMC by volume?",
+          "In the technical document for E-7, what is the volume fraction of DMC?"
+        ],
+        "q26": [
+          "Who prepared the safety review of the E-5 failure?",
+          "Who prepared the safety review of the E-5 failure in the NASA report on rocket engine failures?",
+          "What is the author or preparer of the safety review document for the E-5 failure event?",
+          "Who conducted the safety review for the E-5 failure as mentioned in the technical assessment of rocket engine incidents?"
+        ],
+        "q27": [
+          "Which gases were found in the failed pouch?",
+          "What gases were detected in the failed pouch during the post-mortem analysis?",
+          "List the gas composition identified in the ruptured pouch sample from the failure investigation?",
+          "Which gases were present in the failed pouch as reported in the technical report on pouch integrity failure?"
+        ],
+        "q28": [
+          "What does the safety review recommend for pilot-line pouches?",
+          "What does the safety review recommend for pilot-line pouches in terms of material composition?",
+          "What does the safety review recommend for pilot-line pouches regarding manufacturing process?",
+          "What does the safety review recommend for pilot-line pouches in terms of handling and storage procedures?"
+        ],
+        "q29": [
+          "Which cells meet the 5% swelling limit?",
+          "Find cells that have a swelling percentage equal to or below 5%",
+          "List all cells where the swelling limit is set at 5% or less",
+          "Identify cells with a maximum allowable swelling of 5% or less"
+        ],
+        "q30": [
+          "What separator does the Aurora cell use?",
+          "What separator is used in the Aurora cell?",
+          "What is the separator material in the Aurora cell?",
+          "What type of separator does the Aurora cell employ?"
+        ],
+        "q31": [
+          "What is the N/P ratio of the anode?",
+          "What is the N/P ratio of the anode in the project documentation?",
+          "Find the N/P ratio value assigned to the anode component in the technical specifications.",
+          "What does the N/P ratio indicate for the anode as described in the materials?"
+        ],
+        "q32": [
+          "What voltage window is used in the cycling protocol?",
+          "What is the voltage window specified in the cycling protocol for battery testing?",
+          "What voltage range is defined in the cycling protocol for electrochemical cell operation?",
+          "What voltage window is established in the cycling protocol for battery cycle life testing?"
+        ],
+        "q33": [
+          "Who tested cell AUR-C107?",
+          "Find the person or team responsible for testing cell AUR-C107",
+          "Who conducted the test for cell AUR-C107 in the project documentation",
+          "What individual or group tested cell AUR-C107 according to the experimental records"
+        ],
+        "q34": [
+          "What is the fallback if E-7 swelling exceeds the limit, and how is that fallback performing?",
+          "What is the defined fallback procedure when E-7 swelling exceeds the specified limit in the safety protocol documentation?",
+          "How is the performance of the fallback mechanism evaluated when E-7 swelling exceeds the limit according to operational reports?",
+          "What specific metrics or indicators are used to assess the effectiveness of the fallback in case of E-7 swelling exceeding the threshold?"
+        ],
+        "q35": [
+          "When is the next technical review meeting?",
+          "What is the scheduled date of the next technical review meeting in the project timeline?",
+          "When does the upcoming technical review meeting take place according to the project calendar?",
+          "Is there a listed date for the next technical review meeting in the project schedule document?"
+        ],
+        "q36": [
+          "Who owns risk R2 in the risk register?",
+          "Find the owner of risk item R2 in the official risk register document.",
+          "What is the assigned owner for risk identifier R2 in the risk register?",
+          "Who is responsible for risk R2 as listed in the risk register?"
+        ],
+        "q37": [
+          "What is the energy density of the Aurora S1?",
+          "What is the energy density of the Aurora S1 battery model?",
+          "Aurora S1 energy density specification in Wh/kg or mAh/g",
+          "Technical datasheet of Aurora S1 showing energy density value"
+        ],
+        "q38": [
+          "What is the price per kWh of the Aurora S1 cell?",
+          "What is the price per kWh of the Aurora S1 solar cell model?",
+          "Aurora S1 cell cost per kilowatt-hour official specification",
+          "Aurora S1 cell retail price per kWh",
+          "What is the price per kWh of the Aurora S1 cell official specification from manufacturer?"
+        ],
+        "q39": [
+          "Who is the CEO of Helios Energy Lab?",
+          "What is the current CEO of Helios Energy Lab?",
+          "Who holds the position of CEO at Helios Energy Lab?",
+          "What is the name of the CEO of Helios Energy Lab as of today?",
+          "Who is the CEO of Helios Energy Lab as of June 2024?"
+        ],
+        "q40": [
+          "What capacity retention did cell AUR-C109 reach?",
+          "What is the capacity retention percentage of cell AUR-C109 in technical documentation?",
+          "What capacity retention value is reported for cell AUR-C109 in battery performance studies?",
+          "What is the capacity retention achieved by cell AUR-C109 after cycling in experimental data?"
+        ]
+      },
+      "vs_base": {
+        "wins": [],
+        "losses": []
+      }
+    },
+    "grader": {
+      "confusion": {
+        "insufficient->insufficient": 2,
+        "insufficient->partial": 1,
+        "partial->sufficient": 1,
+        "sufficient->partial": 2,
+        "sufficient->sufficient": 34
+      },
+      "binary_accuracy": 0.925,
+      "unanswerable": {
+        "q38": "insufficient",
+        "q39": "partial",
+        "q40": "insufficient"
+      },
+      "disagreements": [
+        "q11",
+        "q20",
+        "q22"
+      ]
+    }
+  }
+}
