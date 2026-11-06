@@ -1,0 +1,32 @@
+{
+  "name": "routing_holdout",
+  "version": 1,
+  "created": "2026-11-06",
+  "description": "Held-out questions for the Phase 9b query router: labels only, no evidence (not a retrieval set). Written and labelled before the router rules, from the intent definitions in retrieval/router.py, so router accuracy can be checked on questions the rules were not tuned on. Same author as the rules, so this is a sanity check, not an unbiased test. Intents: lookup = one fact stated in text; table = a value read from structured data (amount, count, share, ranking, list of rows); image = about visual content (photo, chart, scan, whiteboard, drawing); multi_hop = several facts combined (two-part question, a thing described instead of named, or a comparison).",
+  "questions": [
+    {"id": "h01", "intent": "lookup", "question": "What is the main goal of Project Aurora?"},
+    {"id": "h02", "intent": "lookup", "question": "Who wrote the E-7 technical note?"},
+    {"id": "h03", "intent": "lookup", "question": "Why is sodium-ion chemistry being explored instead of lithium?"},
+    {"id": "h04", "intent": "lookup", "question": "What did the team decide about the pilot line in the March meeting?"},
+    {"id": "h05", "intent": "lookup", "question": "What is NaDFOB?"},
+    {"id": "h06", "intent": "lookup", "question": "Where will the pilot cells be assembled?"},
+    {"id": "h07", "intent": "table", "question": "How much has been spent on the anode workstream so far?"},
+    {"id": "h08", "intent": "table", "question": "Which cell has the highest capacity retention?"},
+    {"id": "h09", "intent": "table", "question": "How many cycles has AUR-C105 completed?"},
+    {"id": "h10", "intent": "table", "question": "What percentage of the total budget is allocated to testing?"},
+    {"id": "h11", "intent": "table", "question": "List the suppliers with a lead time longer than 6 weeks."},
+    {"id": "h12", "intent": "table", "question": "What is the average swelling of the E-7 cells?"},
+    {"id": "h13", "intent": "image", "question": "What is drawn on the whiteboard next to the timeline?"},
+    {"id": "h14", "intent": "image", "question": "Describe the photo of the cell on the product page."},
+    {"id": "h15", "intent": "image", "question": "Which bars are shown in the swelling chart?"},
+    {"id": "h16", "intent": "image", "question": "What handwritten note appears at the bottom of the scanned page?"},
+    {"id": "h17", "intent": "image", "question": "What does the diagram of the cell stack show?"},
+    {"id": "h18", "intent": "image", "question": "What colour is used for E-5 in the retention chart?"},
+    {"id": "h19", "intent": "multi_hop", "question": "Who owns the workstream that has spent the largest share of its budget?"},
+    {"id": "h20", "intent": "multi_hop", "question": "Which supplier provides the hard carbon used in the cells tested by Aiko Tana?"},
+    {"id": "h21", "intent": "multi_hop", "question": "Is the swelling of AUR-C105 below the limit set in the safety review?"},
+    {"id": "h22", "intent": "multi_hop", "question": "What did the person who prepared the safety review recommend, and was it approved?"},
+    {"id": "h23", "intent": "multi_hop", "question": "Compare the cycle life of E-5 and E-7 cells."},
+    {"id": "h24", "intent": "multi_hop", "question": "Which milestone depends on the electrolyte that replaced E-5?"}
+  ]
+}

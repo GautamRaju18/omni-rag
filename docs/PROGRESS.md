@@ -20,12 +20,13 @@ A feature counts as done only when its tests pass and the result was observed, n
 | 7 | Graph-enhanced hybrid retrieval (RRF) | ✅ Done 2026-11-05 | 325 unit + 28 live tests; dense+bm25 RRF seed MRR 0.928 (default); graph measured, opt-in; [learning/phase-07](learning/phase-07-graph-retrieval-and-fusion.md), [results](benchmarks/fusion-2026-11-05.json) |
 | 8 | Reranking | ✅ Done 2026-11-05 | 332 unit + 30 live tests; bge-reranker-v2-m3 depth 20: seed MRR 0.980 / nDCG 0.948, relational R@5 1.000; 17 s/query on CPU (opt-in mode; GPU open); [learning/phase-08](learning/phase-08-reranking.md), [results](benchmarks/rerank-2026-11-05.json) |
 | 9a | Corrective retrieval workflow (LangGraph): transforms, context check, bounded retries | ✅ Done 2026-11-06 | 344 unit + 32 live tests; transforms don't help these sets; context check 37/40 seed, catches 3/3 unanswerable; [learning/phase-09a](learning/phase-09a-corrective-retrieval-workflow.md), [results](benchmarks/workflow-2026-11-05.json) |
-| 9b | Routing, self-query, context expansion/compression, agentic retrieval | ⏭ Next | |
+| 9b | Query router, self-query, grounded search agent, per-document cap; Streamlit dashboard (Phase 14's retrieval lab, pulled forward) | ✅ Done 2026-11-06 | 373 unit tests; rules router 30/40 · 7/8 · 23/24 (LLM router worse); default (router + agent) relational R@5 0.875 → 0.938, MRR 0.838 → 0.917, +r02 no loss, seed unchanged; [learning/phase-09b](learning/phase-09b-routing-and-agentic-retrieval.md), [results](benchmarks/workflow-9b-2026-11-06.json) |
+| 9c | Context assembly: parent-child / neighbour expansion, compression, token budget | ⏭ Next | |
 | 10 | Ollama generation | ⬜ | |
 | 11 | Citations + answer validation | ⬜ | |
 | 12 | LangSmith evaluation | ⬜ | |
 | 13 | Failure analysis + observability | ⬜ | |
-| 14 | Frontend (Streamlit) | ⬜ | |
+| 14 | Frontend (Streamlit) | 🟡 Started in 9b | Overview, retrieval lab, workflow inspector, benchmarks done; upload, library, chat, citations, graph explorer, evaluation and performance screens remain |
 | 15 | Dockerization + deployment | ⬜ | |
 | 16 | Tests, docs, resume prep | ⬜ | |
 
@@ -55,6 +56,7 @@ A feature counts as done only when its tests pass and the result was observed, n
 - [ADR-0014](adr/0014-graph-retrieval-and-rrf.md): graph retrieval + RRF; dense+bm25 default, graph opt-in (measured to lower ranking here)
 - [ADR-0015](adr/0015-cross-encoder-reranking.md): bge-reranker-v2-m3 cross-encoder (pinned, CPU with CUDA auto-detect); quality mode, not default; its score doesn't detect unanswerable questions
 - [ADR-0016](adr/0016-corrective-retrieval-workflow.md): LangGraph corrective loop (bounded); transforms off by default (no gain measured); identifier + LLM context check on
+- [ADR-0017](adr/0017-routing-self-query-agentic-retrieval.md): rule router (beats the LLM router); grounded search agent for multi-hop routes (+r02); BM25 requires only the user's identifiers; no corrective retry after the agent; self-query opt-in (precise, no gain)
 
 ## Measured baselines (2026-11-04)
 | Metric | Value |

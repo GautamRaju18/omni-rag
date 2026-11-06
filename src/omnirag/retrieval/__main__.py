@@ -56,7 +56,9 @@ def cmd_advanced(args: argparse.Namespace) -> int:
     workflow = build_workflow(settings, service)
     strategy = workflow.default.model_copy(update={
         "transform": args.transform, "grade": not args.no_grade,
-        "max_retries": args.retries, "rerank": args.rerank})  # fmt: skip
+        "max_retries": args.retries, "rerank": args.rerank, "route": args.route,
+        "self_query": args.self_query, "agent": args.agent, "agent_steps": args.agent_steps,
+        "max_per_document": args.max_per_document})  # fmt: skip
     try:
         result = workflow.retrieve(args.query, args.k, strategy=Strategy(**strategy.model_dump()))
     finally:
@@ -64,6 +66,22 @@ def cmd_advanced(args: argparse.Namespace) -> int:
         service.close()
     d = result.details
     print(f"verdict={d['verdict']} attempts={d['attempts']} queries={d['queries']}")
+    route = d["route"]
+    print(
+        f"  route: {route['intent']} via {route['method']} {route['cues']}"
+        + (f" -> prefers {route['element_types']}" if route["element_types"] else "")
+    )
+    if d["self_query"]:
+        sq = d["self_query"]
+        print(
+            f"  self-query: documents={sq['documents']} proposed={sq['proposed']}"
+            + (f" rejected={[r.get('file') for r in sq['rejected']]}" if sq["rejected"] else "")
+        )
+    for step in d["agent"]["steps"]:
+        print(
+            f"  agent: {step['action']} {step['query']!r}"
+            + (f" REFUSED ({step['refused']})" if step["refused"] else f" ({step['reason']})")
+        )
     for check in d["checks"]:
         print(f"  check #{check['attempt']}: {check['verdict']} via {check['method']}"
               + (f" (missing: {check['missing']})" if check["missing"] else ""))  # fmt: skip
@@ -103,7 +121,9 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--identifiers", choices=["terms", "boost", "require"], default=None)
     p.add_argument("--full", action="store_true", help="print whole chunks")
     p.set_defaults(fn=cmd_search)
-    p = sub.add_parser("advanced", help="LangGraph workflow: transforms, check, retries")
+    p = sub.add_parser(
+        "advanced", help="LangGraph workflow: route, transforms, agent, check, retries"
+    )
     p.add_argument("query")
     p.add_argument("--k", type=int, default=get_settings().retrieval_k)
     p.add_argument(
@@ -114,6 +134,17 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--no-grade", action="store_true")
     p.add_argument("--retries", type=int, default=get_settings().workflow_max_retries)
     p.add_argument("--rerank", action="store_true")
+    p.add_argument(
+        "--route", default=get_settings().workflow_route, choices=["off", "rules", "llm"]
+    )
+    p.add_argument(
+        "--self-query", default=get_settings().workflow_self_query, choices=["off", "soft", "hard"]
+    )
+    p.add_argument(
+        "--agent", default=get_settings().workflow_agent, choices=["off", "auto", "always"]
+    )
+    p.add_argument("--agent-steps", type=int, default=get_settings().workflow_agent_steps)
+    p.add_argument("--max-per-document", type=int, default=get_settings().workflow_max_per_document)
     p.add_argument("--full", action="store_true")
     p.set_defaults(fn=cmd_advanced)
     args = parser.parse_args(argv)

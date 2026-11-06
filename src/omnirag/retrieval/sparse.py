@@ -57,8 +57,19 @@ def identifiers(text: str) -> list[str]:
     return out
 
 
-def lucene_query(text: str, mode: IdentifierMode = "boost", boost: float = 2.0) -> str:
-    """A safe Lucene query for ``text``. Returns "" if there is nothing to search for."""
+def lucene_query(
+    text: str,
+    mode: IdentifierMode = "boost",
+    boost: float = 2.0,
+    required: list[str] | None = None,
+) -> str:
+    """A safe Lucene query for ``text``. Returns "" if there is nothing to search for.
+
+    ``required`` (``require`` mode only): the identifiers that must occur; the query's other
+    identifiers are boosted instead. The workflow passes the *user's* identifiers, so a name
+    the agent copied from a passage ("Aurora S1") can't exclude every chunk without it
+    (Phase 9b).
+    """
     phrases = [p.strip() for p in _PHRASE.findall(text) if p.strip()]
     rest = _PHRASE.sub(" ", text)
     words = [w.lower() for w in _WORD.findall(rest)]
@@ -68,7 +79,9 @@ def lucene_query(text: str, mode: IdentifierMode = "boost", boost: float = 2.0) 
     if mode == "boost":
         parts += [f'"{escape(i.lower())}"^{boost:g}' for i in ids]
     elif mode == "require":
-        parts += [f'+"{escape(i.lower())}"' for i in ids]
+        must = None if required is None else {r.lower() for r in required}
+        parts += [f'+"{escape(i.lower())}"' if must is None or i.lower() in must
+                  else f'"{escape(i.lower())}"^{boost:g}' for i in ids]  # fmt: skip
     return " ".join(parts)
 
 
@@ -98,10 +111,11 @@ class LexicalRetriever:
         k: int = 5,
         filters: RetrievalFilters | None = None,
         identifier_mode: IdentifierMode | None = None,
+        required: list[str] | None = None,
     ) -> RetrievalResult:
         filters = filters or RetrievalFilters()
         started = time.perf_counter()
-        lucene = lucene_query(query, identifier_mode or self.identifier_mode)
+        lucene = lucene_query(query, identifier_mode or self.identifier_mode, required=required)
         _, after, params = predicates(filters, self.config_id)  # nothing runs in-index
         fetch = fetch_size(k, after, self.overfetch, self.max_fetch)
         hits: list[RetrievedChunk] = []

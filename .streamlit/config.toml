@@ -1,0 +1,7 @@
+# Streamlit dashboard settings (read from the repo root when you run `streamlit run`).
+[browser]
+gatherUsageStats = false   # local-first: no telemetry to Streamlit's servers
+
+[server]
+headless = true            # don't try to open a browser from WSL
+port = 8501

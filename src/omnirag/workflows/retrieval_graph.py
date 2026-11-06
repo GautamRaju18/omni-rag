@@ -1,21 +1,32 @@
-"""Corrective retrieval workflow in LangGraph (Phase 9a).
+"""Retrieval workflow in LangGraph: routing, transforms, agentic search, corrective retries.
 
-    START → transform → retrieve → [rerank] → check ─┬─ sufficient / out of retries ─→ END
-                           ↑                         └─ partial / insufficient → correct ┘
+    START → route → transform → retrieve ──(agent on, steps left)──→ plan
+                                    ↑   ↑                                │ search / graph
+                                    │   └────────────────────────────────┘
+                                    │   retrieve / plan(finish) → [rerank] → check
+                                    │                                         │ sufficient or
+                                    │                                         │ no retry left → END
+                                    └──────────── correct ←───────────────────┘ partial/insufficient
 
-* **transform**: ``none`` | ``rewrite`` | ``multi_query`` | ``hyde`` | ``multi_query+hyde``.
-  The original question always stays among the queries.
-* **retrieve**: dense and BM25 for every query (and dense for the HyDE passage), in parallel,
-  fused with RRF together with every list from earlier attempts. A retry only adds evidence.
-* **rerank** (optional): cross-encoder on the fused candidates (slow on CPU, ADR-0015).
-* **check**: identifier coverage, then (optionally) the LLM grader (``transforms.py``).
-* **correct**: one new query aimed at what the check says is missing, then retrieve again.
+* **route** (Phase 9b): the router's intent (``retrieval/router.py``) and the self-query's
+  documents (``retrieval/self_query.py``) become *preferences*: extra ranked lists for the
+  original question, restricted to the preferred element types or documents, that join RRF
+  (``self_query="hard"`` filters instead). ``multi_hop`` turns the agent on (``agent="auto"``).
+* **transform** (9a): ``none`` | ``rewrite`` | ``multi_query`` | ``hyde`` | ``multi_query+hyde``.
+* **retrieve**: dense and BM25 for every query (dense for the HyDE passage, graph for entities
+  the agent looked up), in parallel, fused with RRF together with every list from earlier
+  steps. A later step only adds evidence.
+* **plan** (9b): the agent reads the current top passages and picks ``search`` / ``graph`` /
+  ``finish`` (``retrieval/agent.py``); its queries may only use names it has read.
+* **rerank** (optional), **check** (identifier coverage, then the LLM grader) and **correct**
+  (one new query aimed at what is missing) are the 9a corrective loop.
+* The returned top k may cap chunks per document (``max_per_document``, ``fusion.diversify``);
+  the check and the agent see that same top k.
 
-**Bounded by construction:** ``max_retries`` (0–3) is counted in the state, and the graph runs
-with a ``recursion_limit`` derived from it, so a loop beyond the plan raises instead of
-spinning. Every node appends to ``trace`` (what ran, how long, what it produced). The result
-says whether the context was judged sufficient; ``insufficient`` is a signal for generation
-(Phase 10) to say "not in the documents", not an error.
+**Bounded by construction:** ``agent_steps`` (0–3) and ``max_retries`` (0–3) are counted in
+the state, and the graph runs with a ``recursion_limit`` derived from both
+(``recursion_limit()``), so a loop beyond the plan raises instead of spinning. Every node
+appends to ``trace``.
 """
 
 from __future__ import annotations
@@ -28,9 +39,13 @@ from langgraph.graph import END, START, StateGraph
 from pydantic import BaseModel, Field
 
 from omnirag.llm.chat import LLMError
-from omnirag.retrieval.fusion import rrf
+from omnirag.retrieval.agent import AgentPlanner
+from omnirag.retrieval.fusion import diversify, rrf
 from omnirag.retrieval.models import RetrievalFilters, RetrievalResult, RetrievedChunk
 from omnirag.retrieval.reranker import CrossEncoderReranker, passage_text, sigmoid
+from omnirag.retrieval.router import LLMRouter, Route, RuleRouter
+from omnirag.retrieval.self_query import SelfQuery, SelfQueryResult
+from omnirag.retrieval.sparse import identifiers
 from omnirag.retrieval.transforms import QueryTransformer
 
 Transform = Literal["none", "rewrite", "multi_query", "hyde", "multi_query+hyde"]
@@ -44,6 +59,19 @@ class Strategy(BaseModel):
     rerank: bool = False
     depth: int = Field(default=20, ge=1, le=100)  # candidates per list / reranked
     rrf_k: int = Field(default=60, ge=1)
+    # Phase 9b (defaults measured, ADR-0017): rule router + agent on multi_hop routes
+    route: Literal["off", "rules", "llm"] = "rules"
+    self_query: Literal["off", "soft", "hard"] = "off"
+    agent: Literal["off", "auto", "always"] = "auto"  # auto: only for multi_hop routes
+    agent_steps: int = Field(default=2, ge=0, le=3)
+    max_per_document: int | None = Field(default=None, ge=1, le=20)
+
+
+def recursion_limit(s: Strategy) -> int:
+    """route + transform, 2 nodes per agent step, 4 per attempt (retrieve, rerank, check,
+    correct), plus slack. Adding a node to a loop means changing this."""
+    steps = s.agent_steps if s.agent != "off" else 0
+    return 4 * (s.max_retries + 1) + 2 * steps + 5
 
 
 class State(TypedDict, total=False):
@@ -51,10 +79,18 @@ class State(TypedDict, total=False):
     k: int
     filters: RetrievalFilters
     strategy: Strategy
-    queries: list[str]  # every query issued so far (original first)
+    route: dict[str, Any]
+    self_query: dict[str, Any] | None
+    prefer: list[tuple[str, RetrievalFilters]]  # extra lists for the original question
+    queries: list[str]  # every dense + BM25 query issued so far (original first)
+    graph_queries: list[str]  # entities the agent looked up
     hyde: str | None
     lists: dict[str, RetrievalResult]  # every ranked list so far, fused together
     hits: list[RetrievedChunk]
+    use_agent: bool
+    agent_steps: int
+    agent_done: bool
+    steps: list[dict[str, Any]]  # the agent's decisions
     attempts: int  # corrective retries done
     checks: list[dict[str, Any]]
     verdict: str
@@ -76,28 +112,78 @@ class RetrievalWorkflow:
         transformer: QueryTransformer,
         reranker: CrossEncoderReranker | None = None,
         default: Strategy | None = None,
+        *,
+        graph: Any = None,
+        self_query: SelfQuery | None = None,
+        router: RuleRouter | None = None,
+        llm_router: LLMRouter | None = None,
+        agent: AgentPlanner | None = None,
     ) -> None:
         self.dense = dense
         self.bm25 = bm25
+        self.graph = graph
         self.tx = transformer
         self.reranker = reranker
         self.default = default or Strategy()
+        self.rules = router or RuleRouter()
+        self.llm_router = llm_router or LLMRouter(transformer.llm)
+        self.self_query = self_query
+        self.agent = agent or AgentPlanner(transformer.llm)
         self._pool = ThreadPoolExecutor(max_workers=8, thread_name_prefix="workflow")
-        graph = StateGraph(State)
-        graph.add_node("transform", self._transform)
-        graph.add_node("retrieve", self._retrieve)
-        graph.add_node("rerank", self._rerank)
-        graph.add_node("check", self._check)
-        graph.add_node("correct", self._correct)
-        graph.add_edge(START, "transform")
-        graph.add_edge("transform", "retrieve")
-        graph.add_conditional_edges("retrieve", self._after_retrieve, ["rerank", "check"])
-        graph.add_edge("rerank", "check")
-        graph.add_conditional_edges("check", self._after_check, ["correct", END])
-        graph.add_edge("correct", "retrieve")
-        self.graph = graph.compile()
+        graph_ = StateGraph(State)
+        for name in ("route", "transform", "retrieve", "plan", "rerank", "check", "correct"):
+            graph_.add_node(name, getattr(self, f"_{name}"))
+        graph_.add_edge(START, "route")
+        graph_.add_edge("route", "transform")
+        graph_.add_edge("transform", "retrieve")
+        graph_.add_conditional_edges("retrieve", self._after_retrieve, ["plan", "rerank", "check"])
+        graph_.add_conditional_edges("plan", self._after_plan, ["retrieve", "rerank", "check"])
+        graph_.add_edge("rerank", "check")
+        graph_.add_conditional_edges("check", self._after_check, ["correct", END])
+        graph_.add_edge("correct", "retrieve")
+        self.graph_app = graph_.compile()
+
+    def _top(self, state: State) -> list[RetrievedChunk]:
+        return diversify(state["hits"], state["k"], state["strategy"].max_per_document)
 
     # ---------------------------------------------------------------- nodes
+    def _route(self, state: State) -> dict[str, Any]:
+        started = time.perf_counter()
+        q, s, filters = state["question"], state["strategy"], state["filters"]
+        if s.route == "rules":
+            route = self.rules.route(q)
+        elif s.route == "llm":
+            route = self.llm_router.route(q)
+        else:
+            route = Route("lookup", "off")
+        sq: SelfQueryResult | None = None
+        prefer: list[tuple[str, RetrievalFilters]] = []
+        if s.self_query != "off":
+            sq = self.self_query.run(q) if self.self_query else SelfQueryResult(method="off")
+            ids = [
+                d["document_id"]
+                for d in sq.documents
+                if not filters.document_ids or d["document_id"] in filters.document_ids
+            ]
+            if ids and s.self_query == "hard":
+                filters = filters.model_copy(update={"document_ids": ids})
+            elif ids:
+                prefer.append(("documents", filters.model_copy(update={"document_ids": ids})))
+        if route.element_types and not filters.element_types:  # the caller's filter wins
+            prefer.append((route.intent, filters.model_copy(
+                update={"element_types": list(route.element_types)})))  # fmt: skip
+        use_agent = s.agent_steps > 0 and (
+            s.agent == "always" or (s.agent == "auto" and route.intent == "multi_hop")
+        )
+        return {"route": route.as_dict(), "self_query": sq.as_dict() if sq else None,
+                "filters": filters, "prefer": prefer, "use_agent": use_agent,
+                "agent_steps": 0, "agent_done": not use_agent, "graph_queries": [],
+                "steps": [],
+                "trace": _step(state, "route", started, intent=route.intent,
+                               method=route.method, prefer=[n for n, _ in prefer],
+                               documents=sq.as_dict()["documents"] if sq else [],
+                               agent=use_agent)}  # fmt: skip
+
     def _transform(self, state: State) -> dict[str, Any]:
         started = time.perf_counter()
         q, s = state["question"], state["strategy"]
@@ -124,22 +210,52 @@ class RetrievalWorkflow:
 
     def _retrieve(self, state: State) -> dict[str, Any]:
         started = time.perf_counter()
-        s, lists = state["strategy"], dict(state.get("lists", {}))
+        s, lists, filters = state["strategy"], dict(state.get("lists", {})), state["filters"]
+        variants = [("", filters), *state.get("prefer", [])]
+        # BM25 requires the user's identifiers only; others in LLM-written queries are boosts.
+        required = identifiers(state["question"])
         jobs = {}
         for q in state["queries"]:
-            for name, retriever in (("dense", self.dense), ("bm25", self.bm25)):
-                if f"{name}:{q}" not in lists:
-                    jobs[f"{name}:{q}"] = self._pool.submit(retriever.retrieve, q, s.depth,
-                                                            state["filters"])  # fmt: skip
+            # Preferences apply to the original question's lists only.
+            for variant, f in variants if q == state["question"] else variants[:1]:
+                for name, retriever in (("dense", self.dense), ("bm25", self.bm25)):
+                    key = f"{name}:{variant}:{q}" if variant else f"{name}:{q}"
+                    if key in lists:
+                        continue
+                    kw = {"required": required} if name == "bm25" else {}
+                    jobs[key] = self._pool.submit(retriever.retrieve, q, s.depth, f, **kw)
         if state.get("hyde") and "dense:hyde" not in lists:
             jobs["dense:hyde"] = self._pool.submit(self.dense.retrieve, state["hyde"], s.depth,
-                                                   state["filters"])  # fmt: skip
+                                                   filters)  # fmt: skip
+        if self.graph is not None:
+            for entity in state.get("graph_queries", []):
+                if f"graph:{entity}" not in lists:
+                    jobs[f"graph:{entity}"] = self._pool.submit(self.graph.retrieve, entity,
+                                                                s.depth, filters)  # fmt: skip
         for key, future in jobs.items():
             lists[key] = future.result()
         fused = rrf(lists, k=s.rrf_k, top=max(s.depth, state["k"]), mode="dense+bm25")
         return {"lists": lists, "hits": fused,
                 "trace": _step(state, "retrieve", started, lists=len(lists),
                                new_lists=len(jobs), candidates=len(fused))}  # fmt: skip
+
+    def _plan(self, state: State) -> dict[str, Any]:
+        started = time.perf_counter()
+        tried = [*state["queries"], *(f"graph: {e}" for e in state.get("graph_queries", []))]
+        step = self.agent.next_step(state["question"], self._top(state), tried)
+        if step.action == "graph" and self.graph is None and not step.refused:
+            step.refused = "graph retrieval is not available"
+        out: dict[str, Any] = {"agent_steps": state["agent_steps"] + 1,
+                               "steps": [*state.get("steps", []), step.as_dict()]}  # fmt: skip
+        if step.refused or step.action == "finish":
+            out["agent_done"] = True
+        elif step.action == "search":
+            out["queries"] = [*state["queries"], step.query]
+        else:
+            out["graph_queries"] = [*state.get("graph_queries", []), step.query]
+        out["trace"] = _step(state, "plan", started, action=step.action, query=step.query,
+                             refused=step.refused)  # fmt: skip
+        return out
 
     def _rerank(self, state: State) -> dict[str, Any]:
         started = time.perf_counter()
@@ -152,8 +268,8 @@ class RetrievalWorkflow:
 
     def _check(self, state: State) -> dict[str, Any]:
         started = time.perf_counter()
-        top = state["hits"][: state["k"]]
-        result = self.tx.check(state["question"], top, use_llm=state["strategy"].grade)
+        result = self.tx.check(state["question"], self._top(state),
+                               use_llm=state["strategy"].grade)  # fmt: skip
         check = {"attempt": state.get("attempts", 0), "verdict": result.verdict,
                  "method": result.method, "missing": result.missing,
                  "missing_identifiers": result.missing_identifiers,
@@ -175,12 +291,25 @@ class RetrievalWorkflow:
 
     # ---------------------------------------------------------------- routing
     def _after_retrieve(self, state: State) -> str:
+        if not state.get("agent_done", True) and \
+                state.get("agent_steps", 0) < state["strategy"].agent_steps:  # fmt: skip
+            return "plan"
         return "rerank" if state["strategy"].rerank and self.reranker else "check"
+
+    def _after_plan(self, state: State) -> str:
+        if state["agent_done"]:
+            return "rerank" if state["strategy"].rerank and self.reranker else "check"
+        return "retrieve"
 
     def _after_check(self, state: State) -> str:
         if state["verdict"] == "sufficient":
             return END
         if state.get("attempts", 0) >= state["strategy"].max_retries:
+            return END
+        # The agent already searched with what the passages say; the corrective rewrite (which
+        # doesn't read them) only dilutes RRF. Measured 2026-11-06: after the agent found r02's
+        # supplier row, a corrective retry pushed it back out of the top 5 (ADR-0017).
+        if state.get("use_agent"):
             return END
         # The identifier check found an identifier that no passage mentions: rewording
         # the query won't make it exist, so stop instead of spending retries.
@@ -198,22 +327,29 @@ class RetrievalWorkflow:
     ) -> RetrievalResult:
         strategy = strategy or self.default
         started = time.perf_counter()
-        # 4 nodes per attempt + transform: a loop beyond max_retries raises, never spins.
-        limit = 4 * (strategy.max_retries + 1) + 4
-        out: State = self.graph.invoke(
+        limit = recursion_limit(strategy)
+        out: State = self.graph_app.invoke(
             {"question": query, "k": k, "filters": filters or RetrievalFilters(),
              "strategy": strategy},
             config={"recursion_limit": limit},
         )  # fmt: skip
         hits = [h.model_copy(update={"rank": i + 1, "retriever": "advanced"})
-                for i, h in enumerate(out["hits"][:k])]  # fmt: skip
+                for i, h in enumerate(self._top(out))]  # fmt: skip
         return RetrievalResult(
             query=query, retriever="advanced", k=k, hits=hits,
             latency_ms=round((time.perf_counter() - started) * 1000, 2),
             details={"verdict": out["verdict"], "attempts": out["attempts"],
                      "queries": out["queries"], "hyde": out.get("hyde"),
+                     "route": out["route"], "self_query": out["self_query"],
+                     "agent": {"used": out["use_agent"], "steps": out["steps"],
+                               "graph_queries": out["graph_queries"]},
                      "checks": out["checks"], "strategy": strategy.model_dump(),
-                     "trace": out["trace"], "recursion_limit": limit},
+                     "trace": out["trace"], "recursion_limit": limit,
+                     # what each search found before fusion (top 10 per list)
+                     "lists": {key: {"latency_ms": r.latency_ms,
+                                     "hits": [[h.chunk_id, h.rank, round(h.score, 4),
+                                               h.source_file] for h in r.hits[:10]]}
+                               for key, r in out["lists"].items()}},
         )  # fmt: skip
 
     def close(self) -> None:
@@ -221,8 +357,9 @@ class RetrievalWorkflow:
 
 
 def build_workflow(settings: Any, service: Any) -> RetrievalWorkflow:
-    """Workflow over the service's dense and BM25 retrievers and its reranker."""
+    """Workflow over the service's dense, BM25 and graph retrievers and its reranker."""
     from omnirag.llm.chat import OllamaChat
+    from omnirag.retrieval.self_query import catalog_from
 
     llm = OllamaChat(settings.ollama_base_url, settings.generation_model,
                      timeout_s=settings.workflow_llm_timeout_s)  # fmt: skip
@@ -230,7 +367,13 @@ def build_workflow(settings: Any, service: Any) -> RetrievalWorkflow:
         transform=settings.workflow_transform, multi_query_n=settings.workflow_multi_query_n,
         grade=settings.workflow_grade, max_retries=settings.workflow_max_retries,
         rerank=settings.workflow_rerank, depth=settings.retrieval_fusion_depth,
-        rrf_k=settings.retrieval_rrf_k,
+        rrf_k=settings.retrieval_rrf_k, route=settings.workflow_route,
+        self_query=settings.workflow_self_query, agent=settings.workflow_agent,
+        agent_steps=settings.workflow_agent_steps,
+        max_per_document=settings.workflow_max_per_document,
     )  # fmt: skip
-    return RetrievalWorkflow(service.retrievers["dense"], service.retrievers["bm25"],
-                             QueryTransformer(llm), service.reranker, default)  # fmt: skip
+    return RetrievalWorkflow(
+        service.retrievers["dense"], service.retrievers["bm25"], QueryTransformer(llm),
+        service.reranker, default, graph=service.retrievers.get("graph"),
+        self_query=SelfQuery(llm, catalog_from(service.store)),
+    )  # fmt: skip

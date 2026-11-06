@@ -2,7 +2,7 @@
 
 **Multimodal Graph-Based Retrieval Intelligence**: a local-first RAG platform. It ingests heterogeneous documents (PDF, scans, Office files, images, HTML, JSON), builds a Neo4j knowledge graph with vector and full-text indexes, runs dense + BM25 + graph hybrid retrieval with reranking, and generates cited, grounded answers with local LLMs through Ollama. Every stage is measured by an evaluation harness.
 
-> 🚧 Work in progress, built in 16 tested phases. Current status: **Phase 9a complete** (multimodal ingestion with upload API; 8 chunking strategies; versioned bge-m3 embeddings; Neo4j knowledge graph with vector + full-text indexes, document versioning, and LLM-extracted entities/relations validated against the source; dense, identifier-aware BM25 and graph retrieval with metadata filters, fused by RRF and optionally reranked by a BGE cross-encoder, benchmarked against exact baselines; a LangGraph corrective-retrieval workflow with query transforms and a context check). See [docs/PROGRESS.md](docs/PROGRESS.md).
+> 🚧 Work in progress, built in 16 tested phases. Current status: **Phase 9b complete** (multimodal ingestion with upload API; 8 chunking strategies; versioned bge-m3 embeddings; Neo4j knowledge graph with vector + full-text indexes, document versioning, and LLM-extracted entities/relations validated against the source; dense, identifier-aware BM25 and graph retrieval with metadata filters, fused by RRF and optionally reranked by a BGE cross-encoder, benchmarked against exact baselines; a LangGraph retrieval workflow with a query router, a bounded search agent, query transforms and a context check; a Streamlit dashboard to run and inspect every step). See [docs/PROGRESS.md](docs/PROGRESS.md).
 
 ## Target hardware
 Built for and measured on a 16 GB RAM laptop with a 6 GB RTX 3060 (Windows 11 + WSL2). Memory and VRAM budgets are documented in [docs/learning/phase-00-environment.md](docs/learning/phase-00-environment.md).
@@ -65,8 +65,24 @@ See [.env.example](.env.example). All application settings use the `OMNIRAG_` pr
 | POST | `/api/v1/documents/{id}/reingest` | Process the stored original again |
 | DELETE | `/api/v1/documents/{id}` | Delete (409 while being ingested) |
 | GET | `/api/v1/ingestion/jobs` · `/jobs/{id}` · `/status` | Job list, one job (poll after upload), worker/queue state |
+| POST | `/api/v1/retrieval/search` | One retrieval mode: dense, bm25, graph, their RRF fusions, `+rerank` |
+| POST | `/api/v1/retrieval/advanced` | LangGraph workflow: router, transforms, agent, context check, retries; returns the per-node trace and every ranked list |
+| GET | `/api/v1/graph/stats` · `/graph/entities` | Graph size; most-mentioned entities |
 
 Upload example: `curl -F "file=@data/samples/aurora_safety_review.pdf" localhost:8000/api/v1/documents`
+
+## Dashboard
+A Streamlit app to try every retrieval feature and watch each step (it talks to the API only):
+```bash
+uv run uvicorn omnirag.api.main:app --no-access-log          # terminal 1
+uv run streamlit run src/omnirag/frontend/app.py             # terminal 2 → http://localhost:8501
+```
+- **Overview**: health of Neo4j and Ollama, what is in the graph, the system's stages.
+- **Retrieval lab**: one question through several modes side by side: where each chunk ranks in each mode, overlap, latency.
+- **Workflow inspector**: every Phase 9 option (router, self-query, transforms, agent, rerank, context check, retries, per-document cap); shows the path through the LangGraph graph, a timeline, what each node did, every ranked list and how RRF built the final context.
+- **Benchmarks**: the measured results in `docs/benchmarks/` (read, never recomputed).
+
+Streamlit telemetry is off (`.streamlit/config.toml`).
 
 ## Testing
 ```bash

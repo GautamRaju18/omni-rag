@@ -176,6 +176,16 @@ class Settings(BaseSettings):
     workflow_max_retries: int = Field(default=1, ge=0, le=3)
     workflow_rerank: bool = False  # CPU reranking costs 10-17 s (ADR-0015)
     workflow_llm_timeout_s: float = Field(default=60.0, gt=0)
+    # Phase 9b (ADR-0017): query router, self-query, agentic search, per-document cap
+    workflow_route: Literal["off", "rules", "llm"] = "rules"  # LLM router measured worse
+    workflow_self_query: Literal["off", "soft", "hard"] = "off"  # no gain; hard lost evidence
+    workflow_agent: Literal["off", "auto", "always"] = "auto"  # auto: multi_hop routes only
+    workflow_agent_steps: int = Field(default=2, ge=0, le=3)
+    workflow_max_per_document: int | None = Field(default=None, ge=1, le=20)
+
+    # --- dashboard (Streamlit, pulled forward from Phase 14): talks to the API only
+    frontend_api_url: str = "http://localhost:8000"
+    frontend_timeout_s: float = Field(default=180.0, gt=0)  # agent + CPU rerank can take ~30 s
 
     # --- PDF engine (ADR-0005): "auto" routes multi-column documents to Docling's layout model
     # and everything else to PyMuPDF (~40x faster); "pymupdf" / "docling" force one engine.

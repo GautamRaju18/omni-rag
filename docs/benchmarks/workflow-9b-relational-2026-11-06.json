@@ -1,0 +1,1053 @@
+{
+  "created": "2026-11-06T07:27:26.520562+00:00",
+  "dataset": "relational_seed.json",
+  "k": 5,
+  "model": "qwen3:4b-instruct",
+  "results": {
+    "base": {
+      "hit": 1.0,
+      "recall": 0.875,
+      "precision": 0.375,
+      "mrr": 0.838,
+      "ndcg": 0.754,
+      "context_precision": 0.433,
+      "recall_by_type": {
+        "relational": 0.875
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 1.0,
+        "r07": 1.0,
+        "r08": 1.0
+      },
+      "latency_ms": {
+        "p50": 29.4,
+        "p95": 34.2
+      },
+      "llm_calls_per_question": 0.0,
+      "attempts": {
+        "0": 8
+      },
+      "verdicts": {
+        "sufficient": 8
+      },
+      "verdict_by_question": {
+        "r01": "sufficient",
+        "r02": "sufficient",
+        "r03": "sufficient",
+        "r04": "sufficient",
+        "r05": "sufficient",
+        "r06": "sufficient",
+        "r07": "sufficient",
+        "r08": "sufficient"
+      },
+      "queries_by_question": {
+        "r01": [
+          "Which cells are being tested with the electrolyte whose qualification Marco Lindqvist owns?"
+        ],
+        "r02": [
+          "Who supplies the salt that the E-5 electrolyte is made with?"
+        ],
+        "r03": [
+          "What swelling limit must the electrolyte that replaced E-5 stay below for milestone M2?"
+        ],
+        "r04": [
+          "What is the planned budget of the workstream owned by the person responsible for risk R2?"
+        ],
+        "r05": [
+          "Which supplier is being qualified as a second source for the anode material of the Aurora cell?"
+        ],
+        "r06": [
+          "Who reviewed the E-5 safety review, and what did that person approve on 2026-03-25?"
+        ],
+        "r07": [
+          "How much of the budget of the workstream owned by the electrolyte chemist has been spent?"
+        ],
+        "r08": [
+          "Which person tests the cells that use the E-7 electrolyte at room temperature?"
+        ]
+      },
+      "route_by_question": {
+        "r01": "lookup",
+        "r02": "lookup",
+        "r03": "lookup",
+        "r04": "lookup",
+        "r05": "lookup",
+        "r06": "lookup",
+        "r07": "lookup",
+        "r08": "lookup"
+      },
+      "agent_used": 0,
+      "agent_actions": {},
+      "agent_steps_by_question": {},
+      "vs_base": {
+        "wins": [],
+        "losses": []
+      }
+    },
+    "route_rules": {
+      "hit": 1.0,
+      "recall": 0.875,
+      "precision": 0.375,
+      "mrr": 0.838,
+      "ndcg": 0.754,
+      "context_precision": 0.433,
+      "recall_by_type": {
+        "relational": 0.875
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 1.0,
+        "r07": 1.0,
+        "r08": 1.0
+      },
+      "latency_ms": {
+        "p50": 30.2,
+        "p95": 32.7
+      },
+      "llm_calls_per_question": 0.0,
+      "attempts": {
+        "0": 8
+      },
+      "verdicts": {
+        "sufficient": 8
+      },
+      "verdict_by_question": {
+        "r01": "sufficient",
+        "r02": "sufficient",
+        "r03": "sufficient",
+        "r04": "sufficient",
+        "r05": "sufficient",
+        "r06": "sufficient",
+        "r07": "sufficient",
+        "r08": "sufficient"
+      },
+      "queries_by_question": {
+        "r01": [
+          "Which cells are being tested with the electrolyte whose qualification Marco Lindqvist owns?"
+        ],
+        "r02": [
+          "Who supplies the salt that the E-5 electrolyte is made with?"
+        ],
+        "r03": [
+          "What swelling limit must the electrolyte that replaced E-5 stay below for milestone M2?"
+        ],
+        "r04": [
+          "What is the planned budget of the workstream owned by the person responsible for risk R2?"
+        ],
+        "r05": [
+          "Which supplier is being qualified as a second source for the anode material of the Aurora cell?"
+        ],
+        "r06": [
+          "Who reviewed the E-5 safety review, and what did that person approve on 2026-03-25?"
+        ],
+        "r07": [
+          "How much of the budget of the workstream owned by the electrolyte chemist has been spent?"
+        ],
+        "r08": [
+          "Which person tests the cells that use the E-7 electrolyte at room temperature?"
+        ]
+      },
+      "route_by_question": {
+        "r01": "multi_hop",
+        "r02": "multi_hop",
+        "r03": "multi_hop",
+        "r04": "multi_hop",
+        "r05": "lookup",
+        "r06": "multi_hop",
+        "r07": "multi_hop",
+        "r08": "multi_hop"
+      },
+      "agent_used": 0,
+      "agent_actions": {},
+      "agent_steps_by_question": {},
+      "vs_base": {
+        "wins": [],
+        "losses": []
+      }
+    },
+    "route_llm": {
+      "hit": 1.0,
+      "recall": 0.812,
+      "precision": 0.35,
+      "mrr": 0.838,
+      "ndcg": 0.735,
+      "context_precision": 0.432,
+      "recall_by_type": {
+        "relational": 0.812
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 0.5,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 1.0,
+        "r07": 1.0,
+        "r08": 1.0
+      },
+      "latency_ms": {
+        "p50": 1228.5,
+        "p95": 1560.8
+      },
+      "llm_calls_per_question": 1.0,
+      "attempts": {
+        "0": 8
+      },
+      "verdicts": {
+        "sufficient": 8
+      },
+      "verdict_by_question": {
+        "r01": "sufficient",
+        "r02": "sufficient",
+        "r03": "sufficient",
+        "r04": "sufficient",
+        "r05": "sufficient",
+        "r06": "sufficient",
+        "r07": "sufficient",
+        "r08": "sufficient"
+      },
+      "queries_by_question": {
+        "r01": [
+          "Which cells are being tested with the electrolyte whose qualification Marco Lindqvist owns?"
+        ],
+        "r02": [
+          "Who supplies the salt that the E-5 electrolyte is made with?"
+        ],
+        "r03": [
+          "What swelling limit must the electrolyte that replaced E-5 stay below for milestone M2?"
+        ],
+        "r04": [
+          "What is the planned budget of the workstream owned by the person responsible for risk R2?"
+        ],
+        "r05": [
+          "Which supplier is being qualified as a second source for the anode material of the Aurora cell?"
+        ],
+        "r06": [
+          "Who reviewed the E-5 safety review, and what did that person approve on 2026-03-25?"
+        ],
+        "r07": [
+          "How much of the budget of the workstream owned by the electrolyte chemist has been spent?"
+        ],
+        "r08": [
+          "Which person tests the cells that use the E-7 electrolyte at room temperature?"
+        ]
+      },
+      "route_by_question": {
+        "r01": "multi_hop",
+        "r02": "lookup",
+        "r03": "table",
+        "r04": "table",
+        "r05": "lookup",
+        "r06": "multi_hop",
+        "r07": "table",
+        "r08": "lookup"
+      },
+      "agent_used": 0,
+      "agent_actions": {},
+      "agent_steps_by_question": {},
+      "vs_base": {
+        "wins": [],
+        "losses": [
+          "r03"
+        ]
+      }
+    },
+    "self_query_soft": {
+      "hit": 1.0,
+      "recall": 0.812,
+      "precision": 0.35,
+      "mrr": 0.838,
+      "ndcg": 0.716,
+      "context_precision": 0.416,
+      "recall_by_type": {
+        "relational": 0.812
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 1.0,
+        "r07": 0.5,
+        "r08": 1.0
+      },
+      "latency_ms": {
+        "p50": 648.2,
+        "p95": 680.4
+      },
+      "llm_calls_per_question": 1.0,
+      "attempts": {
+        "0": 8
+      },
+      "verdicts": {
+        "sufficient": 8
+      },
+      "verdict_by_question": {
+        "r01": "sufficient",
+        "r02": "sufficient",
+        "r03": "sufficient",
+        "r04": "sufficient",
+        "r05": "sufficient",
+        "r06": "sufficient",
+        "r07": "sufficient",
+        "r08": "sufficient"
+      },
+      "queries_by_question": {
+        "r01": [
+          "Which cells are being tested with the electrolyte whose qualification Marco Lindqvist owns?"
+        ],
+        "r02": [
+          "Who supplies the salt that the E-5 electrolyte is made with?"
+        ],
+        "r03": [
+          "What swelling limit must the electrolyte that replaced E-5 stay below for milestone M2?"
+        ],
+        "r04": [
+          "What is the planned budget of the workstream owned by the person responsible for risk R2?"
+        ],
+        "r05": [
+          "Which supplier is being qualified as a second source for the anode material of the Aurora cell?"
+        ],
+        "r06": [
+          "Who reviewed the E-5 safety review, and what did that person approve on 2026-03-25?"
+        ],
+        "r07": [
+          "How much of the budget of the workstream owned by the electrolyte chemist has been spent?"
+        ],
+        "r08": [
+          "Which person tests the cells that use the E-7 electrolyte at room temperature?"
+        ]
+      },
+      "route_by_question": {
+        "r01": "lookup",
+        "r02": "lookup",
+        "r03": "lookup",
+        "r04": "lookup",
+        "r05": "lookup",
+        "r06": "lookup",
+        "r07": "lookup",
+        "r08": "lookup"
+      },
+      "agent_used": 0,
+      "agent_actions": {},
+      "agent_steps_by_question": {},
+      "self_query": {
+        "questions_filtered": 3,
+        "accepted_right": 3,
+        "accepted_wrong": 0,
+        "hard_filter_safe": [
+          "r06"
+        ],
+        "hard_filter_loses_evidence": [
+          "r04",
+          "r07"
+        ],
+        "by_question": {
+          "r01": {
+            "accepted": [],
+            "proposed": [
+              "e7_technical_note.pdf"
+            ],
+            "rejected": [
+              "e7_technical_note.pdf"
+            ]
+          },
+          "r02": {
+            "accepted": [],
+            "proposed": [
+              "e7_technical_note.pdf"
+            ],
+            "rejected": [
+              "e7_technical_note.pdf"
+            ]
+          },
+          "r03": {
+            "accepted": [],
+            "proposed": [
+              "e7_technical_note.pdf"
+            ],
+            "rejected": [
+              "e7_technical_note.pdf"
+            ]
+          },
+          "r04": {
+            "accepted": [
+              "aurora_budget_2026.xlsx"
+            ],
+            "proposed": [
+              "aurora_budget_2026.xlsx"
+            ],
+            "rejected": []
+          },
+          "r06": {
+            "accepted": [
+              "aurora_safety_review.pdf"
+            ],
+            "proposed": [
+              "aurora_safety_review.pdf"
+            ],
+            "rejected": []
+          },
+          "r07": {
+            "accepted": [
+              "aurora_budget_2026.xlsx"
+            ],
+            "proposed": [
+              "aurora_budget_2026.xlsx"
+            ],
+            "rejected": []
+          }
+        }
+      },
+      "vs_base": {
+        "wins": [],
+        "losses": [
+          "r07"
+        ]
+      }
+    },
+    "self_query_hard": {
+      "hit": 1.0,
+      "recall": 0.75,
+      "precision": 0.325,
+      "mrr": 0.838,
+      "ndcg": 0.667,
+      "context_precision": 0.408,
+      "recall_by_type": {
+        "relational": 0.75
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 1.0,
+        "r04": 0.5,
+        "r05": 0.5,
+        "r06": 1.0,
+        "r07": 0.5,
+        "r08": 1.0
+      },
+      "latency_ms": {
+        "p50": 631.6,
+        "p95": 760.8
+      },
+      "llm_calls_per_question": 1.0,
+      "attempts": {
+        "0": 8
+      },
+      "verdicts": {
+        "sufficient": 7,
+        "insufficient": 1
+      },
+      "verdict_by_question": {
+        "r01": "sufficient",
+        "r02": "sufficient",
+        "r03": "sufficient",
+        "r04": "insufficient",
+        "r05": "sufficient",
+        "r06": "sufficient",
+        "r07": "sufficient",
+        "r08": "sufficient"
+      },
+      "queries_by_question": {
+        "r01": [
+          "Which cells are being tested with the electrolyte whose qualification Marco Lindqvist owns?"
+        ],
+        "r02": [
+          "Who supplies the salt that the E-5 electrolyte is made with?"
+        ],
+        "r03": [
+          "What swelling limit must the electrolyte that replaced E-5 stay below for milestone M2?"
+        ],
+        "r04": [
+          "What is the planned budget of the workstream owned by the person responsible for risk R2?"
+        ],
+        "r05": [
+          "Which supplier is being qualified as a second source for the anode material of the Aurora cell?"
+        ],
+        "r06": [
+          "Who reviewed the E-5 safety review, and what did that person approve on 2026-03-25?"
+        ],
+        "r07": [
+          "How much of the budget of the workstream owned by the electrolyte chemist has been spent?"
+        ],
+        "r08": [
+          "Which person tests the cells that use the E-7 electrolyte at room temperature?"
+        ]
+      },
+      "route_by_question": {
+        "r01": "lookup",
+        "r02": "lookup",
+        "r03": "lookup",
+        "r04": "lookup",
+        "r05": "lookup",
+        "r06": "lookup",
+        "r07": "lookup",
+        "r08": "lookup"
+      },
+      "agent_used": 0,
+      "agent_actions": {},
+      "agent_steps_by_question": {},
+      "self_query": {
+        "questions_filtered": 3,
+        "accepted_right": 3,
+        "accepted_wrong": 0,
+        "hard_filter_safe": [
+          "r06"
+        ],
+        "hard_filter_loses_evidence": [
+          "r04",
+          "r07"
+        ],
+        "by_question": {
+          "r01": {
+            "accepted": [],
+            "proposed": [
+              "e7_technical_note.pdf"
+            ],
+            "rejected": [
+              "e7_technical_note.pdf"
+            ]
+          },
+          "r02": {
+            "accepted": [],
+            "proposed": [
+              "e7_technical_note.pdf"
+            ],
+            "rejected": [
+              "e7_technical_note.pdf"
+            ]
+          },
+          "r03": {
+            "accepted": [],
+            "proposed": [
+              "e7_technical_note.pdf"
+            ],
+            "rejected": [
+              "e7_technical_note.pdf"
+            ]
+          },
+          "r04": {
+            "accepted": [
+              "aurora_budget_2026.xlsx"
+            ],
+            "proposed": [
+              "aurora_budget_2026.xlsx"
+            ],
+            "rejected": []
+          },
+          "r06": {
+            "accepted": [
+              "aurora_safety_review.pdf"
+            ],
+            "proposed": [
+              "aurora_safety_review.pdf"
+            ],
+            "rejected": []
+          },
+          "r07": {
+            "accepted": [
+              "aurora_budget_2026.xlsx"
+            ],
+            "proposed": [
+              "aurora_budget_2026.xlsx"
+            ],
+            "rejected": []
+          }
+        }
+      },
+      "vs_base": {
+        "wins": [],
+        "losses": [
+          "r04",
+          "r07"
+        ]
+      }
+    },
+    "diverse_2": {
+      "hit": 1.0,
+      "recall": 0.875,
+      "precision": 0.375,
+      "mrr": 0.838,
+      "ndcg": 0.754,
+      "context_precision": 0.397,
+      "recall_by_type": {
+        "relational": 0.875
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 0.5,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 1.0,
+        "r07": 1.0,
+        "r08": 1.0
+      },
+      "latency_ms": {
+        "p50": 40.3,
+        "p95": 45.1
+      },
+      "llm_calls_per_question": 0.0,
+      "attempts": {
+        "0": 8
+      },
+      "verdicts": {
+        "sufficient": 8
+      },
+      "verdict_by_question": {
+        "r01": "sufficient",
+        "r02": "sufficient",
+        "r03": "sufficient",
+        "r04": "sufficient",
+        "r05": "sufficient",
+        "r06": "sufficient",
+        "r07": "sufficient",
+        "r08": "sufficient"
+      },
+      "queries_by_question": {
+        "r01": [
+          "Which cells are being tested with the electrolyte whose qualification Marco Lindqvist owns?"
+        ],
+        "r02": [
+          "Who supplies the salt that the E-5 electrolyte is made with?"
+        ],
+        "r03": [
+          "What swelling limit must the electrolyte that replaced E-5 stay below for milestone M2?"
+        ],
+        "r04": [
+          "What is the planned budget of the workstream owned by the person responsible for risk R2?"
+        ],
+        "r05": [
+          "Which supplier is being qualified as a second source for the anode material of the Aurora cell?"
+        ],
+        "r06": [
+          "Who reviewed the E-5 safety review, and what did that person approve on 2026-03-25?"
+        ],
+        "r07": [
+          "How much of the budget of the workstream owned by the electrolyte chemist has been spent?"
+        ],
+        "r08": [
+          "Which person tests the cells that use the E-7 electrolyte at room temperature?"
+        ]
+      },
+      "route_by_question": {
+        "r01": "lookup",
+        "r02": "lookup",
+        "r03": "lookup",
+        "r04": "lookup",
+        "r05": "lookup",
+        "r06": "lookup",
+        "r07": "lookup",
+        "r08": "lookup"
+      },
+      "agent_used": 0,
+      "agent_actions": {},
+      "agent_steps_by_question": {},
+      "vs_base": {
+        "wins": [],
+        "losses": []
+      }
+    },
+    "agent_auto": {
+      "hit": 1.0,
+      "recall": 0.938,
+      "precision": 0.4,
+      "mrr": 0.917,
+      "ndcg": 0.831,
+      "context_precision": 0.431,
+      "recall_by_type": {
+        "relational": 0.938
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 1.0,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 1.0,
+        "r07": 1.0,
+        "r08": 1.0
+      },
+      "latency_ms": {
+        "p50": 3721.8,
+        "p95": 5923.2
+      },
+      "llm_calls_per_question": 1.5,
+      "attempts": {
+        "0": 8
+      },
+      "verdicts": {
+        "sufficient": 8
+      },
+      "verdict_by_question": {
+        "r01": "sufficient",
+        "r02": "sufficient",
+        "r03": "sufficient",
+        "r04": "sufficient",
+        "r05": "sufficient",
+        "r06": "sufficient",
+        "r07": "sufficient",
+        "r08": "sufficient"
+      },
+      "queries_by_question": {
+        "r01": [
+          "Which cells are being tested with the electrolyte whose qualification Marco Lindqvist owns?",
+          "cells AUR-C105 and AUR-C106",
+          "electrolyte E-7 qualification Marco Lindqvist"
+        ],
+        "r02": [
+          "Who supplies the salt that the E-5 electrolyte is made with?",
+          "NaPF₆ salt supplier"
+        ],
+        "r03": [
+          "What swelling limit must the electrolyte that replaced E-5 stay below for milestone M2?"
+        ],
+        "r04": [
+          "What is the planned budget of the workstream owned by the person responsible for risk R2?",
+          "planned budget of workstream owned by Samuel Okafor"
+        ],
+        "r05": [
+          "Which supplier is being qualified as a second source for the anode material of the Aurora cell?"
+        ],
+        "r06": [
+          "Who reviewed the E-5 safety review, and what did that person approve on 2026-03-25?",
+          "Dr. Priya Raman approval E-7 testing 2026-03-25",
+          "Dr. Priya Raman approval E-5 safety review 2026-03-25"
+        ],
+        "r07": [
+          "How much of the budget of the workstream owned by the electrolyte chemist has been spent?"
+        ],
+        "r08": [
+          "Which person tests the cells that use the E-7 electrolyte at room temperature?",
+          "Aiko Tanaka tests cells with E-7 electrolyte at room temperature"
+        ]
+      },
+      "route_by_question": {
+        "r01": "multi_hop",
+        "r02": "multi_hop",
+        "r03": "multi_hop",
+        "r04": "multi_hop",
+        "r05": "lookup",
+        "r06": "multi_hop",
+        "r07": "multi_hop",
+        "r08": "multi_hop"
+      },
+      "agent_used": 7,
+      "agent_actions": {
+        "search": 7,
+        "finish": 2,
+        "graph (refused)": 1,
+        "graph": 1,
+        "search (refused)": 1
+      },
+      "agent_steps_by_question": {
+        "r01": [
+          "search: cells AUR-C105 and AUR-C106",
+          "search: electrolyte E-7 qualification Marco Lindqvist"
+        ],
+        "r02": [
+          "search: NaPF₆ salt supplier",
+          "finish: NaPF6 salt"
+        ],
+        "r03": [
+          "graph: E-7 swelling limit REFUSED entity not named in the question or passages"
+        ],
+        "r04": [
+          "search: planned budget of workstream owned by Samuel Okafor",
+          "graph: Samuel Okafor"
+        ],
+        "r06": [
+          "search: Dr. Priya Raman approval E-7 testing 2026-03-25",
+          "search: Dr. Priya Raman approval E-5 safety review 2026-03-25"
+        ],
+        "r07": [
+          "finish: electrolyte chemist"
+        ],
+        "r08": [
+          "search: Aiko Tanaka tests cells with E-7 electrolyte at room temperature",
+          "search: Aiko Tanaka tests cells with E-7 electrolyte at room temperature REFUSED repeats an earlier search"
+        ]
+      },
+      "vs_base": {
+        "wins": [
+          "r02"
+        ],
+        "losses": []
+      }
+    },
+    "agent_always": {
+      "hit": 1.0,
+      "recall": 0.938,
+      "precision": 0.4,
+      "mrr": 0.917,
+      "ndcg": 0.831,
+      "context_precision": 0.396,
+      "recall_by_type": {
+        "relational": 0.938
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 1.0,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 1.0,
+        "r07": 1.0,
+        "r08": 1.0
+      },
+      "latency_ms": {
+        "p50": 4143.8,
+        "p95": 5247.6
+      },
+      "llm_calls_per_question": 1.75,
+      "attempts": {
+        "0": 8
+      },
+      "verdicts": {
+        "sufficient": 8
+      },
+      "verdict_by_question": {
+        "r01": "sufficient",
+        "r02": "sufficient",
+        "r03": "sufficient",
+        "r04": "sufficient",
+        "r05": "sufficient",
+        "r06": "sufficient",
+        "r07": "sufficient",
+        "r08": "sufficient"
+      },
+      "queries_by_question": {
+        "r01": [
+          "Which cells are being tested with the electrolyte whose qualification Marco Lindqvist owns?",
+          "cells AUR-C105 and AUR-C106",
+          "electrolyte E-7 qualification Marco Lindqvist"
+        ],
+        "r02": [
+          "Who supplies the salt that the E-5 electrolyte is made with?",
+          "NaPF₆ salt supplier"
+        ],
+        "r03": [
+          "What swelling limit must the electrolyte that replaced E-5 stay below for milestone M2?"
+        ],
+        "r04": [
+          "What is the planned budget of the workstream owned by the person responsible for risk R2?",
+          "planned budget of workstream owned by Samuel Okafor"
+        ],
+        "r05": [
+          "Which supplier is being qualified as a second source for the anode material of the Aurora cell?",
+          "qualified suppliers for hard carbon anode Aurora S1 cell",
+          "Kokos Carbon Ltd second source anode Aurora cell"
+        ],
+        "r06": [
+          "Who reviewed the E-5 safety review, and what did that person approve on 2026-03-25?",
+          "Dr. Priya Raman approval E-7 testing 2026-03-25",
+          "Dr. Priya Raman approval E-5 safety review 2026-03-25"
+        ],
+        "r07": [
+          "How much of the budget of the workstream owned by the electrolyte chemist has been spent?"
+        ],
+        "r08": [
+          "Which person tests the cells that use the E-7 electrolyte at room temperature?",
+          "Aiko Tanaka tests cells with E-7 electrolyte at room temperature"
+        ]
+      },
+      "route_by_question": {
+        "r01": "lookup",
+        "r02": "lookup",
+        "r03": "lookup",
+        "r04": "lookup",
+        "r05": "lookup",
+        "r06": "lookup",
+        "r07": "lookup",
+        "r08": "lookup"
+      },
+      "agent_used": 8,
+      "agent_actions": {
+        "search": 9,
+        "finish": 2,
+        "graph (refused)": 1,
+        "graph": 1,
+        "search (refused)": 1
+      },
+      "agent_steps_by_question": {
+        "r01": [
+          "search: cells AUR-C105 and AUR-C106",
+          "search: electrolyte E-7 qualification Marco Lindqvist"
+        ],
+        "r02": [
+          "search: NaPF₆ salt supplier",
+          "finish: NaPF6 salt"
+        ],
+        "r03": [
+          "graph: E-7 swelling limit REFUSED entity not named in the question or passages"
+        ],
+        "r04": [
+          "search: planned budget of workstream owned by Samuel Okafor",
+          "graph: Samuel Okafor"
+        ],
+        "r05": [
+          "search: qualified suppliers for hard carbon anode Aurora S1 cell",
+          "search: Kokos Carbon Ltd second source anode Aurora cell"
+        ],
+        "r06": [
+          "search: Dr. Priya Raman approval E-7 testing 2026-03-25",
+          "search: Dr. Priya Raman approval E-5 safety review 2026-03-25"
+        ],
+        "r07": [
+          "finish: electrolyte chemist"
+        ],
+        "r08": [
+          "search: Aiko Tanaka tests cells with E-7 electrolyte at room temperature",
+          "search: Aiko Tanaka tests cells with E-7 electrolyte at room temperature REFUSED repeats an earlier search"
+        ]
+      },
+      "vs_base": {
+        "wins": [
+          "r02"
+        ],
+        "losses": []
+      }
+    },
+    "agent_auto+corrective": {
+      "hit": 1.0,
+      "recall": 0.938,
+      "precision": 0.4,
+      "mrr": 0.917,
+      "ndcg": 0.831,
+      "context_precision": 0.431,
+      "recall_by_type": {
+        "relational": 0.938
+      },
+      "per_question_recall": {
+        "r01": 1.0,
+        "r02": 1.0,
+        "r03": 1.0,
+        "r04": 1.0,
+        "r05": 0.5,
+        "r06": 1.0,
+        "r07": 1.0,
+        "r08": 1.0
+      },
+      "latency_ms": {
+        "p50": 4748.9,
+        "p95": 5868.8
+      },
+      "llm_calls_per_question": 2.75,
+      "attempts": {
+        "0": 7,
+        "1": 1
+      },
+      "verdicts": {
+        "sufficient": 2,
+        "partial": 5,
+        "insufficient": 1
+      },
+      "verdict_by_question": {
+        "r01": "sufficient",
+        "r02": "partial",
+        "r03": "sufficient",
+        "r04": "partial",
+        "r05": "insufficient",
+        "r06": "partial",
+        "r07": "partial",
+        "r08": "partial"
+      },
+      "queries_by_question": {
+        "r01": [
+          "Which cells are being tested with the electrolyte whose qualification Marco Lindqvist owns?",
+          "cells AUR-C105 and AUR-C106",
+          "electrolyte E-7 qualification Marco Lindqvist"
+        ],
+        "r02": [
+          "Who supplies the salt that the E-5 electrolyte is made with?",
+          "NaPF₆ salt supplier"
+        ],
+        "r03": [
+          "What swelling limit must the electrolyte that replaced E-5 stay below for milestone M2?"
+        ],
+        "r04": [
+          "What is the planned budget of the workstream owned by the person responsible for risk R2?",
+          "planned budget of workstream owned by Samuel Okafor"
+        ],
+        "r05": [
+          "Which supplier is being qualified as a second source for the anode material of the Aurora cell?"
+        ],
+        "r06": [
+          "Who reviewed the E-5 safety review, and what did that person approve on 2026-03-25?",
+          "Dr. Priya Raman approval E-7 testing 2026-03-25",
+          "Dr. Priya Raman approval E-5 safety review 2026-03-25"
+        ],
+        "r07": [
+          "How much of the budget of the workstream owned by the electrolyte chemist has been spent?"
+        ],
+        "r08": [
+          "Which person tests the cells that use the E-7 electrolyte at room temperature?",
+          "Aiko Tanaka tests cells with E-7 electrolyte at room temperature"
+        ]
+      },
+      "route_by_question": {
+        "r01": "multi_hop",
+        "r02": "multi_hop",
+        "r03": "multi_hop",
+        "r04": "multi_hop",
+        "r05": "lookup",
+        "r06": "multi_hop",
+        "r07": "multi_hop",
+        "r08": "multi_hop"
+      },
+      "agent_used": 7,
+      "agent_actions": {
+        "search": 7,
+        "finish": 2,
+        "graph (refused)": 1,
+        "graph": 1,
+        "search (refused)": 1
+      },
+      "agent_steps_by_question": {
+        "r01": [
+          "search: cells AUR-C105 and AUR-C106",
+          "search: electrolyte E-7 qualification Marco Lindqvist"
+        ],
+        "r02": [
+          "search: NaPF₆ salt supplier",
+          "finish: NaPF6 salt"
+        ],
+        "r03": [
+          "graph: E-7 swelling limit REFUSED entity not named in the question or passages"
+        ],
+        "r04": [
+          "search: planned budget of workstream owned by Samuel Okafor",
+          "graph: Samuel Okafor"
+        ],
+        "r06": [
+          "search: Dr. Priya Raman approval E-7 testing 2026-03-25",
+          "search: Dr. Priya Raman approval E-5 safety review 2026-03-25"
+        ],
+        "r07": [
+          "finish: electrolyte chemist"
+        ],
+        "r08": [
+          "search: Aiko Tanaka tests cells with E-7 electrolyte at room temperature",
+          "search: Aiko Tanaka tests cells with E-7 electrolyte at room temperature REFUSED repeats an earlier search"
+        ]
+      },
+      "vs_base": {
+        "wins": [
+          "r02"
+        ],
+        "losses": []
+      }
+    }
+  },
+  "notes": "agent_auto+corrective measured in a later run (2026-11-06T07:42:33.640945+00:00), after the change that ends the workflow at the check once the agent has run (no corrective retry) (ADR-0017); that run's base reproduced the base above."
+}

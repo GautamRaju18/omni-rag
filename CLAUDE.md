@@ -76,6 +76,21 @@ Local-first multimodal GraphRAG platform, built phase by phase (see `docs/PROGRE
 - The context check (identifier coverage, then the LLM grader) is the "insufficient evidence" signal for generation; the reranker score is not.
 - Measure transform changes on both eval sets with `evaluation.workflow_benchmark`; report per-question wins/losses (q22 is a known ground-truth gap).
 
+## Routing + agent invariants (Phase 9b, ADR-0017)
+- Router / self-query outputs are *preferences* (extra RRF lists for the original question), never silent filters; `self_query="hard"` is opt-in (measured: lost evidence on r04/r07).
+- Self-query: the reply schema's enum is the live catalog; a proposal is accepted only if the question contains the document's descriptor words (`self_query.grounded`). Never accept a document because it "might contain the answer".
+- Agent queries / graph entities may only use identifiers found in the question or the passages shown (`agent.ungrounded`, `norm`); refused steps end the agent's turn and stay in the trace.
+- No corrective retry once the agent has run (`_after_check`): a later, worse query dilutes RRF (measured: lost r02). Defaults `route=rules`, `agent=auto` live in both `Strategy` and `Settings`; keep them in sync.
+- BM25 requires only the *user's* identifiers (`required=identifiers(question)` for every LLM-written query); identifiers a model wrote are boosts.
+- `recursion_limit = 4*(max_retries+1) + 2*agent_steps + 5` (`retrieval_graph.recursion_limit`); the worst-case test must keep passing.
+- Rule router beats the LLM router on all three label sets (`evaluation.routing_eval`); re-measure both before switching. `data/eval/routing_holdout.json` was labelled before the rules: don't tune rules on it.
+
+## Dashboard (Streamlit, pulled forward from Phase 14)
+- `src/omnirag/frontend/`: `app.py` entry, `pages.py` (Streamlit), `views.py` (pure, unit-tested), `api_client.py`. The dashboard talks to the HTTP API only: no Neo4j/Ollama clients, no secrets.
+- Run: API (`uvicorn`) then `uv run streamlit run src/omnirag/frontend/app.py` (port 8501). Telemetry off in `.streamlit/config.toml`; keep it off.
+- Streamlit caches imported modules: restart the server after editing `pages.py`/`views.py`. Graphviz DOT: never name a node `graph`/`subgraph`/`digraph`/`strict` (blank diagram; asserted by a test).
+- Benchmarks page reads `docs/benchmarks/*.json`; never compute or invent numbers in the UI.
+
 ## Conventions
 - Code lives in `src/omnirag/<module>/` (ADR-0001). Create a module's package only in its phase.
 - Config only through `omnirag.core.config.Settings` (`OMNIRAG_*`). No hardcoded secrets.

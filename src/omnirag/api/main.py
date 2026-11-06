@@ -15,7 +15,7 @@ from fastapi import FastAPI
 
 from omnirag import __version__
 from omnirag.api.middleware import request_context_middleware
-from omnirag.api.routers import documents, health, ingestion, retrieval
+from omnirag.api.routers import documents, graph, health, ingestion, retrieval
 from omnirag.core.config import Settings, get_settings
 from omnirag.core.errors import register_exception_handlers
 from omnirag.core.logging import configure_logging
@@ -96,6 +96,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(documents.router, prefix=settings.api_prefix)
     app.include_router(ingestion.router, prefix=settings.api_prefix)
     app.include_router(retrieval.router, prefix=settings.api_prefix)
+    app.include_router(graph.router, prefix=settings.api_prefix)
     # Unversioned liveness alias for container/orchestrator probes; hidden from OpenAPI.
     app.add_api_route("/health", health.health, methods=["GET"], include_in_schema=False)
     return app

@@ -1,0 +1,259 @@
+{
+  "created": "2026-11-06T07:10:11.896910+00:00",
+  "model": "qwen3:4b-instruct",
+  "results": {
+    "chunking_seed.json": {
+      "rules": {
+        "accuracy": 0.75,
+        "correct": 30,
+        "n": 40,
+        "per_intent": {
+          "lookup": {
+            "recall": 0.952,
+            "precision": 0.714
+          },
+          "table": {
+            "recall": 0.364,
+            "precision": 1.0
+          },
+          "image": {
+            "recall": 0.6,
+            "precision": 1.0
+          },
+          "multi_hop": {
+            "recall": 1.0,
+            "precision": 0.6
+          }
+        },
+        "confusion": {
+          "image->image": 3,
+          "image->lookup": 1,
+          "image->multi_hop": 1,
+          "lookup->lookup": 20,
+          "lookup->multi_hop": 1,
+          "multi_hop->multi_hop": 3,
+          "table->lookup": 7,
+          "table->table": 4
+        },
+        "errors": {
+          "q09": "lookup->multi_hop",
+          "q11": "table->lookup",
+          "q13": "table->lookup",
+          "q15": "table->lookup",
+          "q16": "image->lookup",
+          "q17": "image->multi_hop",
+          "q21": "table->lookup",
+          "q25": "table->lookup",
+          "q33": "table->lookup",
+          "q37": "table->lookup"
+        },
+        "failed": 0,
+        "p50_ms": 0.01
+      },
+      "llm": {
+        "accuracy": 0.575,
+        "correct": 23,
+        "n": 40,
+        "per_intent": {
+          "lookup": {
+            "recall": 0.381,
+            "precision": 0.727
+          },
+          "table": {
+            "recall": 0.818,
+            "precision": 0.45
+          },
+          "image": {
+            "recall": 0.6,
+            "precision": 1.0
+          },
+          "multi_hop": {
+            "recall": 1.0,
+            "precision": 0.5
+          }
+        },
+        "confusion": {
+          "image->image": 3,
+          "image->lookup": 1,
+          "image->table": 1,
+          "lookup->lookup": 8,
+          "lookup->multi_hop": 3,
+          "lookup->table": 10,
+          "multi_hop->multi_hop": 3,
+          "table->lookup": 2,
+          "table->table": 9
+        },
+        "errors": {
+          "q03": "lookup->multi_hop",
+          "q05": "lookup->multi_hop",
+          "q09": "lookup->multi_hop",
+          "q11": "table->lookup",
+          "q12": "lookup->table",
+          "q14": "lookup->table",
+          "q16": "image->lookup",
+          "q17": "image->table",
+          "q24": "lookup->table",
+          "q29": "lookup->table",
+          "q31": "lookup->table",
+          "q32": "lookup->table",
+          "q33": "table->lookup",
+          "q35": "lookup->table",
+          "q36": "lookup->table",
+          "q38": "lookup->table",
+          "q40": "lookup->table"
+        },
+        "failed": 0,
+        "p50_ms": 806.5
+      }
+    },
+    "relational_seed.json": {
+      "rules": {
+        "accuracy": 0.875,
+        "correct": 7,
+        "n": 8,
+        "per_intent": {
+          "lookup": {
+            "recall": 0.0,
+            "precision": 0.0
+          },
+          "table": {
+            "recall": 0.0,
+            "precision": 0.0
+          },
+          "image": {
+            "recall": 0.0,
+            "precision": 0.0
+          },
+          "multi_hop": {
+            "recall": 0.875,
+            "precision": 1.0
+          }
+        },
+        "confusion": {
+          "multi_hop->lookup": 1,
+          "multi_hop->multi_hop": 7
+        },
+        "errors": {
+          "r05": "multi_hop->lookup"
+        },
+        "failed": 0,
+        "p50_ms": 0.009
+      },
+      "llm": {
+        "accuracy": 0.25,
+        "correct": 2,
+        "n": 8,
+        "per_intent": {
+          "lookup": {
+            "recall": 0.0,
+            "precision": 0.0
+          },
+          "table": {
+            "recall": 0.0,
+            "precision": 0.0
+          },
+          "image": {
+            "recall": 0.0,
+            "precision": 0.0
+          },
+          "multi_hop": {
+            "recall": 0.25,
+            "precision": 1.0
+          }
+        },
+        "confusion": {
+          "multi_hop->lookup": 3,
+          "multi_hop->multi_hop": 2,
+          "multi_hop->table": 3
+        },
+        "errors": {
+          "r02": "multi_hop->lookup",
+          "r03": "multi_hop->table",
+          "r04": "multi_hop->table",
+          "r05": "multi_hop->lookup",
+          "r07": "multi_hop->table",
+          "r08": "multi_hop->lookup"
+        },
+        "failed": 0,
+        "p50_ms": 1209.25
+      }
+    },
+    "routing_holdout.json": {
+      "rules": {
+        "accuracy": 0.958,
+        "correct": 23,
+        "n": 24,
+        "per_intent": {
+          "lookup": {
+            "recall": 1.0,
+            "precision": 0.857
+          },
+          "table": {
+            "recall": 0.833,
+            "precision": 1.0
+          },
+          "image": {
+            "recall": 1.0,
+            "precision": 1.0
+          },
+          "multi_hop": {
+            "recall": 1.0,
+            "precision": 1.0
+          }
+        },
+        "confusion": {
+          "image->image": 6,
+          "lookup->lookup": 6,
+          "multi_hop->multi_hop": 6,
+          "table->lookup": 1,
+          "table->table": 5
+        },
+        "errors": {
+          "h11": "table->lookup"
+        },
+        "failed": 0,
+        "p50_ms": 0.017
+      },
+      "llm": {
+        "accuracy": 0.833,
+        "correct": 20,
+        "n": 24,
+        "per_intent": {
+          "lookup": {
+            "recall": 0.833,
+            "precision": 0.714
+          },
+          "table": {
+            "recall": 1.0,
+            "precision": 0.857
+          },
+          "image": {
+            "recall": 0.833,
+            "precision": 1.0
+          },
+          "multi_hop": {
+            "recall": 0.667,
+            "precision": 0.8
+          }
+        },
+        "confusion": {
+          "image->image": 5,
+          "image->table": 1,
+          "lookup->lookup": 5,
+          "lookup->multi_hop": 1,
+          "multi_hop->lookup": 2,
+          "multi_hop->multi_hop": 4,
+          "table->table": 6
+        },
+        "errors": {
+          "h03": "lookup->multi_hop",
+          "h18": "image->table",
+          "h20": "multi_hop->lookup",
+          "h21": "multi_hop->lookup"
+        },
+        "failed": 0,
+        "p50_ms": 987.25
+      }
+    }
+  }
+}

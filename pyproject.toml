@@ -42,9 +42,13 @@ layout = [
     "torch==2.15.0",
     "torchvision==0.29.2",
 ]
+# Dashboard (Streamlit; Phase 14's retrieval laboratory, pulled forward in Phase 9b).
+frontend = [
+    "streamlit==1.66.1",
+]
 
 [tool.uv]
-default-groups = ["dev", "layout"]
+default-groups = ["dev", "layout", "frontend"]
 
 # CPU-only PyTorch: the 6 GB GPU is reserved for Ollama, and CUDA wheels add several GB.
 [[tool.uv.index]]

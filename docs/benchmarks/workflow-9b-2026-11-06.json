@@ -1,0 +1,3289 @@
+{
+  "created": "2026-11-06T07:25:48.054475+00:00",
+  "dataset": "chunking_seed.json",
+  "k": 5,
+  "model": "qwen3:4b-instruct",
+  "results": {
+    "base": {
+      "hit": 1.0,
+      "recall": 0.986,
+      "precision": 0.297,
+      "mrr": 0.928,
+      "ndcg": 0.889,
+      "context_precision": 0.333,
+      "recall_by_type": {
+        "comparative": 0.5,
+        "factual": 1.0,
+        "image": 1.0,
+        "keyword": 1.0,
+        "multi_hop": 1.0,
+        "table": 1.0
+      },
+      "per_question_recall": {
+        "q01": 1.0,
+        "q02": 1.0,
+        "q03": 1.0,
+        "q04": 1.0,
+        "q05": 1.0,
+        "q06": 1.0,
+        "q07": 1.0,
+        "q08": 1.0,
+        "q09": 1.0,
+        "q10": 1.0,
+        "q11": 1.0,
+        "q12": 1.0,
+        "q13": 1.0,
+        "q14": 1.0,
+        "q15": 1.0,
+        "q16": 1.0,
+        "q17": 1.0,
+        "q18": 1.0,
+        "q19": 1.0,
+        "q20": 1.0,
+        "q21": 1.0,
+        "q22": 0.5,
+        "q23": 1.0,
+        "q24": 1.0,
+        "q25": 1.0,
+        "q26": 1.0,
+        "q27": 1.0,
+        "q28": 1.0,
+        "q29": 1.0,
+        "q30": 1.0,
+        "q31": 1.0,
+        "q32": 1.0,
+        "q33": 1.0,
+        "q34": 1.0,
+        "q35": 1.0,
+        "q36": 1.0,
+        "q37": 1.0
+      },
+      "latency_ms": {
+        "p50": 38.7,
+        "p95": 75.0
+      },
+      "llm_calls_per_question": 0.0,
+      "attempts": {
+        "0": 40
+      },
+      "verdicts": {
+        "sufficient": 39,
+        "insufficient": 1
+      },
+      "verdict_by_question": {
+        "q01": "sufficient",
+        "q02": "sufficient",
+        "q03": "sufficient",
+        "q04": "sufficient",
+        "q05": "sufficient",
+        "q06": "sufficient",
+        "q07": "sufficient",
+        "q08": "sufficient",
+        "q09": "sufficient",
+        "q10": "sufficient",
+        "q11": "sufficient",
+        "q12": "sufficient",
+        "q13": "sufficient",
+        "q14": "sufficient",
+        "q15": "sufficient",
+        "q16": "sufficient",
+        "q17": "sufficient",
+        "q18": "sufficient",
+        "q19": "sufficient",
+        "q20": "sufficient",
+        "q21": "sufficient",
+        "q22": "sufficient",
+        "q23": "sufficient",
+        "q24": "sufficient",
+        "q25": "sufficient",
+        "q26": "sufficient",
+        "q27": "sufficient",
+        "q28": "sufficient",
+        "q29": "sufficient",
+        "q30": "sufficient",
+        "q31": "sufficient",
+        "q32": "sufficient",
+        "q33": "sufficient",
+        "q34": "sufficient",
+        "q35": "sufficient",
+        "q36": "sufficient",
+        "q37": "sufficient",
+        "q38": "sufficient",
+        "q39": "sufficient",
+        "q40": "insufficient"
+      },
+      "queries_by_question": {
+        "q01": [
+          "Who is the project lead of Project Aurora?"
+        ],
+        "q02": [
+          "What cathode material does the Aurora cell use?"
+        ],
+        "q03": [
+          "Why was Prussian white chosen over layered oxides?"
+        ],
+        "q04": [
+          "What capacity retention did cell AUR-C103 reach, and after how many cycles?"
+        ],
+        "q05": [
+          "Why did cell AUR-C103 fail?"
+        ],
+        "q06": [
+          "How much did the pouch of AUR-C103 swell?"
+        ],
+        "q07": [
+          "Which electrolyte replaced the one used in the cell that failed at 45 °C, and who owns its qualification?"
+        ],
+        "q08": [
+          "What is the planned budget of the electrolyte workstream?"
+        ],
+        "q09": [
+          "When did the steering committee approve extra funding for the E-7 qualification, and how much?"
+        ],
+        "q10": [
+          "What share of the cathode budget has been spent?"
+        ],
+        "q11": [
+          "Which hard-carbon supplier is not yet qualified?"
+        ],
+        "q12": [
+          "What is the lead time for NaPF6 salt from Nordic Salts AB?"
+        ],
+        "q13": [
+          "When is milestone M3 due?"
+        ],
+        "q14": [
+          "What is the status of milestone M2?"
+        ],
+        "q15": [
+          "What capacity retention did AUR-C106 have after 300 cycles at 45 °C?"
+        ],
+        "q16": [
+          "What swelling did the lab notebook record for AUR-C106?"
+        ],
+        "q17": [
+          "When is the next checkpoint noted in the scanned lab notebook?"
+        ],
+        "q18": [
+          "What pilot batch size is written on the E-7 qualification plan whiteboard?"
+        ],
+        "q19": [
+          "Which cell has the lowest bar in the capacity retention bar chart?"
+        ],
+        "q20": [
+          "What does the photo on the Aurora S1 product page show?"
+        ],
+        "q21": [
+          "What is the nominal voltage of the Aurora S1 cell?"
+        ],
+        "q22": [
+          "Does the Aurora S1's rated cycle life match the project's cycle target?"
+        ],
+        "q23": [
+          "What is the role of NaDFOB in the E-7 electrolyte?"
+        ],
+        "q24": [
+          "Which solvents replace DEC in the E-7 blend?"
+        ],
+        "q25": [
+          "What volume fraction of DMC does E-7 contain?"
+        ],
+        "q26": [
+          "Who prepared the safety review of the E-5 failure?"
+        ],
+        "q27": [
+          "Which gases were found in the failed pouch?"
+        ],
+        "q28": [
+          "What does the safety review recommend for pilot-line pouches?"
+        ],
+        "q29": [
+          "Which cells meet the 5% swelling limit?"
+        ],
+        "q30": [
+          "What separator does the Aurora cell use?"
+        ],
+        "q31": [
+          "What is the N/P ratio of the anode?"
+        ],
+        "q32": [
+          "What voltage window is used in the cycling protocol?"
+        ],
+        "q33": [
+          "Who tested cell AUR-C107?"
+        ],
+        "q34": [
+          "What is the fallback if E-7 swelling exceeds the limit, and how is that fallback performing?"
+        ],
+        "q35": [
+          "When is the next technical review meeting?"
+        ],
+        "q36": [
+          "Who owns risk R2 in the risk register?"
+        ],
+        "q37": [
+          "What is the energy density of the Aurora S1?"
+        ],
+        "q38": [
+          "What is the price per kWh of the Aurora S1 cell?"
+        ],
+        "q39": [
+          "Who is the CEO of Helios Energy Lab?"
+        ],
+        "q40": [
+          "What capacity retention did cell AUR-C109 reach?"
+        ]
+      },
+      "route_by_question": {
+        "q01": "lookup",
+        "q02": "lookup",
+        "q03": "lookup",
+        "q04": "lookup",
+        "q05": "lookup",
+        "q06": "lookup",
+        "q07": "lookup",
+        "q08": "lookup",
+        "q09": "lookup",
+        "q10": "lookup",
+        "q11": "lookup",
+        "q12": "lookup",
+        "q13": "lookup",
+        "q14": "lookup",
+        "q15": "lookup",
+        "q16": "lookup",
+        "q17": "lookup",
+        "q18": "lookup",
+        "q19": "lookup",
+        "q20": "lookup",
+        "q21": "lookup",
+        "q22": "lookup",
+        "q23": "lookup",
+        "q24": "lookup",
+        "q25": "lookup",
+        "q26": "lookup",
+        "q27": "lookup",
+        "q28": "lookup",
+        "q29": "lookup",
+        "q30": "lookup",
+        "q31": "lookup",
+        "q32": "lookup",
+        "q33": "lookup",
+        "q34": "lookup",
+        "q35": "lookup",
+        "q36": "lookup",
+        "q37": "lookup",
+        "q38": "lookup",
+        "q39": "lookup",
+        "q40": "lookup"
+      },
+      "agent_used": 0,
+      "agent_actions": {},
+      "agent_steps_by_question": {},
+      "vs_base": {
+        "wins": [],
+        "losses": []
+      }
+    },
+    "route_rules": {
+      "hit": 1.0,
+      "recall": 0.986,
+      "precision": 0.286,
+      "mrr": 0.941,
+      "ndcg": 0.883,
+      "context_precision": 0.313,
+      "recall_by_type": {
+        "comparative": 0.5,
+        "factual": 1.0,
+        "image": 1.0,
+        "keyword": 1.0,
+        "multi_hop": 1.0,
+        "table": 1.0
+      },
+      "per_question_recall": {
+        "q01": 1.0,
+        "q02": 1.0,
+        "q03": 1.0,
+        "q04": 1.0,
+        "q05": 1.0,
+        "q06": 1.0,
+        "q07": 1.0,
+        "q08": 1.0,
+        "q09": 1.0,
+        "q10": 1.0,
+        "q11": 1.0,
+        "q12": 1.0,
+        "q13": 1.0,
+        "q14": 1.0,
+        "q15": 1.0,
+        "q16": 1.0,
+        "q17": 1.0,
+        "q18": 1.0,
+        "q19": 1.0,
+        "q20": 1.0,
+        "q21": 1.0,
+        "q22": 0.5,
+        "q23": 1.0,
+        "q24": 1.0,
+        "q25": 1.0,
+        "q26": 1.0,
+        "q27": 1.0,
+        "q28": 1.0,
+        "q29": 1.0,
+        "q30": 1.0,
+        "q31": 1.0,
+        "q32": 1.0,
+        "q33": 1.0,
+        "q34": 1.0,
+        "q35": 1.0,
+        "q36": 1.0,
+        "q37": 1.0
+      },
+      "latency_ms": {
+        "p50": 36.0,
+        "p95": 59.0
+      },
+      "llm_calls_per_question": 0.0,
+      "attempts": {
+        "0": 40
+      },
+      "verdicts": {
+        "sufficient": 39,
+        "insufficient": 1
+      },
+      "verdict_by_question": {
+        "q01": "sufficient",
+        "q02": "sufficient",
+        "q03": "sufficient",
+        "q04": "sufficient",
+        "q05": "sufficient",
+        "q06": "sufficient",
+        "q07": "sufficient",
+        "q08": "sufficient",
+        "q09": "sufficient",
+        "q10": "sufficient",
+        "q11": "sufficient",
+        "q12": "sufficient",
+        "q13": "sufficient",
+        "q14": "sufficient",
+        "q15": "sufficient",
+        "q16": "sufficient",
+        "q17": "sufficient",
+        "q18": "sufficient",
+        "q19": "sufficient",
+        "q20": "sufficient",
+        "q21": "sufficient",
+        "q22": "sufficient",
+        "q23": "sufficient",
+        "q24": "sufficient",
+        "q25": "sufficient",
+        "q26": "sufficient",
+        "q27": "sufficient",
+        "q28": "sufficient",
+        "q29": "sufficient",
+        "q30": "sufficient",
+        "q31": "sufficient",
+        "q32": "sufficient",
+        "q33": "sufficient",
+        "q34": "sufficient",
+        "q35": "sufficient",
+        "q36": "sufficient",
+        "q37": "sufficient",
+        "q38": "sufficient",
+        "q39": "sufficient",
+        "q40": "insufficient"
+      },
+      "queries_by_question": {
+        "q01": [
+          "Who is the project lead of Project Aurora?"
+        ],
+        "q02": [
+          "What cathode material does the Aurora cell use?"
+        ],
+        "q03": [
+          "Why was Prussian white chosen over layered oxides?"
+        ],
+        "q04": [
+          "What capacity retention did cell AUR-C103 reach, and after how many cycles?"
+        ],
+        "q05": [
+          "Why did cell AUR-C103 fail?"
+        ],
+        "q06": [
+          "How much did the pouch of AUR-C103 swell?"
+        ],
+        "q07": [
+          "Which electrolyte replaced the one used in the cell that failed at 45 °C, and who owns its qualification?"
+        ],
+        "q08": [
+          "What is the planned budget of the electrolyte workstream?"
+        ],
+        "q09": [
+          "When did the steering committee approve extra funding for the E-7 qualification, and how much?"
+        ],
+        "q10": [
+          "What share of the cathode budget has been spent?"
+        ],
+        "q11": [
+          "Which hard-carbon supplier is not yet qualified?"
+        ],
+        "q12": [
+          "What is the lead time for NaPF6 salt from Nordic Salts AB?"
+        ],
+        "q13": [
+          "When is milestone M3 due?"
+        ],
+        "q14": [
+          "What is the status of milestone M2?"
+        ],
+        "q15": [
+          "What capacity retention did AUR-C106 have after 300 cycles at 45 °C?"
+        ],
+        "q16": [
+          "What swelling did the lab notebook record for AUR-C106?"
+        ],
+        "q17": [
+          "When is the next checkpoint noted in the scanned lab notebook?"
+        ],
+        "q18": [
+          "What pilot batch size is written on the E-7 qualification plan whiteboard?"
+        ],
+        "q19": [
+          "Which cell has the lowest bar in the capacity retention bar chart?"
+        ],
+        "q20": [
+          "What does the photo on the Aurora S1 product page show?"
+        ],
+        "q21": [
+          "What is the nominal voltage of the Aurora S1 cell?"
+        ],
+        "q22": [
+          "Does the Aurora S1's rated cycle life match the project's cycle target?"
+        ],
+        "q23": [
+          "What is the role of NaDFOB in the E-7 electrolyte?"
+        ],
+        "q24": [
+          "Which solvents replace DEC in the E-7 blend?"
+        ],
+        "q25": [
+          "What volume fraction of DMC does E-7 contain?"
+        ],
+        "q26": [
+          "Who prepared the safety review of the E-5 failure?"
+        ],
+        "q27": [
+          "Which gases were found in the failed pouch?"
+        ],
+        "q28": [
+          "What does the safety review recommend for pilot-line pouches?"
+        ],
+        "q29": [
+          "Which cells meet the 5% swelling limit?"
+        ],
+        "q30": [
+          "What separator does the Aurora cell use?"
+        ],
+        "q31": [
+          "What is the N/P ratio of the anode?"
+        ],
+        "q32": [
+          "What voltage window is used in the cycling protocol?"
+        ],
+        "q33": [
+          "Who tested cell AUR-C107?"
+        ],
+        "q34": [
+          "What is the fallback if E-7 swelling exceeds the limit, and how is that fallback performing?"
+        ],
+        "q35": [
+          "When is the next technical review meeting?"
+        ],
+        "q36": [
+          "Who owns risk R2 in the risk register?"
+        ],
+        "q37": [
+          "What is the energy density of the Aurora S1?"
+        ],
+        "q38": [
+          "What is the price per kWh of the Aurora S1 cell?"
+        ],
+        "q39": [
+          "Who is the CEO of Helios Energy Lab?"
+        ],
+        "q40": [
+          "What capacity retention did cell AUR-C109 reach?"
+        ]
+      },
+      "route_by_question": {
+        "q01": "lookup",
+        "q02": "lookup",
+        "q03": "lookup",
+        "q04": "table",
+        "q05": "lookup",
+        "q06": "table",
+        "q07": "multi_hop",
+        "q08": "table",
+        "q09": "multi_hop",
+        "q10": "table",
+        "q11": "lookup",
+        "q12": "lookup",
+        "q13": "lookup",
+        "q14": "lookup",
+        "q15": "lookup",
+        "q16": "lookup",
+        "q17": "multi_hop",
+        "q18": "image",
+        "q19": "image",
+        "q20": "image",
+        "q21": "lookup",
+        "q22": "multi_hop",
+        "q23": "lookup",
+        "q24": "lookup",
+        "q25": "lookup",
+        "q26": "lookup",
+        "q27": "lookup",
+        "q28": "lookup",
+        "q29": "lookup",
+        "q30": "lookup",
+        "q31": "lookup",
+        "q32": "lookup",
+        "q33": "lookup",
+        "q34": "multi_hop",
+        "q35": "lookup",
+        "q36": "lookup",
+        "q37": "lookup",
+        "q38": "lookup",
+        "q39": "lookup",
+        "q40": "lookup"
+      },
+      "agent_used": 0,
+      "agent_actions": {},
+      "agent_steps_by_question": {},
+      "vs_base": {
+        "wins": [],
+        "losses": []
+      }
+    },
+    "route_llm": {
+      "hit": 0.946,
+      "recall": 0.932,
+      "precision": 0.276,
+      "mrr": 0.858,
+      "ndcg": 0.806,
+      "context_precision": 0.31,
+      "recall_by_type": {
+        "comparative": 0.5,
+        "factual": 0.846,
+        "image": 1.0,
+        "keyword": 1.0,
+        "multi_hop": 1.0,
+        "table": 1.0
+      },
+      "per_question_recall": {
+        "q01": 1.0,
+        "q02": 1.0,
+        "q03": 1.0,
+        "q04": 1.0,
+        "q05": 1.0,
+        "q06": 1.0,
+        "q07": 1.0,
+        "q08": 1.0,
+        "q09": 1.0,
+        "q10": 1.0,
+        "q11": 1.0,
+        "q12": 1.0,
+        "q13": 1.0,
+        "q14": 1.0,
+        "q15": 1.0,
+        "q16": 1.0,
+        "q17": 1.0,
+        "q18": 1.0,
+        "q19": 1.0,
+        "q20": 1.0,
+        "q21": 1.0,
+        "q22": 0.5,
+        "q23": 1.0,
+        "q24": 0.0,
+        "q25": 1.0,
+        "q26": 1.0,
+        "q27": 1.0,
+        "q28": 1.0,
+        "q29": 1.0,
+        "q30": 1.0,
+        "q31": 1.0,
+        "q32": 1.0,
+        "q33": 1.0,
+        "q34": 1.0,
+        "q35": 0.0,
+        "q36": 1.0,
+        "q37": 1.0
+      },
+      "latency_ms": {
+        "p50": 831.4,
+        "p95": 1075.4
+      },
+      "llm_calls_per_question": 1.0,
+      "attempts": {
+        "0": 40
+      },
+      "verdicts": {
+        "sufficient": 39,
+        "insufficient": 1
+      },
+      "verdict_by_question": {
+        "q01": "sufficient",
+        "q02": "sufficient",
+        "q03": "sufficient",
+        "q04": "sufficient",
+        "q05": "sufficient",
+        "q06": "sufficient",
+        "q07": "sufficient",
+        "q08": "sufficient",
+        "q09": "sufficient",
+        "q10": "sufficient",
+        "q11": "sufficient",
+        "q12": "sufficient",
+        "q13": "sufficient",
+        "q14": "sufficient",
+        "q15": "sufficient",
+        "q16": "sufficient",
+        "q17": "sufficient",
+        "q18": "sufficient",
+        "q19": "sufficient",
+        "q20": "sufficient",
+        "q21": "sufficient",
+        "q22": "sufficient",
+        "q23": "sufficient",
+        "q24": "sufficient",
+        "q25": "sufficient",
+        "q26": "sufficient",
+        "q27": "sufficient",
+        "q28": "sufficient",
+        "q29": "sufficient",
+        "q30": "sufficient",
+        "q31": "sufficient",
+        "q32": "sufficient",
+        "q33": "sufficient",
+        "q34": "sufficient",
+        "q35": "sufficient",
+        "q36": "sufficient",
+        "q37": "sufficient",
+        "q38": "sufficient",
+        "q39": "sufficient",
+        "q40": "insufficient"
+      },
+      "queries_by_question": {
+        "q01": [
+          "Who is the project lead of Project Aurora?"
+        ],
+        "q02": [
+          "What cathode material does the Aurora cell use?"
+        ],
+        "q03": [
+          "Why was Prussian white chosen over layered oxides?"
+        ],
+        "q04": [
+          "What capacity retention did cell AUR-C103 reach, and after how many cycles?"
+        ],
+        "q05": [
+          "Why did cell AUR-C103 fail?"
+        ],
+        "q06": [
+          "How much did the pouch of AUR-C103 swell?"
+        ],
+        "q07": [
+          "Which electrolyte replaced the one used in the cell that failed at 45 °C, and who owns its qualification?"
+        ],
+        "q08": [
+          "What is the planned budget of the electrolyte workstream?"
+        ],
+        "q09": [
+          "When did the steering committee approve extra funding for the E-7 qualification, and how much?"
+        ],
+        "q10": [
+          "What share of the cathode budget has been spent?"
+        ],
+        "q11": [
+          "Which hard-carbon supplier is not yet qualified?"
+        ],
+        "q12": [
+          "What is the lead time for NaPF6 salt from Nordic Salts AB?"
+        ],
+        "q13": [
+          "When is milestone M3 due?"
+        ],
+        "q14": [
+          "What is the status of milestone M2?"
+        ],
+        "q15": [
+          "What capacity retention did AUR-C106 have after 300 cycles at 45 °C?"
+        ],
+        "q16": [
+          "What swelling did the lab notebook record for AUR-C106?"
+        ],
+        "q17": [
+          "When is the next checkpoint noted in the scanned lab notebook?"
+        ],
+        "q18": [
+          "What pilot batch size is written on the E-7 qualification plan whiteboard?"
+        ],
+        "q19": [
+          "Which cell has the lowest bar in the capacity retention bar chart?"
+        ],
+        "q20": [
+          "What does the photo on the Aurora S1 product page show?"
+        ],
+        "q21": [
+          "What is the nominal voltage of the Aurora S1 cell?"
+        ],
+        "q22": [
+          "Does the Aurora S1's rated cycle life match the project's cycle target?"
+        ],
+        "q23": [
+          "What is the role of NaDFOB in the E-7 electrolyte?"
+        ],
+        "q24": [
+          "Which solvents replace DEC in the E-7 blend?"
+        ],
+        "q25": [
+          "What volume fraction of DMC does E-7 contain?"
+        ],
+        "q26": [
+          "Who prepared the safety review of the E-5 failure?"
+        ],
+        "q27": [
+          "Which gases were found in the failed pouch?"
+        ],
+        "q28": [
+          "What does the safety review recommend for pilot-line pouches?"
+        ],
+        "q29": [
+          "Which cells meet the 5% swelling limit?"
+        ],
+        "q30": [
+          "What separator does the Aurora cell use?"
+        ],
+        "q31": [
+          "What is the N/P ratio of the anode?"
+        ],
+        "q32": [
+          "What voltage window is used in the cycling protocol?"
+        ],
+        "q33": [
+          "Who tested cell AUR-C107?"
+        ],
+        "q34": [
+          "What is the fallback if E-7 swelling exceeds the limit, and how is that fallback performing?"
+        ],
+        "q35": [
+          "When is the next technical review meeting?"
+        ],
+        "q36": [
+          "Who owns risk R2 in the risk register?"
+        ],
+        "q37": [
+          "What is the energy density of the Aurora S1?"
+        ],
+        "q38": [
+          "What is the price per kWh of the Aurora S1 cell?"
+        ],
+        "q39": [
+          "Who is the CEO of Helios Energy Lab?"
+        ],
+        "q40": [
+          "What capacity retention did cell AUR-C109 reach?"
+        ]
+      },
+      "route_by_question": {
+        "q01": "lookup",
+        "q02": "lookup",
+        "q03": "multi_hop",
+        "q04": "table",
+        "q05": "multi_hop",
+        "q06": "table",
+        "q07": "multi_hop",
+        "q08": "table",
+        "q09": "multi_hop",
+        "q10": "table",
+        "q11": "lookup",
+        "q12": "table",
+        "q13": "table",
+        "q14": "table",
+        "q15": "table",
+        "q16": "lookup",
+        "q17": "table",
+        "q18": "image",
+        "q19": "image",
+        "q20": "image",
+        "q21": "table",
+        "q22": "multi_hop",
+        "q23": "lookup",
+        "q24": "table",
+        "q25": "table",
+        "q26": "lookup",
+        "q27": "lookup",
+        "q28": "lookup",
+        "q29": "table",
+        "q30": "lookup",
+        "q31": "table",
+        "q32": "table",
+        "q33": "lookup",
+        "q34": "multi_hop",
+        "q35": "table",
+        "q36": "table",
+        "q37": "table",
+        "q38": "table",
+        "q39": "lookup",
+        "q40": "table"
+      },
+      "agent_used": 0,
+      "agent_actions": {},
+      "agent_steps_by_question": {},
+      "vs_base": {
+        "wins": [],
+        "losses": [
+          "q24",
+          "q35"
+        ]
+      }
+    },
+    "self_query_soft": {
+      "hit": 1.0,
+      "recall": 0.986,
+      "precision": 0.292,
+      "mrr": 0.928,
+      "ndcg": 0.878,
+      "context_precision": 0.336,
+      "recall_by_type": {
+        "comparative": 0.5,
+        "factual": 1.0,
+        "image": 1.0,
+        "keyword": 1.0,
+        "multi_hop": 1.0,
+        "table": 1.0
+      },
+      "per_question_recall": {
+        "q01": 1.0,
+        "q02": 1.0,
+        "q03": 1.0,
+        "q04": 1.0,
+        "q05": 1.0,
+        "q06": 1.0,
+        "q07": 1.0,
+        "q08": 1.0,
+        "q09": 1.0,
+        "q10": 1.0,
+        "q11": 1.0,
+        "q12": 1.0,
+        "q13": 1.0,
+        "q14": 1.0,
+        "q15": 1.0,
+        "q16": 1.0,
+        "q17": 1.0,
+        "q18": 1.0,
+        "q19": 1.0,
+        "q20": 1.0,
+        "q21": 1.0,
+        "q22": 0.5,
+        "q23": 1.0,
+        "q24": 1.0,
+        "q25": 1.0,
+        "q26": 1.0,
+        "q27": 1.0,
+        "q28": 1.0,
+        "q29": 1.0,
+        "q30": 1.0,
+        "q31": 1.0,
+        "q32": 1.0,
+        "q33": 1.0,
+        "q34": 1.0,
+        "q35": 1.0,
+        "q36": 1.0,
+        "q37": 1.0
+      },
+      "latency_ms": {
+        "p50": 718.5,
+        "p95": 6562.6
+      },
+      "llm_calls_per_question": 1.07,
+      "attempts": {
+        "0": 40
+      },
+      "verdicts": {
+        "sufficient": 39,
+        "insufficient": 1
+      },
+      "verdict_by_question": {
+        "q01": "sufficient",
+        "q02": "sufficient",
+        "q03": "sufficient",
+        "q04": "sufficient",
+        "q05": "sufficient",
+        "q06": "sufficient",
+        "q07": "sufficient",
+        "q08": "sufficient",
+        "q09": "sufficient",
+        "q10": "sufficient",
+        "q11": "sufficient",
+        "q12": "sufficient",
+        "q13": "sufficient",
+        "q14": "sufficient",
+        "q15": "sufficient",
+        "q16": "sufficient",
+        "q17": "sufficient",
+        "q18": "sufficient",
+        "q19": "sufficient",
+        "q20": "sufficient",
+        "q21": "sufficient",
+        "q22": "sufficient",
+        "q23": "sufficient",
+        "q24": "sufficient",
+        "q25": "sufficient",
+        "q26": "sufficient",
+        "q27": "sufficient",
+        "q28": "sufficient",
+        "q29": "sufficient",
+        "q30": "sufficient",
+        "q31": "sufficient",
+        "q32": "sufficient",
+        "q33": "sufficient",
+        "q34": "sufficient",
+        "q35": "sufficient",
+        "q36": "sufficient",
+        "q37": "sufficient",
+        "q38": "sufficient",
+        "q39": "sufficient",
+        "q40": "insufficient"
+      },
+      "queries_by_question": {
+        "q01": [
+          "Who is the project lead of Project Aurora?"
+        ],
+        "q02": [
+          "What cathode material does the Aurora cell use?"
+        ],
+        "q03": [
+          "Why was Prussian white chosen over layered oxides?"
+        ],
+        "q04": [
+          "What capacity retention did cell AUR-C103 reach, and after how many cycles?"
+        ],
+        "q05": [
+          "Why did cell AUR-C103 fail?"
+        ],
+        "q06": [
+          "How much did the pouch of AUR-C103 swell?"
+        ],
+        "q07": [
+          "Which electrolyte replaced the one used in the cell that failed at 45 °C, and who owns its qualification?"
+        ],
+        "q08": [
+          "What is the planned budget of the electrolyte workstream?"
+        ],
+        "q09": [
+          "When did the steering committee approve extra funding for the E-7 qualification, and how much?"
+        ],
+        "q10": [
+          "What share of the cathode budget has been spent?"
+        ],
+        "q11": [
+          "Which hard-carbon supplier is not yet qualified?"
+        ],
+        "q12": [
+          "What is the lead time for NaPF6 salt from Nordic Salts AB?"
+        ],
+        "q13": [
+          "When is milestone M3 due?"
+        ],
+        "q14": [
+          "What is the status of milestone M2?"
+        ],
+        "q15": [
+          "What capacity retention did AUR-C106 have after 300 cycles at 45 °C?"
+        ],
+        "q16": [
+          "What swelling did the lab notebook record for AUR-C106?"
+        ],
+        "q17": [
+          "When is the next checkpoint noted in the scanned lab notebook?"
+        ],
+        "q18": [
+          "What pilot batch size is written on the E-7 qualification plan whiteboard?"
+        ],
+        "q19": [
+          "Which cell has the lowest bar in the capacity retention bar chart?"
+        ],
+        "q20": [
+          "What does the photo on the Aurora S1 product page show?"
+        ],
+        "q21": [
+          "What is the nominal voltage of the Aurora S1 cell?"
+        ],
+        "q22": [
+          "Does the Aurora S1's rated cycle life match the project's cycle target?"
+        ],
+        "q23": [
+          "What is the role of NaDFOB in the E-7 electrolyte?"
+        ],
+        "q24": [
+          "Which solvents replace DEC in the E-7 blend?"
+        ],
+        "q25": [
+          "What volume fraction of DMC does E-7 contain?"
+        ],
+        "q26": [
+          "Who prepared the safety review of the E-5 failure?"
+        ],
+        "q27": [
+          "Which gases were found in the failed pouch?"
+        ],
+        "q28": [
+          "What does the safety review recommend for pilot-line pouches?"
+        ],
+        "q29": [
+          "Which cells meet the 5% swelling limit?"
+        ],
+        "q30": [
+          "What separator does the Aurora cell use?"
+        ],
+        "q31": [
+          "What is the N/P ratio of the anode?"
+        ],
+        "q32": [
+          "What voltage window is used in the cycling protocol?"
+        ],
+        "q33": [
+          "Who tested cell AUR-C107?"
+        ],
+        "q34": [
+          "What is the fallback if E-7 swelling exceeds the limit, and how is that fallback performing?"
+        ],
+        "q35": [
+          "When is the next technical review meeting?"
+        ],
+        "q36": [
+          "Who owns risk R2 in the risk register?"
+        ],
+        "q37": [
+          "What is the energy density of the Aurora S1?"
+        ],
+        "q38": [
+          "What is the price per kWh of the Aurora S1 cell?"
+        ],
+        "q39": [
+          "Who is the CEO of Helios Energy Lab?"
+        ],
+        "q40": [
+          "What capacity retention did cell AUR-C109 reach?"
+        ]
+      },
+      "route_by_question": {
+        "q01": "lookup",
+        "q02": "lookup",
+        "q03": "lookup",
+        "q04": "lookup",
+        "q05": "lookup",
+        "q06": "lookup",
+        "q07": "lookup",
+        "q08": "lookup",
+        "q09": "lookup",
+        "q10": "lookup",
+        "q11": "lookup",
+        "q12": "lookup",
+        "q13": "lookup",
+        "q14": "lookup",
+        "q15": "lookup",
+        "q16": "lookup",
+        "q17": "lookup",
+        "q18": "lookup",
+        "q19": "lookup",
+        "q20": "lookup",
+        "q21": "lookup",
+        "q22": "lookup",
+        "q23": "lookup",
+        "q24": "lookup",
+        "q25": "lookup",
+        "q26": "lookup",
+        "q27": "lookup",
+        "q28": "lookup",
+        "q29": "lookup",
+        "q30": "lookup",
+        "q31": "lookup",
+        "q32": "lookup",
+        "q33": "lookup",
+        "q34": "lookup",
+        "q35": "lookup",
+        "q36": "lookup",
+        "q37": "lookup",
+        "q38": "lookup",
+        "q39": "lookup",
+        "q40": "lookup"
+      },
+      "agent_used": 0,
+      "agent_actions": {},
+      "agent_steps_by_question": {},
+      "self_query": {
+        "questions_filtered": 10,
+        "accepted_right": 10,
+        "accepted_wrong": 0,
+        "hard_filter_safe": [
+          "q08",
+          "q10",
+          "q16",
+          "q17",
+          "q18",
+          "q20",
+          "q21",
+          "q23",
+          "q33",
+          "q37"
+        ],
+        "hard_filter_loses_evidence": [],
+        "by_question": {
+          "q02": {
+            "accepted": [],
+            "proposed": [
+              "helios_aurora_s1.html"
+            ],
+            "rejected": [
+              "helios_aurora_s1.html"
+            ]
+          },
+          "q04": {
+            "accepted": [],
+            "proposed": [
+              "cell_test_results.csv"
+            ],
+            "rejected": [
+              "cell_test_results.csv"
+            ]
+          },
+          "q05": {
+            "accepted": [],
+            "proposed": [
+              "cell_test_results.csv"
+            ],
+            "rejected": [
+              "cell_test_results.csv"
+            ]
+          },
+          "q06": {
+            "accepted": [],
+            "proposed": [
+              "cell_test_results.csv"
+            ],
+            "rejected": [
+              "cell_test_results.csv"
+            ]
+          },
+          "q07": {
+            "accepted": [],
+            "proposed": [
+              "e7_technical_note.pdf"
+            ],
+            "rejected": [
+              "e7_technical_note.pdf"
+            ]
+          },
+          "q08": {
+            "accepted": [
+              "aurora_budget_2026.xlsx"
+            ],
+            "proposed": [
+              "aurora_budget_2026.xlsx"
+            ],
+            "rejected": []
+          },
+          "q10": {
+            "accepted": [
+              "aurora_budget_2026.xlsx"
+            ],
+            "proposed": [
+              "aurora_budget_2026.xlsx"
+            ],
+            "rejected": []
+          },
+          "q14": {
+            "accepted": [],
+            "proposed": [
+              "aurora_status_report_2026-03.docx"
+            ],
+            "rejected": [
+              "aurora_status_report_2026-03.docx"
+            ]
+          },
+          "q15": {
+            "accepted": [],
+            "proposed": [
+              "cell_test_results.csv"
+            ],
+            "rejected": [
+              "cell_test_results.csv"
+            ]
+          },
+          "q16": {
+            "accepted": [
+              "aurora_lab_notebook_scan.pdf"
+            ],
+            "proposed": [
+              "aurora_lab_notebook_scan.pdf"
+            ],
+            "rejected": []
+          },
+          "q17": {
+            "accepted": [
+              "aurora_lab_notebook_scan.pdf"
+            ],
+            "proposed": [
+              "aurora_lab_notebook_scan.pdf"
+            ],
+            "rejected": []
+          },
+          "q18": {
+            "accepted": [
+              "whiteboard_2026-03-20.jpg"
+            ],
+            "proposed": [
+              "whiteboard_2026-03-20.jpg"
+            ],
+            "rejected": []
+          },
+          "q19": {
+            "accepted": [],
+            "proposed": [
+              "helios_aurora_s1.html"
+            ],
+            "rejected": [
+              "helios_aurora_s1.html"
+            ]
+          },
+          "q20": {
+            "accepted": [
+              "helios_aurora_s1.html"
+            ],
+            "proposed": [
+              "helios_aurora_s1.html"
+            ],
+            "rejected": []
+          },
+          "q21": {
+            "accepted": [
+              "helios_aurora_s1.html"
+            ],
+            "proposed": [
+              "helios_aurora_s1.html"
+            ],
+            "rejected": []
+          },
+          "q22": {
+            "accepted": [],
+            "proposed": [
+              "helios_aurora_s1.html"
+            ],
+            "rejected": [
+              "helios_aurora_s1.html"
+            ]
+          },
+          "q23": {
+            "accepted": [
+              "e7_technical_note.pdf"
+            ],
+            "proposed": [
+              "e7_technical_note.pdf"
+            ],
+            "rejected": []
+          },
+          "q24": {
+            "accepted": [],
+            "proposed": [
+              "e7_technical_note.pdf"
+            ],
+            "rejected": [
+              "e7_technical_note.pdf"
+            ]
+          },
+          "q25": {
+            "accepted": [],
+            "proposed": [
+              "e7_technical_note.pdf"
+            ],
+            "rejected": [
+              "e7_technical_note.pdf"
+            ]
+          },
+          "q29": {
+            "accepted": [],
+            "proposed": [
+              "cell_test_results.csv"
+            ],
+            "rejected": [
+              "cell_test_results.csv"
+            ]
+          },
+          "q30": {
+            "accepted": [],
+            "proposed": [
+              "helios_aurora_s1.html"
+            ],
+            "rejected": [
+              "helios_aurora_s1.html"
+            ]
+          },
+          "q31": {
+            "accepted": [],
+            "proposed": [
+              "helios_aurora_s1.html"
+            ],
+            "rejected": [
+              "helios_aurora_s1.html"
+            ]
+          },
+          "q32": {
+            "accepted": [],
+            "proposed": [
+              "helios_aurora_s1.html"
+            ],
+            "rejected": [
+              "helios_aurora_s1.html"
+            ]
+          },
+          "q33": {
+            "accepted": [
+              "cell_test_results.csv"
+            ],
+            "proposed": [
+              "cell_test_results.csv"
+            ],
+            "rejected": []
+          },
+          "q34": {
+            "accepted": [],
+            "proposed": [
+              "e7_technical_note.pdf"
+            ],
+            "rejected": [
+              "e7_technical_note.pdf"
+            ]
+          },
+          "q37": {
+            "accepted": [
+              "helios_aurora_s1.html"
+            ],
+            "proposed": [
+              "helios_aurora_s1.html"
+            ],
+            "rejected": []
+          },
+          "q38": {
+            "accepted": [
+              "helios_aurora_s1.html"
+            ],
+            "proposed": [
+              "helios_aurora_s1.html"
+            ],
+            "rejected": []
+          },
+          "q40": {
+            "accepted": [],
+            "proposed": [
+              "cell_test_results.csv"
+            ],
+            "rejected": [
+              "cell_test_results.csv"
+            ]
+          }
+        }
+      },
+      "vs_base": {
+        "wins": [],
+        "losses": []
+      }
+    },
+    "self_query_hard": {
+      "hit": 1.0,
+      "recall": 0.986,
+      "precision": 0.381,
+      "mrr": 0.928,
+      "ndcg": 0.878,
+      "context_precision": 0.413,
+      "recall_by_type": {
+        "comparative": 0.5,
+        "factual": 1.0,
+        "image": 1.0,
+        "keyword": 1.0,
+        "multi_hop": 1.0,
+        "table": 1.0
+      },
+      "per_question_recall": {
+        "q01": 1.0,
+        "q02": 1.0,
+        "q03": 1.0,
+        "q04": 1.0,
+        "q05": 1.0,
+        "q06": 1.0,
+        "q07": 1.0,
+        "q08": 1.0,
+        "q09": 1.0,
+        "q10": 1.0,
+        "q11": 1.0,
+        "q12": 1.0,
+        "q13": 1.0,
+        "q14": 1.0,
+        "q15": 1.0,
+        "q16": 1.0,
+        "q17": 1.0,
+        "q18": 1.0,
+        "q19": 1.0,
+        "q20": 1.0,
+        "q21": 1.0,
+        "q22": 0.5,
+        "q23": 1.0,
+        "q24": 1.0,
+        "q25": 1.0,
+        "q26": 1.0,
+        "q27": 1.0,
+        "q28": 1.0,
+        "q29": 1.0,
+        "q30": 1.0,
+        "q31": 1.0,
+        "q32": 1.0,
+        "q33": 1.0,
+        "q34": 1.0,
+        "q35": 1.0,
+        "q36": 1.0,
+        "q37": 1.0
+      },
+      "latency_ms": {
+        "p50": 811.2,
+        "p95": 7919.5
+      },
+      "llm_calls_per_question": 1.07,
+      "attempts": {
+        "0": 40
+      },
+      "verdicts": {
+        "sufficient": 39,
+        "insufficient": 1
+      },
+      "verdict_by_question": {
+        "q01": "sufficient",
+        "q02": "sufficient",
+        "q03": "sufficient",
+        "q04": "sufficient",
+        "q05": "sufficient",
+        "q06": "sufficient",
+        "q07": "sufficient",
+        "q08": "sufficient",
+        "q09": "sufficient",
+        "q10": "sufficient",
+        "q11": "sufficient",
+        "q12": "sufficient",
+        "q13": "sufficient",
+        "q14": "sufficient",
+        "q15": "sufficient",
+        "q16": "sufficient",
+        "q17": "sufficient",
+        "q18": "sufficient",
+        "q19": "sufficient",
+        "q20": "sufficient",
+        "q21": "sufficient",
+        "q22": "sufficient",
+        "q23": "sufficient",
+        "q24": "sufficient",
+        "q25": "sufficient",
+        "q26": "sufficient",
+        "q27": "sufficient",
+        "q28": "sufficient",
+        "q29": "sufficient",
+        "q30": "sufficient",
+        "q31": "sufficient",
+        "q32": "sufficient",
+        "q33": "sufficient",
+        "q34": "sufficient",
+        "q35": "sufficient",
+        "q36": "sufficient",
+        "q37": "sufficient",
+        "q38": "sufficient",
+        "q39": "sufficient",
+        "q40": "insufficient"
+      },
+      "queries_by_question": {
+        "q01": [
+          "Who is the project lead of Project Aurora?"
+        ],
+        "q02": [
+          "What cathode material does the Aurora cell use?"
+        ],
+        "q03": [
+          "Why was Prussian white chosen over layered oxides?"
+        ],
+        "q04": [
+          "What capacity retention did cell AUR-C103 reach, and after how many cycles?"
+        ],
+        "q05": [
+          "Why did cell AUR-C103 fail?"
+        ],
+        "q06": [
+          "How much did the pouch of AUR-C103 swell?"
+        ],
+        "q07": [
+          "Which electrolyte replaced the one used in the cell that failed at 45 °C, and who owns its qualification?"
+        ],
+        "q08": [
+          "What is the planned budget of the electrolyte workstream?"
+        ],
+        "q09": [
+          "When did the steering committee approve extra funding for the E-7 qualification, and how much?"
+        ],
+        "q10": [
+          "What share of the cathode budget has been spent?"
+        ],
+        "q11": [
+          "Which hard-carbon supplier is not yet qualified?"
+        ],
+        "q12": [
+          "What is the lead time for NaPF6 salt from Nordic Salts AB?"
+        ],
+        "q13": [
+          "When is milestone M3 due?"
+        ],
+        "q14": [
+          "What is the status of milestone M2?"
+        ],
+        "q15": [
+          "What capacity retention did AUR-C106 have after 300 cycles at 45 °C?"
+        ],
+        "q16": [
+          "What swelling did the lab notebook record for AUR-C106?"
+        ],
+        "q17": [
+          "When is the next checkpoint noted in the scanned lab notebook?"
+        ],
+        "q18": [
+          "What pilot batch size is written on the E-7 qualification plan whiteboard?"
+        ],
+        "q19": [
+          "Which cell has the lowest bar in the capacity retention bar chart?"
+        ],
+        "q20": [
+          "What does the photo on the Aurora S1 product page show?"
+        ],
+        "q21": [
+          "What is the nominal voltage of the Aurora S1 cell?"
+        ],
+        "q22": [
+          "Does the Aurora S1's rated cycle life match the project's cycle target?"
+        ],
+        "q23": [
+          "What is the role of NaDFOB in the E-7 electrolyte?"
+        ],
+        "q24": [
+          "Which solvents replace DEC in the E-7 blend?"
+        ],
+        "q25": [
+          "What volume fraction of DMC does E-7 contain?"
+        ],
+        "q26": [
+          "Who prepared the safety review of the E-5 failure?"
+        ],
+        "q27": [
+          "Which gases were found in the failed pouch?"
+        ],
+        "q28": [
+          "What does the safety review recommend for pilot-line pouches?"
+        ],
+        "q29": [
+          "Which cells meet the 5% swelling limit?"
+        ],
+        "q30": [
+          "What separator does the Aurora cell use?"
+        ],
+        "q31": [
+          "What is the N/P ratio of the anode?"
+        ],
+        "q32": [
+          "What voltage window is used in the cycling protocol?"
+        ],
+        "q33": [
+          "Who tested cell AUR-C107?"
+        ],
+        "q34": [
+          "What is the fallback if E-7 swelling exceeds the limit, and how is that fallback performing?"
+        ],
+        "q35": [
+          "When is the next technical review meeting?"
+        ],
+        "q36": [
+          "Who owns risk R2 in the risk register?"
+        ],
+        "q37": [
+          "What is the energy density of the Aurora S1?"
+        ],
+        "q38": [
+          "What is the price per kWh of the Aurora S1 cell?"
+        ],
+        "q39": [
+          "Who is the CEO of Helios Energy Lab?"
+        ],
+        "q40": [
+          "What capacity retention did cell AUR-C109 reach?"
+        ]
+      },
+      "route_by_question": {
+        "q01": "lookup",
+        "q02": "lookup",
+        "q03": "lookup",
+        "q04": "lookup",
+        "q05": "lookup",
+        "q06": "lookup",
+        "q07": "lookup",
+        "q08": "lookup",
+        "q09": "lookup",
+        "q10": "lookup",
+        "q11": "lookup",
+        "q12": "lookup",
+        "q13": "lookup",
+        "q14": "lookup",
+        "q15": "lookup",
+        "q16": "lookup",
+        "q17": "lookup",
+        "q18": "lookup",
+        "q19": "lookup",
+        "q20": "lookup",
+        "q21": "lookup",
+        "q22": "lookup",
+        "q23": "lookup",
+        "q24": "lookup",
+        "q25": "lookup",
+        "q26": "lookup",
+        "q27": "lookup",
+        "q28": "lookup",
+        "q29": "lookup",
+        "q30": "lookup",
+        "q31": "lookup",
+        "q32": "lookup",
+        "q33": "lookup",
+        "q34": "lookup",
+        "q35": "lookup",
+        "q36": "lookup",
+        "q37": "lookup",
+        "q38": "lookup",
+        "q39": "lookup",
+        "q40": "lookup"
+      },
+      "agent_used": 0,
+      "agent_actions": {},
+      "agent_steps_by_question": {},
+      "self_query": {
+        "questions_filtered": 10,
+        "accepted_right": 10,
+        "accepted_wrong": 0,
+        "hard_filter_safe": [
+          "q08",
+          "q10",
+          "q16",
+          "q17",
+          "q18",
+          "q20",
+          "q21",
+          "q23",
+          "q33",
+          "q37"
+        ],
+        "hard_filter_loses_evidence": [],
+        "by_question": {
+          "q02": {
+            "accepted": [],
+            "proposed": [
+              "helios_aurora_s1.html"
+            ],
+            "rejected": [
+              "helios_aurora_s1.html"
+            ]
+          },
+          "q04": {
+            "accepted": [],
+            "proposed": [
+              "cell_test_results.csv"
+            ],
+            "rejected": [
+              "cell_test_results.csv"
+            ]
+          },
+          "q05": {
+            "accepted": [],
+            "proposed": [
+              "cell_test_results.csv"
+            ],
+            "rejected": [
+              "cell_test_results.csv"
+            ]
+          },
+          "q06": {
+            "accepted": [],
+            "proposed": [
+              "cell_test_results.csv"
+            ],
+            "rejected": [
+              "cell_test_results.csv"
+            ]
+          },
+          "q07": {
+            "accepted": [],
+            "proposed": [
+              "e7_technical_note.pdf"
+            ],
+            "rejected": [
+              "e7_technical_note.pdf"
+            ]
+          },
+          "q08": {
+            "accepted": [
+              "aurora_budget_2026.xlsx"
+            ],
+            "proposed": [
+              "aurora_budget_2026.xlsx"
+            ],
+            "rejected": []
+          },
+          "q10": {
+            "accepted": [
+              "aurora_budget_2026.xlsx"
+            ],
+            "proposed": [
+              "aurora_budget_2026.xlsx"
+            ],
+            "rejected": []
+          },
+          "q14": {
+            "accepted": [],
+            "proposed": [
+              "aurora_status_report_2026-03.docx"
+            ],
+            "rejected": [
+              "aurora_status_report_2026-03.docx"
+            ]
+          },
+          "q15": {
+            "accepted": [],
+            "proposed": [
+              "cell_test_results.csv"
+            ],
+            "rejected": [
+              "cell_test_results.csv"
+            ]
+          },
+          "q16": {
+            "accepted": [
+              "aurora_lab_notebook_scan.pdf"
+            ],
+            "proposed": [
+              "aurora_lab_notebook_scan.pdf"
+            ],
+            "rejected": []
+          },
+          "q17": {
+            "accepted": [
+              "aurora_lab_notebook_scan.pdf"
+            ],
+            "proposed": [
+              "aurora_lab_notebook_scan.pdf"
+            ],
+            "rejected": []
+          },
+          "q18": {
+            "accepted": [
+              "whiteboard_2026-03-20.jpg"
+            ],
+            "proposed": [
+              "whiteboard_2026-03-20.jpg"
+            ],
+            "rejected": []
+          },
+          "q19": {
+            "accepted": [],
+            "proposed": [
+              "helios_aurora_s1.html"
+            ],
+            "rejected": [
+              "helios_aurora_s1.html"
+            ]
+          },
+          "q20": {
+            "accepted": [
+              "helios_aurora_s1.html"
+            ],
+            "proposed": [
+              "helios_aurora_s1.html"
+            ],
+            "rejected": []
+          },
+          "q21": {
+            "accepted": [
+              "helios_aurora_s1.html"
+            ],
+            "proposed": [
+              "helios_aurora_s1.html"
+            ],
+            "rejected": []
+          },
+          "q22": {
+            "accepted": [],
+            "proposed": [
+              "helios_aurora_s1.html"
+            ],
+            "rejected": [
+              "helios_aurora_s1.html"
+            ]
+          },
+          "q23": {
+            "accepted": [
+              "e7_technical_note.pdf"
+            ],
+            "proposed": [
+              "e7_technical_note.pdf"
+            ],
+            "rejected": []
+          },
+          "q24": {
+            "accepted": [],
+            "proposed": [
+              "e7_technical_note.pdf"
+            ],
+            "rejected": [
+              "e7_technical_note.pdf"
+            ]
+          },
+          "q25": {
+            "accepted": [],
+            "proposed": [
+              "e7_technical_note.pdf"
+            ],
+            "rejected": [
+              "e7_technical_note.pdf"
+            ]
+          },
+          "q29": {
+            "accepted": [],
+            "proposed": [
+              "cell_test_results.csv"
+            ],
+            "rejected": [
+              "cell_test_results.csv"
+            ]
+          },
+          "q30": {
+            "accepted": [],
+            "proposed": [
+              "helios_aurora_s1.html"
+            ],
+            "rejected": [
+              "helios_aurora_s1.html"
+            ]
+          },
+          "q31": {
+            "accepted": [],
+            "proposed": [
+              "helios_aurora_s1.html"
+            ],
+            "rejected": [
+              "helios_aurora_s1.html"
+            ]
+          },
+          "q32": {
+            "accepted": [],
+            "proposed": [
+              "helios_aurora_s1.html"
+            ],
+            "rejected": [
+              "helios_aurora_s1.html"
+            ]
+          },
+          "q33": {
+            "accepted": [
+              "cell_test_results.csv"
+            ],
+            "proposed": [
+              "cell_test_results.csv"
+            ],
+            "rejected": []
+          },
+          "q34": {
+            "accepted": [],
+            "proposed": [
+              "e7_technical_note.pdf"
+            ],
+            "rejected": [
+              "e7_technical_note.pdf"
+            ]
+          },
+          "q37": {
+            "accepted": [
+              "helios_aurora_s1.html"
+            ],
+            "proposed": [
+              "helios_aurora_s1.html"
+            ],
+            "rejected": []
+          },
+          "q38": {
+            "accepted": [
+              "helios_aurora_s1.html"
+            ],
+            "proposed": [
+              "helios_aurora_s1.html"
+            ],
+            "rejected": []
+          },
+          "q40": {
+            "accepted": [],
+            "proposed": [
+              "cell_test_results.csv"
+            ],
+            "rejected": [
+              "cell_test_results.csv"
+            ]
+          }
+        }
+      },
+      "vs_base": {
+        "wins": [],
+        "losses": []
+      }
+    },
+    "diverse_2": {
+      "hit": 1.0,
+      "recall": 1.0,
+      "precision": 0.297,
+      "mrr": 0.928,
+      "ndcg": 0.891,
+      "context_precision": 0.303,
+      "recall_by_type": {
+        "comparative": 1.0,
+        "factual": 1.0,
+        "image": 1.0,
+        "keyword": 1.0,
+        "multi_hop": 1.0,
+        "table": 1.0
+      },
+      "per_question_recall": {
+        "q01": 1.0,
+        "q02": 1.0,
+        "q03": 1.0,
+        "q04": 1.0,
+        "q05": 1.0,
+        "q06": 1.0,
+        "q07": 1.0,
+        "q08": 1.0,
+        "q09": 1.0,
+        "q10": 1.0,
+        "q11": 1.0,
+        "q12": 1.0,
+        "q13": 1.0,
+        "q14": 1.0,
+        "q15": 1.0,
+        "q16": 1.0,
+        "q17": 1.0,
+        "q18": 1.0,
+        "q19": 1.0,
+        "q20": 1.0,
+        "q21": 1.0,
+        "q22": 1.0,
+        "q23": 1.0,
+        "q24": 1.0,
+        "q25": 1.0,
+        "q26": 1.0,
+        "q27": 1.0,
+        "q28": 1.0,
+        "q29": 1.0,
+        "q30": 1.0,
+        "q31": 1.0,
+        "q32": 1.0,
+        "q33": 1.0,
+        "q34": 1.0,
+        "q35": 1.0,
+        "q36": 1.0,
+        "q37": 1.0
+      },
+      "latency_ms": {
+        "p50": 40.2,
+        "p95": 49.6
+      },
+      "llm_calls_per_question": 0.0,
+      "attempts": {
+        "0": 40
+      },
+      "verdicts": {
+        "sufficient": 39,
+        "insufficient": 1
+      },
+      "verdict_by_question": {
+        "q01": "sufficient",
+        "q02": "sufficient",
+        "q03": "sufficient",
+        "q04": "sufficient",
+        "q05": "sufficient",
+        "q06": "sufficient",
+        "q07": "sufficient",
+        "q08": "sufficient",
+        "q09": "sufficient",
+        "q10": "sufficient",
+        "q11": "sufficient",
+        "q12": "sufficient",
+        "q13": "sufficient",
+        "q14": "sufficient",
+        "q15": "sufficient",
+        "q16": "sufficient",
+        "q17": "sufficient",
+        "q18": "sufficient",
+        "q19": "sufficient",
+        "q20": "sufficient",
+        "q21": "sufficient",
+        "q22": "sufficient",
+        "q23": "sufficient",
+        "q24": "sufficient",
+        "q25": "sufficient",
+        "q26": "sufficient",
+        "q27": "sufficient",
+        "q28": "sufficient",
+        "q29": "sufficient",
+        "q30": "sufficient",
+        "q31": "sufficient",
+        "q32": "sufficient",
+        "q33": "sufficient",
+        "q34": "sufficient",
+        "q35": "sufficient",
+        "q36": "sufficient",
+        "q37": "sufficient",
+        "q38": "sufficient",
+        "q39": "sufficient",
+        "q40": "insufficient"
+      },
+      "queries_by_question": {
+        "q01": [
+          "Who is the project lead of Project Aurora?"
+        ],
+        "q02": [
+          "What cathode material does the Aurora cell use?"
+        ],
+        "q03": [
+          "Why was Prussian white chosen over layered oxides?"
+        ],
+        "q04": [
+          "What capacity retention did cell AUR-C103 reach, and after how many cycles?"
+        ],
+        "q05": [
+          "Why did cell AUR-C103 fail?"
+        ],
+        "q06": [
+          "How much did the pouch of AUR-C103 swell?"
+        ],
+        "q07": [
+          "Which electrolyte replaced the one used in the cell that failed at 45 °C, and who owns its qualification?"
+        ],
+        "q08": [
+          "What is the planned budget of the electrolyte workstream?"
+        ],
+        "q09": [
+          "When did the steering committee approve extra funding for the E-7 qualification, and how much?"
+        ],
+        "q10": [
+          "What share of the cathode budget has been spent?"
+        ],
+        "q11": [
+          "Which hard-carbon supplier is not yet qualified?"
+        ],
+        "q12": [
+          "What is the lead time for NaPF6 salt from Nordic Salts AB?"
+        ],
+        "q13": [
+          "When is milestone M3 due?"
+        ],
+        "q14": [
+          "What is the status of milestone M2?"
+        ],
+        "q15": [
+          "What capacity retention did AUR-C106 have after 300 cycles at 45 °C?"
+        ],
+        "q16": [
+          "What swelling did the lab notebook record for AUR-C106?"
+        ],
+        "q17": [
+          "When is the next checkpoint noted in the scanned lab notebook?"
+        ],
+        "q18": [
+          "What pilot batch size is written on the E-7 qualification plan whiteboard?"
+        ],
+        "q19": [
+          "Which cell has the lowest bar in the capacity retention bar chart?"
+        ],
+        "q20": [
+          "What does the photo on the Aurora S1 product page show?"
+        ],
+        "q21": [
+          "What is the nominal voltage of the Aurora S1 cell?"
+        ],
+        "q22": [
+          "Does the Aurora S1's rated cycle life match the project's cycle target?"
+        ],
+        "q23": [
+          "What is the role of NaDFOB in the E-7 electrolyte?"
+        ],
+        "q24": [
+          "Which solvents replace DEC in the E-7 blend?"
+        ],
+        "q25": [
+          "What volume fraction of DMC does E-7 contain?"
+        ],
+        "q26": [
+          "Who prepared the safety review of the E-5 failure?"
+        ],
+        "q27": [
+          "Which gases were found in the failed pouch?"
+        ],
+        "q28": [
+          "What does the safety review recommend for pilot-line pouches?"
+        ],
+        "q29": [
+          "Which cells meet the 5% swelling limit?"
+        ],
+        "q30": [
+          "What separator does the Aurora cell use?"
+        ],
+        "q31": [
+          "What is the N/P ratio of the anode?"
+        ],
+        "q32": [
+          "What voltage window is used in the cycling protocol?"
+        ],
+        "q33": [
+          "Who tested cell AUR-C107?"
+        ],
+        "q34": [
+          "What is the fallback if E-7 swelling exceeds the limit, and how is that fallback performing?"
+        ],
+        "q35": [
+          "When is the next technical review meeting?"
+        ],
+        "q36": [
+          "Who owns risk R2 in the risk register?"
+        ],
+        "q37": [
+          "What is the energy density of the Aurora S1?"
+        ],
+        "q38": [
+          "What is the price per kWh of the Aurora S1 cell?"
+        ],
+        "q39": [
+          "Who is the CEO of Helios Energy Lab?"
+        ],
+        "q40": [
+          "What capacity retention did cell AUR-C109 reach?"
+        ]
+      },
+      "route_by_question": {
+        "q01": "lookup",
+        "q02": "lookup",
+        "q03": "lookup",
+        "q04": "lookup",
+        "q05": "lookup",
+        "q06": "lookup",
+        "q07": "lookup",
+        "q08": "lookup",
+        "q09": "lookup",
+        "q10": "lookup",
+        "q11": "lookup",
+        "q12": "lookup",
+        "q13": "lookup",
+        "q14": "lookup",
+        "q15": "lookup",
+        "q16": "lookup",
+        "q17": "lookup",
+        "q18": "lookup",
+        "q19": "lookup",
+        "q20": "lookup",
+        "q21": "lookup",
+        "q22": "lookup",
+        "q23": "lookup",
+        "q24": "lookup",
+        "q25": "lookup",
+        "q26": "lookup",
+        "q27": "lookup",
+        "q28": "lookup",
+        "q29": "lookup",
+        "q30": "lookup",
+        "q31": "lookup",
+        "q32": "lookup",
+        "q33": "lookup",
+        "q34": "lookup",
+        "q35": "lookup",
+        "q36": "lookup",
+        "q37": "lookup",
+        "q38": "lookup",
+        "q39": "lookup",
+        "q40": "lookup"
+      },
+      "agent_used": 0,
+      "agent_actions": {},
+      "agent_steps_by_question": {},
+      "vs_base": {
+        "wins": [
+          "q22"
+        ],
+        "losses": []
+      }
+    },
+    "agent_auto": {
+      "hit": 1.0,
+      "recall": 0.986,
+      "precision": 0.281,
+      "mrr": 0.928,
+      "ndcg": 0.869,
+      "context_precision": 0.308,
+      "recall_by_type": {
+        "comparative": 0.5,
+        "factual": 1.0,
+        "image": 1.0,
+        "keyword": 1.0,
+        "multi_hop": 1.0,
+        "table": 1.0
+      },
+      "per_question_recall": {
+        "q01": 1.0,
+        "q02": 1.0,
+        "q03": 1.0,
+        "q04": 1.0,
+        "q05": 1.0,
+        "q06": 1.0,
+        "q07": 1.0,
+        "q08": 1.0,
+        "q09": 1.0,
+        "q10": 1.0,
+        "q11": 1.0,
+        "q12": 1.0,
+        "q13": 1.0,
+        "q14": 1.0,
+        "q15": 1.0,
+        "q16": 1.0,
+        "q17": 1.0,
+        "q18": 1.0,
+        "q19": 1.0,
+        "q20": 1.0,
+        "q21": 1.0,
+        "q22": 0.5,
+        "q23": 1.0,
+        "q24": 1.0,
+        "q25": 1.0,
+        "q26": 1.0,
+        "q27": 1.0,
+        "q28": 1.0,
+        "q29": 1.0,
+        "q30": 1.0,
+        "q31": 1.0,
+        "q32": 1.0,
+        "q33": 1.0,
+        "q34": 1.0,
+        "q35": 1.0,
+        "q36": 1.0,
+        "q37": 1.0
+      },
+      "latency_ms": {
+        "p50": 46.8,
+        "p95": 4006.2
+      },
+      "llm_calls_per_question": 0.2,
+      "attempts": {
+        "0": 40
+      },
+      "verdicts": {
+        "sufficient": 39,
+        "insufficient": 1
+      },
+      "verdict_by_question": {
+        "q01": "sufficient",
+        "q02": "sufficient",
+        "q03": "sufficient",
+        "q04": "sufficient",
+        "q05": "sufficient",
+        "q06": "sufficient",
+        "q07": "sufficient",
+        "q08": "sufficient",
+        "q09": "sufficient",
+        "q10": "sufficient",
+        "q11": "sufficient",
+        "q12": "sufficient",
+        "q13": "sufficient",
+        "q14": "sufficient",
+        "q15": "sufficient",
+        "q16": "sufficient",
+        "q17": "sufficient",
+        "q18": "sufficient",
+        "q19": "sufficient",
+        "q20": "sufficient",
+        "q21": "sufficient",
+        "q22": "sufficient",
+        "q23": "sufficient",
+        "q24": "sufficient",
+        "q25": "sufficient",
+        "q26": "sufficient",
+        "q27": "sufficient",
+        "q28": "sufficient",
+        "q29": "sufficient",
+        "q30": "sufficient",
+        "q31": "sufficient",
+        "q32": "sufficient",
+        "q33": "sufficient",
+        "q34": "sufficient",
+        "q35": "sufficient",
+        "q36": "sufficient",
+        "q37": "sufficient",
+        "q38": "sufficient",
+        "q39": "sufficient",
+        "q40": "insufficient"
+      },
+      "queries_by_question": {
+        "q01": [
+          "Who is the project lead of Project Aurora?"
+        ],
+        "q02": [
+          "What cathode material does the Aurora cell use?"
+        ],
+        "q03": [
+          "Why was Prussian white chosen over layered oxides?"
+        ],
+        "q04": [
+          "What capacity retention did cell AUR-C103 reach, and after how many cycles?"
+        ],
+        "q05": [
+          "Why did cell AUR-C103 fail?"
+        ],
+        "q06": [
+          "How much did the pouch of AUR-C103 swell?"
+        ],
+        "q07": [
+          "Which electrolyte replaced the one used in the cell that failed at 45 °C, and who owns its qualification?"
+        ],
+        "q08": [
+          "What is the planned budget of the electrolyte workstream?"
+        ],
+        "q09": [
+          "When did the steering committee approve extra funding for the E-7 qualification, and how much?"
+        ],
+        "q10": [
+          "What share of the cathode budget has been spent?"
+        ],
+        "q11": [
+          "Which hard-carbon supplier is not yet qualified?"
+        ],
+        "q12": [
+          "What is the lead time for NaPF6 salt from Nordic Salts AB?"
+        ],
+        "q13": [
+          "When is milestone M3 due?"
+        ],
+        "q14": [
+          "What is the status of milestone M2?"
+        ],
+        "q15": [
+          "What capacity retention did AUR-C106 have after 300 cycles at 45 °C?"
+        ],
+        "q16": [
+          "What swelling did the lab notebook record for AUR-C106?"
+        ],
+        "q17": [
+          "When is the next checkpoint noted in the scanned lab notebook?",
+          "next checkpoint 700 cycles 2026-03-21"
+        ],
+        "q18": [
+          "What pilot batch size is written on the E-7 qualification plan whiteboard?"
+        ],
+        "q19": [
+          "Which cell has the lowest bar in the capacity retention bar chart?"
+        ],
+        "q20": [
+          "What does the photo on the Aurora S1 product page show?"
+        ],
+        "q21": [
+          "What is the nominal voltage of the Aurora S1 cell?"
+        ],
+        "q22": [
+          "Does the Aurora S1's rated cycle life match the project's cycle target?"
+        ],
+        "q23": [
+          "What is the role of NaDFOB in the E-7 electrolyte?"
+        ],
+        "q24": [
+          "Which solvents replace DEC in the E-7 blend?"
+        ],
+        "q25": [
+          "What volume fraction of DMC does E-7 contain?"
+        ],
+        "q26": [
+          "Who prepared the safety review of the E-5 failure?"
+        ],
+        "q27": [
+          "Which gases were found in the failed pouch?"
+        ],
+        "q28": [
+          "What does the safety review recommend for pilot-line pouches?"
+        ],
+        "q29": [
+          "Which cells meet the 5% swelling limit?"
+        ],
+        "q30": [
+          "What separator does the Aurora cell use?"
+        ],
+        "q31": [
+          "What is the N/P ratio of the anode?"
+        ],
+        "q32": [
+          "What voltage window is used in the cycling protocol?"
+        ],
+        "q33": [
+          "Who tested cell AUR-C107?"
+        ],
+        "q34": [
+          "What is the fallback if E-7 swelling exceeds the limit, and how is that fallback performing?"
+        ],
+        "q35": [
+          "When is the next technical review meeting?"
+        ],
+        "q36": [
+          "Who owns risk R2 in the risk register?"
+        ],
+        "q37": [
+          "What is the energy density of the Aurora S1?"
+        ],
+        "q38": [
+          "What is the price per kWh of the Aurora S1 cell?"
+        ],
+        "q39": [
+          "Who is the CEO of Helios Energy Lab?"
+        ],
+        "q40": [
+          "What capacity retention did cell AUR-C109 reach?"
+        ]
+      },
+      "route_by_question": {
+        "q01": "lookup",
+        "q02": "lookup",
+        "q03": "lookup",
+        "q04": "table",
+        "q05": "lookup",
+        "q06": "table",
+        "q07": "multi_hop",
+        "q08": "table",
+        "q09": "multi_hop",
+        "q10": "table",
+        "q11": "lookup",
+        "q12": "lookup",
+        "q13": "lookup",
+        "q14": "lookup",
+        "q15": "lookup",
+        "q16": "lookup",
+        "q17": "multi_hop",
+        "q18": "image",
+        "q19": "image",
+        "q20": "image",
+        "q21": "lookup",
+        "q22": "multi_hop",
+        "q23": "lookup",
+        "q24": "lookup",
+        "q25": "lookup",
+        "q26": "lookup",
+        "q27": "lookup",
+        "q28": "lookup",
+        "q29": "lookup",
+        "q30": "lookup",
+        "q31": "lookup",
+        "q32": "lookup",
+        "q33": "lookup",
+        "q34": "multi_hop",
+        "q35": "lookup",
+        "q36": "lookup",
+        "q37": "lookup",
+        "q38": "lookup",
+        "q39": "lookup",
+        "q40": "lookup"
+      },
+      "agent_used": 5,
+      "agent_actions": {
+        "graph": 2,
+        "finish": 2,
+        "search": 1,
+        "graph (refused)": 3
+      },
+      "agent_steps_by_question": {
+        "q07": [
+          "graph: E-7",
+          "finish: E-7"
+        ],
+        "q09": [
+          "finish: steering committee approved extra funding for the E-7 qualification"
+        ],
+        "q17": [
+          "search: next checkpoint 700 cycles 2026-03-21",
+          "graph: next checkpoint 700 cycles 2026-03-21 REFUSED repeats an earlier search"
+        ],
+        "q22": [
+          "graph: Project Aurora cycle target REFUSED entity not named in the question or passages"
+        ],
+        "q34": [
+          "graph: E-5 + FEC",
+          "graph: E-5 + FEC REFUSED repeats an earlier search"
+        ]
+      },
+      "vs_base": {
+        "wins": [],
+        "losses": []
+      }
+    },
+    "agent_always": {
+      "hit": 0.973,
+      "recall": 0.959,
+      "precision": 0.292,
+      "mrr": 0.901,
+      "ndcg": 0.867,
+      "context_precision": 0.328,
+      "recall_by_type": {
+        "comparative": 0.5,
+        "factual": 0.923,
+        "image": 1.0,
+        "keyword": 1.0,
+        "multi_hop": 1.0,
+        "table": 1.0
+      },
+      "per_question_recall": {
+        "q01": 1.0,
+        "q02": 1.0,
+        "q03": 1.0,
+        "q04": 1.0,
+        "q05": 1.0,
+        "q06": 1.0,
+        "q07": 1.0,
+        "q08": 1.0,
+        "q09": 1.0,
+        "q10": 1.0,
+        "q11": 1.0,
+        "q12": 1.0,
+        "q13": 1.0,
+        "q14": 1.0,
+        "q15": 1.0,
+        "q16": 1.0,
+        "q17": 1.0,
+        "q18": 1.0,
+        "q19": 1.0,
+        "q20": 1.0,
+        "q21": 1.0,
+        "q22": 0.5,
+        "q23": 1.0,
+        "q24": 1.0,
+        "q25": 1.0,
+        "q26": 1.0,
+        "q27": 1.0,
+        "q28": 1.0,
+        "q29": 0.0,
+        "q30": 1.0,
+        "q31": 1.0,
+        "q32": 1.0,
+        "q33": 1.0,
+        "q34": 1.0,
+        "q35": 1.0,
+        "q36": 1.0,
+        "q37": 1.0
+      },
+      "latency_ms": {
+        "p50": 2583.2,
+        "p95": 5820.9
+      },
+      "llm_calls_per_question": 1.35,
+      "attempts": {
+        "0": 40
+      },
+      "verdicts": {
+        "sufficient": 39,
+        "insufficient": 1
+      },
+      "verdict_by_question": {
+        "q01": "sufficient",
+        "q02": "sufficient",
+        "q03": "sufficient",
+        "q04": "sufficient",
+        "q05": "sufficient",
+        "q06": "sufficient",
+        "q07": "sufficient",
+        "q08": "sufficient",
+        "q09": "sufficient",
+        "q10": "sufficient",
+        "q11": "sufficient",
+        "q12": "sufficient",
+        "q13": "sufficient",
+        "q14": "sufficient",
+        "q15": "sufficient",
+        "q16": "sufficient",
+        "q17": "sufficient",
+        "q18": "sufficient",
+        "q19": "sufficient",
+        "q20": "sufficient",
+        "q21": "sufficient",
+        "q22": "sufficient",
+        "q23": "sufficient",
+        "q24": "sufficient",
+        "q25": "sufficient",
+        "q26": "sufficient",
+        "q27": "sufficient",
+        "q28": "sufficient",
+        "q29": "sufficient",
+        "q30": "sufficient",
+        "q31": "sufficient",
+        "q32": "sufficient",
+        "q33": "sufficient",
+        "q34": "sufficient",
+        "q35": "sufficient",
+        "q36": "sufficient",
+        "q37": "sufficient",
+        "q38": "sufficient",
+        "q39": "sufficient",
+        "q40": "insufficient"
+      },
+      "queries_by_question": {
+        "q01": [
+          "Who is the project lead of Project Aurora?"
+        ],
+        "q02": [
+          "What cathode material does the Aurora cell use?"
+        ],
+        "q03": [
+          "Why was Prussian white chosen over layered oxides?"
+        ],
+        "q04": [
+          "What capacity retention did cell AUR-C103 reach, and after how many cycles?"
+        ],
+        "q05": [
+          "Why did cell AUR-C103 fail?"
+        ],
+        "q06": [
+          "How much did the pouch of AUR-C103 swell?"
+        ],
+        "q07": [
+          "Which electrolyte replaced the one used in the cell that failed at 45 °C, and who owns its qualification?"
+        ],
+        "q08": [
+          "What is the planned budget of the electrolyte workstream?"
+        ],
+        "q09": [
+          "When did the steering committee approve extra funding for the E-7 qualification, and how much?"
+        ],
+        "q10": [
+          "What share of the cathode budget has been spent?"
+        ],
+        "q11": [
+          "Which hard-carbon supplier is not yet qualified?",
+          "Carbonix Materials hard-carbon qualification status",
+          "Carbonix Materials qualification status"
+        ],
+        "q12": [
+          "What is the lead time for NaPF6 salt from Nordic Salts AB?"
+        ],
+        "q13": [
+          "When is milestone M3 due?"
+        ],
+        "q14": [
+          "What is the status of milestone M2?"
+        ],
+        "q15": [
+          "What capacity retention did AUR-C106 have after 300 cycles at 45 °C?"
+        ],
+        "q16": [
+          "What swelling did the lab notebook record for AUR-C106?"
+        ],
+        "q17": [
+          "When is the next checkpoint noted in the scanned lab notebook?",
+          "next checkpoint 700 cycles 2026-03-21"
+        ],
+        "q18": [
+          "What pilot batch size is written on the E-7 qualification plan whiteboard?"
+        ],
+        "q19": [
+          "Which cell has the lowest bar in the capacity retention bar chart?"
+        ],
+        "q20": [
+          "What does the photo on the Aurora S1 product page show?",
+          "Aurora S1 photo figure 1 description",
+          "Aurora S1 pilot-line cell figure 1 image content"
+        ],
+        "q21": [
+          "What is the nominal voltage of the Aurora S1 cell?"
+        ],
+        "q22": [
+          "Does the Aurora S1's rated cycle life match the project's cycle target?"
+        ],
+        "q23": [
+          "What is the role of NaDFOB in the E-7 electrolyte?"
+        ],
+        "q24": [
+          "Which solvents replace DEC in the E-7 blend?"
+        ],
+        "q25": [
+          "What volume fraction of DMC does E-7 contain?",
+          "volume fraction of DMC in E-7 electrolyte",
+          "volume fraction of DMC in E-7 electrolyte formulation"
+        ],
+        "q26": [
+          "Who prepared the safety review of the E-5 failure?"
+        ],
+        "q27": [
+          "Which gases were found in the failed pouch?",
+          "ethylene carbonate decomposition gases"
+        ],
+        "q28": [
+          "What does the safety review recommend for pilot-line pouches?",
+          "gas-sampling port pilot-line pouches",
+          "gas-sampling port pilot-line pouches recommendation"
+        ],
+        "q29": [
+          "Which cells meet the 5% swelling limit?",
+          "cells with swelling below 5% limit"
+        ],
+        "q30": [
+          "What separator does the Aurora cell use?"
+        ],
+        "q31": [
+          "What is the N/P ratio of the anode?"
+        ],
+        "q32": [
+          "What voltage window is used in the cycling protocol?"
+        ],
+        "q33": [
+          "Who tested cell AUR-C107?",
+          "Jonas Weber tester AUR-C107 cell test results.csv"
+        ],
+        "q34": [
+          "What is the fallback if E-7 swelling exceeds the limit, and how is that fallback performing?"
+        ],
+        "q35": [
+          "When is the next technical review meeting?"
+        ],
+        "q36": [
+          "Who owns risk R2 in the risk register?"
+        ],
+        "q37": [
+          "What is the energy density of the Aurora S1?"
+        ],
+        "q38": [
+          "What is the price per kWh of the Aurora S1 cell?",
+          "Aurora S1 cell price per kWh"
+        ],
+        "q39": [
+          "Who is the CEO of Helios Energy Lab?",
+          "Dr. Priya Raman position Helios Energy Lab"
+        ],
+        "q40": [
+          "What capacity retention did cell AUR-C109 reach?",
+          "capacity retention AUR-C109"
+        ]
+      },
+      "route_by_question": {
+        "q01": "lookup",
+        "q02": "lookup",
+        "q03": "lookup",
+        "q04": "lookup",
+        "q05": "lookup",
+        "q06": "lookup",
+        "q07": "lookup",
+        "q08": "lookup",
+        "q09": "lookup",
+        "q10": "lookup",
+        "q11": "lookup",
+        "q12": "lookup",
+        "q13": "lookup",
+        "q14": "lookup",
+        "q15": "lookup",
+        "q16": "lookup",
+        "q17": "lookup",
+        "q18": "lookup",
+        "q19": "lookup",
+        "q20": "lookup",
+        "q21": "lookup",
+        "q22": "lookup",
+        "q23": "lookup",
+        "q24": "lookup",
+        "q25": "lookup",
+        "q26": "lookup",
+        "q27": "lookup",
+        "q28": "lookup",
+        "q29": "lookup",
+        "q30": "lookup",
+        "q31": "lookup",
+        "q32": "lookup",
+        "q33": "lookup",
+        "q34": "lookup",
+        "q35": "lookup",
+        "q36": "lookup",
+        "q37": "lookup",
+        "q38": "lookup",
+        "q39": "lookup",
+        "q40": "lookup"
+      },
+      "agent_used": 40,
+      "agent_actions": {
+        "finish": 29,
+        "graph": 5,
+        "search": 15,
+        "graph (refused)": 3,
+        "search (refused)": 2
+      },
+      "agent_steps_by_question": {
+        "q01": [
+          "finish: Dr. Priya Raman"
+        ],
+        "q02": [
+          "finish: Prussian white"
+        ],
+        "q03": [
+          "finish: Prussian white"
+        ],
+        "q04": [
+          "finish: cell AUR-C103"
+        ],
+        "q05": [
+          "finish: cell AUR-C103"
+        ],
+        "q06": [
+          "finish: AUR-C103"
+        ],
+        "q07": [
+          "graph: E-7",
+          "finish: E-7"
+        ],
+        "q08": [
+          "finish: planned budget of the electrolyte workstream"
+        ],
+        "q09": [
+          "finish: steering committee approved extra funding for the E-7 qualification"
+        ],
+        "q10": [
+          "finish: cathode budget"
+        ],
+        "q11": [
+          "search: Carbonix Materials hard-carbon qualification status",
+          "search: Carbonix Materials qualification status"
+        ],
+        "q12": [
+          "finish: NaPF6 salt"
+        ],
+        "q13": [
+          "finish: milestone M3"
+        ],
+        "q14": [
+          "finish: milestone M2 status"
+        ],
+        "q15": [
+          "finish: AUR-C106"
+        ],
+        "q16": [
+          "finish: swelling"
+        ],
+        "q17": [
+          "search: next checkpoint 700 cycles 2026-03-21",
+          "graph: next checkpoint 700 cycles 2026-03-21 REFUSED repeats an earlier search"
+        ],
+        "q18": [
+          "finish: pilot batch size"
+        ],
+        "q19": [
+          "finish: AUR-C103"
+        ],
+        "q20": [
+          "search: Aurora S1 photo figure 1 description",
+          "search: Aurora S1 pilot-line cell figure 1 image content"
+        ],
+        "q21": [
+          "finish: Aurora S1"
+        ],
+        "q22": [
+          "graph: Project Aurora cycle target REFUSED entity not named in the question or passages"
+        ],
+        "q23": [
+          "finish: NaDFOB"
+        ],
+        "q24": [
+          "finish: DEC"
+        ],
+        "q25": [
+          "search: volume fraction of DMC in E-7 electrolyte",
+          "search: volume fraction of DMC in E-7 electrolyte formulation"
+        ],
+        "q26": [
+          "finish: Lena Brandt"
+        ],
+        "q27": [
+          "search: ethylene carbonate decomposition gases",
+          "finish: ethylene carbonate decomposition gases"
+        ],
+        "q28": [
+          "search: gas-sampling port pilot-line pouches",
+          "search: gas-sampling port pilot-line pouches recommendation"
+        ],
+        "q29": [
+          "graph: E-7",
+          "search: cells with swelling below 5% limit"
+        ],
+        "q30": [
+          "finish: ceramic-coated polyethylene"
+        ],
+        "q31": [
+          "finish: N/P ratio of the anode"
+        ],
+        "q32": [
+          "finish: voltage window is used in the cycling protocol?"
+        ],
+        "q33": [
+          "search: Jonas Weber tester AUR-C107 cell test results.csv",
+          "graph: Jonas Weber"
+        ],
+        "q34": [
+          "graph: E-5 + FEC",
+          "graph: E-5 + FEC REFUSED repeats an earlier search"
+        ],
+        "q35": [
+          "graph: next technical review meeting",
+          "finish: next technical review meeting"
+        ],
+        "q36": [
+          "finish: Samuel Okafor"
+        ],
+        "q37": [
+          "finish: Aurora S1"
+        ],
+        "q38": [
+          "search: Aurora S1 cell price per kWh",
+          "search: Aurora S1 cell price per kWh REFUSED repeats an earlier search"
+        ],
+        "q39": [
+          "search: Dr. Priya Raman position Helios Energy Lab",
+          "finish: Dr. Priya Raman"
+        ],
+        "q40": [
+          "search: capacity retention AUR-C109",
+          "search: capacity retention AUR-C109 REFUSED repeats an earlier search"
+        ]
+      },
+      "vs_base": {
+        "wins": [],
+        "losses": [
+          "q29"
+        ]
+      }
+    },
+    "agent_auto+corrective": {
+      "hit": 1.0,
+      "recall": 0.986,
+      "precision": 0.281,
+      "mrr": 0.928,
+      "ndcg": 0.869,
+      "context_precision": 0.308,
+      "recall_by_type": {
+        "comparative": 0.5,
+        "factual": 1.0,
+        "image": 1.0,
+        "keyword": 1.0,
+        "multi_hop": 1.0,
+        "table": 1.0
+      },
+      "per_question_recall": {
+        "q01": 1.0,
+        "q02": 1.0,
+        "q03": 1.0,
+        "q04": 1.0,
+        "q05": 1.0,
+        "q06": 1.0,
+        "q07": 1.0,
+        "q08": 1.0,
+        "q09": 1.0,
+        "q10": 1.0,
+        "q11": 1.0,
+        "q12": 1.0,
+        "q13": 1.0,
+        "q14": 1.0,
+        "q15": 1.0,
+        "q16": 1.0,
+        "q17": 1.0,
+        "q18": 1.0,
+        "q19": 1.0,
+        "q20": 1.0,
+        "q21": 1.0,
+        "q22": 0.5,
+        "q23": 1.0,
+        "q24": 1.0,
+        "q25": 1.0,
+        "q26": 1.0,
+        "q27": 1.0,
+        "q28": 1.0,
+        "q29": 1.0,
+        "q30": 1.0,
+        "q31": 1.0,
+        "q32": 1.0,
+        "q33": 1.0,
+        "q34": 1.0,
+        "q35": 1.0,
+        "q36": 1.0,
+        "q37": 1.0
+      },
+      "latency_ms": {
+        "p50": 1310.5,
+        "p95": 4455.6
+      },
+      "llm_calls_per_question": 1.38,
+      "attempts": {
+        "0": 36,
+        "1": 4
+      },
+      "verdicts": {
+        "sufficient": 35,
+        "partial": 3,
+        "insufficient": 2
+      },
+      "verdict_by_question": {
+        "q01": "sufficient",
+        "q02": "sufficient",
+        "q03": "sufficient",
+        "q04": "sufficient",
+        "q05": "sufficient",
+        "q06": "sufficient",
+        "q07": "sufficient",
+        "q08": "sufficient",
+        "q09": "sufficient",
+        "q10": "sufficient",
+        "q11": "partial",
+        "q12": "sufficient",
+        "q13": "sufficient",
+        "q14": "sufficient",
+        "q15": "sufficient",
+        "q16": "sufficient",
+        "q17": "sufficient",
+        "q18": "sufficient",
+        "q19": "sufficient",
+        "q20": "sufficient",
+        "q21": "sufficient",
+        "q22": "sufficient",
+        "q23": "sufficient",
+        "q24": "sufficient",
+        "q25": "partial",
+        "q26": "sufficient",
+        "q27": "sufficient",
+        "q28": "sufficient",
+        "q29": "sufficient",
+        "q30": "sufficient",
+        "q31": "sufficient",
+        "q32": "sufficient",
+        "q33": "sufficient",
+        "q34": "sufficient",
+        "q35": "sufficient",
+        "q36": "sufficient",
+        "q37": "sufficient",
+        "q38": "insufficient",
+        "q39": "partial",
+        "q40": "insufficient"
+      },
+      "queries_by_question": {
+        "q01": [
+          "Who is the project lead of Project Aurora?"
+        ],
+        "q02": [
+          "What cathode material does the Aurora cell use?"
+        ],
+        "q03": [
+          "Why was Prussian white chosen over layered oxides?"
+        ],
+        "q04": [
+          "What capacity retention did cell AUR-C103 reach, and after how many cycles?"
+        ],
+        "q05": [
+          "Why did cell AUR-C103 fail?"
+        ],
+        "q06": [
+          "How much did the pouch of AUR-C103 swell?"
+        ],
+        "q07": [
+          "Which electrolyte replaced the one used in the cell that failed at 45 °C, and who owns its qualification?"
+        ],
+        "q08": [
+          "What is the planned budget of the electrolyte workstream?"
+        ],
+        "q09": [
+          "When did the steering committee approve extra funding for the E-7 qualification, and how much?"
+        ],
+        "q10": [
+          "What share of the cathode budget has been spent?"
+        ],
+        "q11": [
+          "Which hard-carbon supplier is not yet qualified?",
+          "Which hard-carbon supplier is not yet qualified? unknown"
+        ],
+        "q12": [
+          "What is the lead time for NaPF6 salt from Nordic Salts AB?"
+        ],
+        "q13": [
+          "When is milestone M3 due?"
+        ],
+        "q14": [
+          "What is the status of milestone M2?"
+        ],
+        "q15": [
+          "What capacity retention did AUR-C106 have after 300 cycles at 45 °C?"
+        ],
+        "q16": [
+          "What swelling did the lab notebook record for AUR-C106?"
+        ],
+        "q17": [
+          "When is the next checkpoint noted in the scanned lab notebook?",
+          "next checkpoint 700 cycles 2026-03-21"
+        ],
+        "q18": [
+          "What pilot batch size is written on the E-7 qualification plan whiteboard?"
+        ],
+        "q19": [
+          "Which cell has the lowest bar in the capacity retention bar chart?"
+        ],
+        "q20": [
+          "What does the photo on the Aurora S1 product page show?"
+        ],
+        "q21": [
+          "What is the nominal voltage of the Aurora S1 cell?"
+        ],
+        "q22": [
+          "Does the Aurora S1's rated cycle life match the project's cycle target?"
+        ],
+        "q23": [
+          "What is the role of NaDFOB in the E-7 electrolyte?"
+        ],
+        "q24": [
+          "Which solvents replace DEC in the E-7 blend?"
+        ],
+        "q25": [
+          "What volume fraction of DMC does E-7 contain?"
+        ],
+        "q26": [
+          "Who prepared the safety review of the E-5 failure?"
+        ],
+        "q27": [
+          "Which gases were found in the failed pouch?"
+        ],
+        "q28": [
+          "What does the safety review recommend for pilot-line pouches?"
+        ],
+        "q29": [
+          "Which cells meet the 5% swelling limit?"
+        ],
+        "q30": [
+          "What separator does the Aurora cell use?"
+        ],
+        "q31": [
+          "What is the N/P ratio of the anode?"
+        ],
+        "q32": [
+          "What voltage window is used in the cycling protocol?"
+        ],
+        "q33": [
+          "Who tested cell AUR-C107?"
+        ],
+        "q34": [
+          "What is the fallback if E-7 swelling exceeds the limit, and how is that fallback performing?"
+        ],
+        "q35": [
+          "When is the next technical review meeting?"
+        ],
+        "q36": [
+          "Who owns risk R2 in the risk register?"
+        ],
+        "q37": [
+          "What is the energy density of the Aurora S1?"
+        ],
+        "q38": [
+          "What is the price per kWh of the Aurora S1 cell?"
+        ],
+        "q39": [
+          "Who is the CEO of Helios Energy Lab?"
+        ],
+        "q40": [
+          "What capacity retention did cell AUR-C109 reach?"
+        ]
+      },
+      "route_by_question": {
+        "q01": "lookup",
+        "q02": "lookup",
+        "q03": "lookup",
+        "q04": "table",
+        "q05": "lookup",
+        "q06": "table",
+        "q07": "multi_hop",
+        "q08": "table",
+        "q09": "multi_hop",
+        "q10": "table",
+        "q11": "lookup",
+        "q12": "lookup",
+        "q13": "lookup",
+        "q14": "lookup",
+        "q15": "lookup",
+        "q16": "lookup",
+        "q17": "multi_hop",
+        "q18": "image",
+        "q19": "image",
+        "q20": "image",
+        "q21": "lookup",
+        "q22": "multi_hop",
+        "q23": "lookup",
+        "q24": "lookup",
+        "q25": "lookup",
+        "q26": "lookup",
+        "q27": "lookup",
+        "q28": "lookup",
+        "q29": "lookup",
+        "q30": "lookup",
+        "q31": "lookup",
+        "q32": "lookup",
+        "q33": "lookup",
+        "q34": "multi_hop",
+        "q35": "lookup",
+        "q36": "lookup",
+        "q37": "lookup",
+        "q38": "lookup",
+        "q39": "lookup",
+        "q40": "lookup"
+      },
+      "agent_used": 5,
+      "agent_actions": {
+        "graph": 2,
+        "finish": 2,
+        "search": 1,
+        "graph (refused)": 3
+      },
+      "agent_steps_by_question": {
+        "q07": [
+          "graph: E-7",
+          "finish: E-7"
+        ],
+        "q09": [
+          "finish: steering committee approved extra funding for the E-7 qualification"
+        ],
+        "q17": [
+          "search: next checkpoint 700 cycles 2026-03-21",
+          "graph: next checkpoint 700 cycles 2026-03-21 REFUSED repeats an earlier search"
+        ],
+        "q22": [
+          "graph: Project Aurora cycle target REFUSED entity not named in the question or passages"
+        ],
+        "q34": [
+          "graph: E-5 + FEC",
+          "graph: E-5 + FEC REFUSED repeats an earlier search"
+        ]
+      },
+      "vs_base": {
+        "wins": [],
+        "losses": []
+      }
+    }
+  },
+  "notes": "agent_auto+corrective measured in a later run (2026-11-06T07:41:48.465143+00:00), after the change that ends the workflow at the check once the agent has run (no corrective retry) (ADR-0017); that run's base reproduced the base above."
+}

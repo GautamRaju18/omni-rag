@@ -7,52 +7,15 @@ from collections.abc import AsyncIterator
 
 import httpx
 import pytest
+from workflow_fakes import FakeLLM, Retriever, _hit
 
 from omnirag.api.dependencies import get_workflow
 from omnirag.api.main import create_app
 from omnirag.core.config import Settings
-from omnirag.llm.chat import ChatResult, LLMError, OllamaChat
-from omnirag.retrieval.models import RetrievalFilters, RetrievalResult, RetrievedChunk
-from omnirag.retrieval.transforms import (
-    CORRECT_SYSTEM,
-    GRADE_SYSTEM,
-    HYDE_SYSTEM,
-    MULTI_SYSTEM,
-    REWRITE_SYSTEM,
-    QueryTransformer,
-)
+from omnirag.llm.chat import LLMError, OllamaChat
+from omnirag.retrieval.models import RetrievalFilters, RetrievalResult
+from omnirag.retrieval.transforms import QueryTransformer
 from omnirag.workflows.retrieval_graph import RetrievalWorkflow, Strategy
-
-CFG = "multimodal-256-ctx"
-
-
-class FakeLLM:
-    """Replies by system prompt; each reply list is consumed in order (last one repeats)."""
-
-    def __init__(self, **replies) -> None:
-        self.replies = {k: list(v) if isinstance(v, list) else [v] for k, v in replies.items()}
-        self.calls: list[tuple[str, str]] = []
-        self.stats = {"calls": 0}
-        self.prompts = {REWRITE_SYSTEM: "rewrite", MULTI_SYSTEM: "multi", HYDE_SYSTEM: "hyde",
-                        GRADE_SYSTEM: "grade", CORRECT_SYSTEM: "correct"}  # fmt: skip
-
-    def chat(self, system, user, *, schema=None, **kw) -> ChatResult:
-        name = self.prompts[system]
-        self.calls.append((name, user))
-        self.stats["calls"] += 1
-        queue = self.replies[name]
-        reply = queue.pop(0) if len(queue) > 1 else queue[0]
-        if isinstance(reply, Exception):
-            raise reply
-        if schema is None:
-            return ChatResult(reply, None, 1, 1, 1.0)
-        return ChatResult(json.dumps(reply), reply, 1, 1, 1.0)
-
-
-def _hit(cid: str, content: str, rank: int = 1) -> RetrievedChunk:
-    return RetrievedChunk(chunk_id=cid, document_id="d", source_file="f.md", rank=rank,
-                          score=0.5, retriever="dense", content=content,
-                          element_type="paragraph", config_id=CFG)  # fmt: skip
 
 
 # ---------------------------------------------------------------- transforms
@@ -87,7 +50,7 @@ def test_check_identifiers_first_then_llm() -> None:
     assert tx.check("Anything?", []).verdict == "insufficient"
     ok = tx.check("Retention of AUR-C105?", hits)
     assert (ok.verdict, ok.method, ok.supporting) == ("sufficient", "llm", ["c2"])
-    assert "[1] (f.md) AUR-C105" in llm.calls[0][1]
+    assert "[1] (d.md) AUR-C105" in llm.calls[0][1]
     assert tx.check("Retention of AUR-C105?", hits, use_llm=False).method == "none"
 
 
@@ -98,17 +61,6 @@ def test_check_reports_a_failed_grader() -> None:
 
 
 # ---------------------------------------------------------------- workflow
-class Retriever:
-    def __init__(self, by_query: dict[str, list[str]], content: str = "text") -> None:
-        self.by_query, self.content, self.calls = by_query, content, []
-
-    def retrieve(self, query, k, filters=None) -> RetrievalResult:
-        self.calls.append(query)
-        ids = self.by_query.get(query, [])
-        hits = [_hit(c, f"{self.content} {c}", i + 1) for i, c in enumerate(ids[:k])]
-        return RetrievalResult(query=query, retriever="dense", k=k, hits=hits, latency_ms=1.0)
-
-
 def _workflow(llm, dense, bm25, reranker=None) -> RetrievalWorkflow:
     return RetrievalWorkflow(dense, bm25, QueryTransformer(llm), reranker)
 
@@ -120,7 +72,8 @@ def test_sufficient_first_try_stops() -> None:
     wf.close()
     assert [h.chunk_id for h in result.hits] == ["b", "a"]  # RRF: b is in both lists
     assert result.retriever == "advanced" and result.details["attempts"] == 0
-    assert [t["node"] for t in result.details["trace"]] == ["transform", "retrieve", "check"]
+    assert [t["node"] for t in result.details["trace"]] == ["route", "transform", "retrieve",
+                                                            "check"]  # fmt: skip
     assert result.details["verdict"] == "sufficient"
 
 
@@ -141,7 +94,7 @@ def test_corrective_retry_adds_evidence_and_is_bounded() -> None:
     assert dense.calls.count("Who owns E-7?") == 1  # earlier lists are reused, not re-run
     nodes = [t["node"] for t in d["trace"]]
     assert nodes.count("check") == 3 and nodes.count("correct") == 2
-    assert d["recursion_limit"] == 4 * 3 + 4
+    assert d["recursion_limit"] == 4 * 3 + 2 * 2 + 5  # 2 agent steps could run (auto)
     assert "Missing: the owner" in [u for n, u in llm.calls if n == "correct"][0]
 
 
@@ -171,8 +124,8 @@ def test_transforms_and_rerank_nodes() -> None:
     assert result.details["hyde"] == "hypothetical passage text"
     assert "hypothetical passage text" in dense.calls  # dense only, never BM25
     assert result.hits[0].chunk_id == "c"  # the reranker's choice
-    assert [t["node"] for t in result.details["trace"]] == ["transform", "retrieve", "rerank",
-                                                            "check"]  # fmt: skip
+    assert [t["node"] for t in result.details["trace"]] == ["route", "transform", "retrieve",
+                                                            "rerank", "check"]  # fmt: skip
 
 
 # ---------------------------------------------------------------- chat client
@@ -260,6 +213,6 @@ def test_failed_transforms_degrade_to_the_original_question() -> None:
     d = result.details
     assert d["queries"] == ["Q?"] and d["hyde"] is None and d["attempts"] == 1
     assert [h.chunk_id for h in result.hits] == ["a"]
-    errors = d["trace"][0]["errors"]
+    errors = d["trace"][1]["errors"]
     assert len(errors) == 2 and "empty reply" in errors[0]
     assert "empty reply" in [t for t in d["trace"] if t["node"] == "correct"][0]["error"]

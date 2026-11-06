@@ -65,6 +65,32 @@ def rrf(
     ]  # fmt: skip
 
 
+def diversify(
+    hits: list[RetrievedChunk], k: int, max_per_document: int | None = None
+) -> list[RetrievedChunk]:
+    """The top k, with at most ``max_per_document`` chunks from any one document (Phase 9b).
+
+    Greedy in rank order: a chunk over its document's cap is skipped, and skipped chunks
+    fill the remaining slots when fewer documents than ``k / cap`` were found. ``None``
+    keeps the ranking unchanged. Multi-document questions need facts from several sources;
+    one document's near-duplicates can push the second source out of the top k.
+    """
+    if not max_per_document:
+        return hits[:k]
+    picked: list[RetrievedChunk] = []
+    skipped: list[RetrievedChunk] = []
+    per_doc: dict[str, int] = {}
+    for hit in hits:
+        if len(picked) == k:
+            break
+        if per_doc.get(hit.document_id, 0) < max_per_document:
+            picked.append(hit)
+            per_doc[hit.document_id] = per_doc.get(hit.document_id, 0) + 1
+        else:
+            skipped.append(hit)
+    return picked + skipped[: k - len(picked)]
+
+
 class HybridRetriever:
     def __init__(
         self,

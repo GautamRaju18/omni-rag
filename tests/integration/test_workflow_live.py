@@ -35,6 +35,20 @@ def test_unknown_identifier_is_insufficient_without_a_model_call(workflow) -> No
     assert len(result.hits) == 5  # retrieval still returns its best guesses
 
 
+def test_agent_bridges_through_a_name_it_read(workflow) -> None:
+    """r02: the salt is only named in the first passage (NaPF₆); its supplier is a budget row."""
+    result = workflow.retrieve(
+        "Who supplies the salt that the E-5 electrolyte is made with?",
+        strategy=Strategy(route="rules", agent="auto", grade=False, max_retries=0),
+    )
+    d = result.details
+    assert d["route"]["intent"] == "multi_hop" and d["agent"]["used"]
+    searches = [s["query"] for s in d["agent"]["steps"] if s["action"] == "search"]
+    assert any("napf" in q.lower() for q in searches)  # a name from a passage, not the question
+    assert any("Nordic Salts AB" in h.content for h in result.hits)
+    assert any("NaPF₆ in EC:DEC" in h.content for h in result.hits)
+
+
 def test_answerable_question_is_graded_by_the_model(workflow) -> None:
     result = workflow.retrieve("Why did cell AUR-C103 fail?",
                                strategy=Strategy(grade=True, max_retries=1))  # fmt: skip
@@ -42,4 +56,4 @@ def test_answerable_question_is_graded_by_the_model(workflow) -> None:
     assert d["checks"][0]["method"] == "llm"
     assert d["verdict"] == "sufficient" and d["attempts"] == 0
     assert any("failed at cycle 412" in h.content for h in result.hits)
-    assert [t["node"] for t in d["trace"]] == ["transform", "retrieve", "check"]
+    assert [t["node"] for t in d["trace"]] == ["route", "transform", "retrieve", "check"]
