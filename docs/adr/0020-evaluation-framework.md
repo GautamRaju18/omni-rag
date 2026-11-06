@@ -43,7 +43,7 @@ Two constraints shape the design:
   - experiments carry scores; answers are `[redacted]` unless `include_answers`;
   - tracing needs both `OMNIRAG_LANGSMITH_TRACING=true` and `LANGSMITH_API_KEY`, and hides inputs/outputs by default.
 
-  The SDK calls were checked against the installed `langsmith` 0.14.17 and are tested with a fake client. They were **not run against the hosted service** (no API key on this machine).
+  Run against the hosted service on 2026-11-06 (personal access token, US endpoint): tracing works (LangGraph runs arrive with inputs/outputs hidden), and the dataset (110 examples) and a first set of E1-E5 experiments uploaded. Two upload bugs were found and fixed (scores before re-scoring; no flush, so a short-lived process lost runs). Re-uploads then hit the free plan's monthly trace limit (HTTP 429: each question result is one trace, 550 per full upload): the SDK only logs this from its background thread, so check the experiment in the LangSmith UI after an upload.
 - **API:** `POST /evaluate` (one run at a time, in the API process, 409 otherwise), `GET /evaluate[/{run_id}]`, `GET /analytics`.
 
 ## Measured (2026-11-06, qwen3:4b-instruct (generator and judge), bge-m3, multimodal-256-ctx chunks; [report](../benchmarks/rag-eval-2026-11-06.json), [per-question records](../benchmarks/rag-eval-2026-11-06.partial.jsonl), [same-76 comparison](../benchmarks/same76-rag-eval-2026-11-06.json))

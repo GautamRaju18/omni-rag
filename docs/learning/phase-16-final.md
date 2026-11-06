@@ -33,7 +33,7 @@ Rules the tests enforce, so later changes can't silently break them:
   - E1–E4 on all 110 questions; deployment.
 - **Partial:**
   - E5 covers 76 of the 110 questions, and E6/E7 were not run: the evaluation was stopped early by request. `rag_eval --out docs/benchmarks/rag-eval-2026-11-06.json` resumes from the stored records.
-  - LangSmith upload and tracing are implemented and tested with a fake client, but have not been run against the hosted service (no API key on this machine).
+  - LangSmith: Run against the hosted service on 2026-11-06 (personal access token, US endpoint): tracing works (LangGraph runs arrive with inputs/outputs hidden), and the dataset (110 examples) and a first set of E1-E5 experiments uploaded. Two upload bugs were found and fixed (scores before re-scoring; no flush, so a short-lived process lost runs). Re-uploads then hit the free plan's monthly trace limit (HTTP 429: each question result is one trace, 550 per full upload): the SDK only logs this from its background thread, so check the experiment in the LangSmith UI after an upload.
 - **Known limits:**
   - one author wrote the dataset;
   - the judge is the generator's own 4B model;

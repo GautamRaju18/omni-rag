@@ -218,12 +218,24 @@ def test_langsmith_payloads_carry_no_document_text(tmp_path: Path, monkeypatch) 
     assert "facts" not in json.dumps(examples)  # evidence quotes stay local
     rec = {
         **_rec("q1", True, True, False),
-        "answer": {**_rec("q1", True, True, False)["answer"], "text": "secret text [1]"},
+        "answer": {
+            **_rec("q1", True, True, False)["answer"],
+            "text": "secret text [1]",
+            "answerable": True,
+        },
     }
     assert langsmith_sync.run_outputs(rec)["answer"] == "[redacted]"
     assert langsmith_sync.run_outputs(rec, include_answers=True)["answer"] == "secret text [1]"
+    assert langsmith_sync.run_outputs(rec)["scores"]["unanswerable_refused"] is None
+    unans = {
+        **_rec("u1", False, True, True),
+        "answer": {**_rec("u1", False, True, True)["answer"], "text": ""},
+    }
+    scores = langsmith_sync.run_outputs(unans)["scores"]
+    assert scores["correct"] is None and scores["unanswerable_refused"] == 1.0
 
     partial = tmp_path / "r.partial.jsonl"
+    rec["qid"] = "q01"  # a real dataset question: records are re-scored with it
     partial.write_text(json.dumps(rec) + "\n", encoding="utf-8")
     calls = []
 
@@ -241,7 +253,7 @@ def test_langsmith_payloads_carry_no_document_text(tmp_path: Path, monkeypatch) 
     import langsmith
 
     monkeypatch.setattr(langsmith, "evaluate", lambda target, **kw: calls.append(
-        ("evaluate", kw["experiment_prefix"], target({"qid": "q1"})["answer"])))  # fmt: skip
+        ("evaluate", kw["experiment_prefix"], target({"qid": "q01"})["answer"])))  # fmt: skip
     report = {"experiments": {"E3": {"label": "Dense + BM25"}}, "prompt_version": "p",
               "generation_model": "m", "chunk_config": "c"}  # fmt: skip
     msg = langsmith_sync.upload_report(report, V1, partial, client=FakeClient())
@@ -250,7 +262,7 @@ def test_langsmith_payloads_carry_no_document_text(tmp_path: Path, monkeypatch) 
         ("examples", 110),
         ("evaluate", "E3-Dense + BM25", "[redacted]"),
     ]
-    assert "experiments ['E3']" in msg
+    assert "experiments sent ['E3']" in msg
     monkeypatch.delenv("LANGSMITH_API_KEY", raising=False)
     assert "skipped" in langsmith_sync.upload_report(report, V1, partial)
 
